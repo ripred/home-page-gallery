@@ -143,7 +143,7 @@
             opacity: 0;
         }
         .main-content-wrapper.bg-type-image::before {
-            opacity: var(--main-content-bg-image-opacity, 0.15);
+            opacity: var(--main-content-bg-image-opacity, 0.25);
         }
         .main-content-wrapper.bg-type-image { /* Ensure wrapper itself is transparent for image to show */
             background-color: transparent !important; 
@@ -939,7 +939,7 @@
 
                     <div class="radio-option">
                         <input type="radio" id="bg-type-local" name="backgroundTypeSelection" value="localImage">
-                        <label for="bg-type-local">Local Image (15% Opacity)</label>
+                        <label for="bg-type-local">Local Image (25% Opacity)</label>
                     </div>
                     <div id="background-local-image-container" class="background-option-details hidden form-group">
                         <label for="settings-background-local-image-trigger">Choose Image File</label>
@@ -949,7 +949,7 @@
 
                     <div class="radio-option">
                         <input type="radio" id="bg-type-online" name="backgroundTypeSelection" value="onlineImage">
-                        <label for="bg-type-online">Online Image (Random, 15% Opacity)</label>
+                        <label for="bg-type-online">Online Image (Random, 25% Opacity)</label>
                     </div>
                      <div id="background-online-image-container" class="background-option-details hidden">
                         <p style="font-size:0.7rem; color: #64748b;">A random image from Picsum Photos will be used. A new one is fetched when saved.</p>
@@ -1015,7 +1015,7 @@
                 localImageName: null,
                 localImageUrlData: null, 
                 onlineImageUrl: null,    
-                imageOpacity: 0.15       
+                imageOpacity: 0.25       
             }
         };
 
@@ -1287,7 +1287,7 @@
                 groupOrder: [],
                 backgroundSettings: {
                     type: 'theme', color: '#e2e8f0', localImageName: null,
-                    localImageUrlData: null, onlineImageUrl: null, imageOpacity: 0.15
+                    localImageUrlData: null, onlineImageUrl: null, imageOpacity: 0.25
                 }
             };
             
@@ -1414,7 +1414,7 @@
                         links: appConfig.links, // Default to current appConfig.links if not in imported
                         nextCustomLinkId: appConfig.nextCustomLinkId, // Default to current
                         groupOrder: [],
-                        backgroundSettings: { type: 'theme', color: '#e2e8f0', localImageName: null, localImageUrlData: null, onlineImageUrl: null, imageOpacity: 0.15 }
+                        backgroundSettings: { type: 'theme', color: '#e2e8f0', localImageName: null, localImageUrlData: null, onlineImageUrl: null, imageOpacity: 0.25 }
                     };
 
                     appConfig.pageTitle = importedConfig.pageTitle || baseConfigForImport.pageTitle;
