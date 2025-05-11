@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Enhanced Link Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- Reset and Base Styles --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-size: 0.75rem; /* text-xs */
+            line-height: 1rem;
+            background-color: #e2e8f0; /* slate-200 */
+            color: #334155; /* slate-700 */
+            transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .dark body {
+            background-color: #0f172a; /* dark:bg-slate-900 */
+            color: #cbd5e1; /* dark:text-slate-300 */
+        }
+
+        /* Minimalist scrollbar (existing) */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #e2e8f0; }
+        ::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0ea5e9; }
+        .dark ::-webkit-scrollbar-track { background: #334155; }
+        .dark ::-webkit-scrollbar-thumb { background: #0ea5e9; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #38bdf8; }
+
+        /* --- Utility Classes --- */
+        .hidden { display: none !important; }
+        .block { display: block; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .flex-col { flex-direction: column; }
+        .flex-grow { flex-grow: 1; }
+        .shrink-0 { flex-shrink: 0; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .w-full { width: 100%; }
+        .min-w-0 { min-width: 0; }
+        .overflow-hidden { overflow: hidden; }
+        .truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .capitalize { text-transform: capitalize; }
+        .rounded-sm { border-radius: 0.125rem; }
+        .rounded-md { border-radius: 0.375rem; }
+        .rounded { border-radius: 0.25rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+
+
+        /* --- Main Layout --- */
+        .main-content-wrapper {
+            flex-grow: 1;
+            width: 100%;
+            padding: 0.75rem 0.5rem; 
+        }
+
+        /* --- Header --- */
+        .page-header {
+            margin-bottom: 1rem; 
+            text-align: center;
+            position: relative;
+        }
+        .page-header .title {
+            font-size: 1.125rem; 
+            line-height: 1.75rem;
+            font-weight: 700; 
+            color: #0369a1; 
+        }
+        .dark .page-header .title {
+            color: #0ea5e9; 
+        }
+        .page-header .subtitle {
+            color: #64748b; 
+            margin-top: 0.125rem; 
+            font-size: 0.75rem; 
+        }
+        .dark .page-header .subtitle {
+            color: #94a3b8; 
+        }
+
+        /* --- Theme Switcher --- */
+        .theme-switcher-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin-top: 0;
+            margin-right: 0;
+        }
+        .theme-switcher-button {
+            padding: 0.5rem; 
+            border-radius: 0.375rem; 
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .theme-switcher-button:hover {
+            background-color: #cbd5e1; 
+        }
+        .dark .theme-switcher-button:hover {
+            background-color: #334155; 
+        }
+        .theme-switcher-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #0ea5e9; 
+        }
+        .theme-switcher-button svg {
+            width: 1.25rem; 
+            height: 1.25rem; 
+            color: #475569; 
+            display: block; 
+        }
+        .dark .theme-switcher-button svg {
+            color: #94a3b8; 
+        }
+        .theme-dropdown-menu {
+            display: none; 
+            position: absolute;
+            right: 0;
+            margin-top: 0.5rem; 
+            width: 10rem; 
+            background-color: #ffffff; 
+            border-radius: 0.375rem; 
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.05);
+            overflow: hidden; 
+            z-index: 50;
+        }
+        .dark .theme-dropdown-menu {
+            background-color: #1e293b; 
+        }
+        .theme-dropdown-menu.show {
+            display: block;
+        }
+        .theme-dropdown-menu ul {
+            list-style: none;
+        }
+        .theme-option-button {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.5rem 0.75rem; 
+            font-size: 0.875rem; 
+            line-height: 1.25rem;
+            color: #334155; 
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+        }
+        .dark .theme-option-button {
+            color: #cbd5e1; 
+        }
+        .theme-option-button:hover {
+            background-color: #f1f5f9; 
+        }
+        .dark .theme-option-button:hover {
+            background-color: #334155; 
+        }
+        .theme-option-button svg {
+            width: 1rem; 
+            height: 1rem; 
+            margin-right: 0.5rem; 
+            display: block; 
+        }
+
+        /* --- Link Groups --- */
+        #link-groups-container {
+            display: grid;
+            grid-template-columns: repeat(1, minmax(0, 1fr)); 
+            gap: 0.75rem; 
+        }
+        .no-links-placeholder {
+            text-align: center;
+            color: #94a3b8; 
+            grid-column: 1 / -1; 
+            padding: 1rem;
+            font-size: 0.875rem; 
+        }
+        .dark .no-links-placeholder {
+            color: #64748b; 
+        }
+        #loading-placeholder {
+            text-align: center;
+            color: #94a3b8; 
+            grid-column: 1 / -1; 
+        }
+        .dark #loading-placeholder {
+            color: #64748b; 
+        }
+
+        .link-group-section {
+            background-color: rgba(255,255,255,0.7); 
+            padding: 0.5rem; 
+            border-radius: 0.375rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .dark .link-group-section {
+            background-color: rgba(30,41,59,0.7); 
+            box-shadow: 0 4px 6px -1px rgba(15,23,42,0.3), 0 2px 4px -1px rgba(15,23,42,0.25);
+        }
+
+        .link-group-title {
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            color: #0284c7; 
+            margin-bottom: 0.375rem; 
+            border-bottom: 1px solid #e0f2fe; 
+            padding-bottom: 0.25rem; 
+            text-transform: capitalize;
+            flex-shrink: 0;
+            transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+        }
+        .dark .link-group-title {
+            color: #38bdf8; 
+            border-bottom-color: #0c4a6e; 
+        }
+
+        .link-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr)); 
+            gap: 0.375rem; 
+        }
+
+        .link-card {
+            display: block;
+            padding: 0.375rem; 
+            border-radius: 0.25rem; 
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); 
+            background-color: #f8fafc; 
+            transition: all 0.2s ease-in-out;
+            text-decoration: none;
+            position: relative; 
+        }
+        .dark .link-card {
+            background-color: #334155; 
+        }
+        .link-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+            background-color: #f0f9ff; 
+            transform: translateY(-1px); 
+        }
+        .dark .link-card:hover {
+            background-color: #0369a1; 
+        }
+
+        .card-action-button { 
+            position: absolute;
+            top: 0.125rem; 
+            right: 0.125rem; 
+            padding: 0.125rem;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            display: none; 
+            z-index: 10; 
+        }
+        .dark .card-action-button {
+            background-color: rgba(51, 65, 85, 0.5); 
+        }
+        .link-card:hover .card-action-button {
+            display: block;
+        }
+        .card-action-button svg {
+            width: 0.75rem; 
+            height: 0.75rem; 
+            color: #64748b; 
+            display: block; 
+        }
+        .dark .card-action-button svg {
+            color: #94a3b8; 
+        }
+        .card-action-button:hover svg {
+            color: #0ea5e9; 
+        }
+        .dark .card-action-button:hover svg {
+            color: #38bdf8; 
+        }
+
+        /* Card Action Dropdown Menu */
+        .card-action-dropdown {
+            display: none; 
+            position: absolute;
+            background-color: #fff;
+            border-radius: 0.375rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+            z-index: 20; 
+            width: 100px; 
+            overflow: hidden;
+        }
+        .dark .card-action-dropdown {
+            background-color: #1e293b; 
+            border: 1px solid #334155; 
+        }
+        .card-action-dropdown.show {
+            display: block;
+        }
+        .card-action-dropdown-item {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.625rem; 
+            font-size: 0.75rem; 
+            color: #334155; 
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+        }
+        .dark .card-action-dropdown-item {
+            color: #cbd5e1; 
+        }
+        .card-action-dropdown-item:hover {
+            background-color: #f1f5f9; 
+        }
+        .dark .card-action-dropdown-item:hover {
+            background-color: #334155; 
+        }
+
+
+        .link-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.125rem; 
+        }
+        .favicon-img {
+            min-width: 16px; 
+            width: 0.875rem; 
+            height: 0.875rem; 
+            margin-right: 0.25rem; 
+            border-radius: 0.125rem; 
+            flex-shrink: 0;
+        }
+        .favicon-fallback {
+            width: 0.875rem; 
+            height: 0.875rem; 
+            margin-right: 0.25rem; 
+            border-radius: 0.125rem; 
+            flex-shrink: 0;
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+        }
+        .favicon-fallback svg {
+            width: 100%;
+            height: 100%;
+            color: #94a3b8; 
+        }
+        .dark .favicon-fallback svg {
+            color: #64748b; 
+        }
+
+        .link-card-title {
+            font-size: 11px; 
+            font-weight: 500; 
+            color: #475569; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex-grow: 1;
+            min-width: 0;
+            padding-right: 1rem; 
+        }
+        .dark .link-card-title {
+            color: #cbd5e1; 
+        }
+        .link-card:hover .link-card-title {
+            color: #0369a1; 
+        }
+        .dark .link-card:hover .link-card-title {
+            color: #38bdf8; 
+        }
+
+        .new-tab-icon {
+            width: 0.5rem; 
+            height: 0.5rem; 
+            color: #94a3b8; 
+            margin-left: 0.25rem; 
+            flex-shrink: 0;
+        }
+        .dark .new-tab-icon {
+            color: #64748b; 
+        }
+        .link-card:hover .new-tab-icon {
+            color: #0ea5e9; 
+        }
+        .dark .link-card:hover .new-tab-icon {
+            color: #38bdf8; 
+        }
+
+        .link-card-url {
+            font-size: 9px; 
+            color: #94a3b8; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .dark .link-card-url {
+            color: #64748b; 
+        }
+
+
+        /* --- Footer --- */
+        .page-footer {
+            padding-top: 0.5rem; 
+            padding-bottom: 0.5rem;
+            border-top: 1px solid #cbd5e1; 
+            text-align: center;
+            font-size: 0.75rem; 
+            color: #64748b; 
+            background-color: #f1f5f9; 
+            transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+            margin-top: auto; 
+        }
+        .dark .page-footer {
+            border-top-color: #334155; 
+            color: #94a3b8; 
+            background-color: #1e293b; 
+        }
+
+        /* --- Editor Modal & Delete Confirmation Modal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; 
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-content { 
+            background-color: #ffffff;
+            padding: 1.5rem; 
+            border-radius: 0.5rem; 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); 
+            width: 90%;
+            max-width: 500px; 
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .dark .modal-content {
+            background-color: #1e293b; 
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem; 
+            padding-bottom: 0.5rem; 
+            border-bottom: 1px solid #e5e7eb; 
+        }
+        .dark .modal-header {
+            border-bottom-color: #334155; 
+        }
+        .modal-title {
+            font-size: 1.125rem; 
+            font-weight: 600; 
+        }
+        .modal-close-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280; 
+        }
+        .dark .modal-close-button {
+            color: #9ca3af; 
+        }
+        .modal-body .form-group { 
+            margin-bottom: 1rem; 
+        }
+        .modal-body label { 
+            display: block;
+            font-size: 0.875rem; 
+            font-weight: 500; 
+            margin-bottom: 0.25rem; 
+        }
+        .modal-body input[type="text"], 
+        .modal-body textarea { 
+            width: 100%;
+            padding: 0.5rem 0.75rem; 
+            border: 1px solid #d1d5db; 
+            border-radius: 0.375rem; 
+            font-size: 0.875rem; 
+            background-color: #fff;
+            color: #1f2937;
+        }
+        .modal-body input[type="text"]:disabled { 
+            background-color: #f3f4f6; 
+            cursor: not-allowed;
+        }
+        .dark .modal-body input[type="text"], 
+        .dark .modal-body textarea { 
+            background-color: #334155; 
+            border-color: #4b5563; 
+            color: #e5e7eb; 
+        }
+        .dark .modal-body input[type="text"]:disabled { 
+            background-color: #1f293b; 
+            color: #6b7280;
+        }
+        .modal-body textarea { 
+            min-height: 80px;
+            font-family: monospace;
+        }
+        
+        #delete-confirm-modal .modal-body p {
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        #delete-confirm-modal .modal-body strong { 
+            font-weight: 600;
+            word-break: break-all; 
+        }
+
+        .modal-footer {
+            margin-top: 1.5rem; 
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem; 
+        }
+        .modal-button {
+            padding: 0.5rem 1rem; 
+            border-radius: 0.375rem; 
+            font-size: 0.875rem; 
+            font-weight: 500; 
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .modal-button-primary { 
+            background-color: #0ea5e9; 
+            color: white;
+        }
+        .modal-button-primary:hover {
+            background-color: #0284c7; 
+        }
+        .modal-button-danger { 
+            background-color: #ef4444; 
+            color: white;
+        }
+        .modal-button-danger:hover {
+            background-color: #dc2626; 
+        }
+        .modal-button-secondary {
+            background-color: #e5e7eb; 
+            color: #1f2937; 
+            border-color: #d1d5db;
+        }
+        .dark .modal-button-secondary {
+            background-color: #334155; 
+            color: #e5e7eb; 
+            border-color: #4b5563;
+        }
+        .modal-button-secondary:hover {
+            background-color: #d1d5db; 
+        }
+        .dark .modal-button-secondary:hover {
+            background-color: #4b5563; 
+        }
+
+
+        /* --- Responsive Styles --- */
+        @media (min-width: 640px) { /* sm */
+            body { font-size: 0.875rem; line-height: 1.25rem; } 
+            .main-content-wrapper { padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 1rem; padding-bottom: 1rem; } 
+            .page-header { margin-bottom: 1.5rem; } 
+            .page-header .title { font-size: 1.25rem; line-height: 1.75rem; } 
+            .page-header .subtitle { font-size: 0.875rem; line-height: 1.25rem; } 
+            #link-groups-container { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } 
+            .link-group-section { padding: 0.75rem; } 
+            .link-group-title { font-size: 0.875rem; line-height: 1.25rem; margin-bottom: 0.5rem; } 
+            .link-cards-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; } 
+        }
+        @media (min-width: 768px) { /* md */
+            #link-groups-container { grid-template-columns: repeat(3, minmax(0, 1fr)); } 
+            .link-cards-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } 
+        }
+        @media (min-width: 1024px) { /* lg */
+            .main-content-wrapper { padding-left: 1rem; padding-right: 1rem; } 
+            #link-groups-container { grid-template-columns: repeat(4, minmax(0, 1fr)); } 
+            .link-cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } 
+        }
+        @media (min-width: 1280px) { /* xl */
+            #link-groups-container { grid-template-columns: repeat(5, minmax(0, 1fr)); } 
+            .link-cards-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } 
+        }
+        @media (min-width: 1536px) { /* 2xl */
+            #link-groups-container { grid-template-columns: repeat(6, minmax(0, 1fr)); } 
+            .link-cards-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } 
+        }
+
+    </style>
+</head>
+<body> 
+    <div class="main-content-wrapper">
+        <header class="page-header">
+            <h1 class="title">My Link Hub</h1>
+            <p class="subtitle">Your configurable, themed dashboard.</p>
+            
+            <div class="theme-switcher-container">
+                <button id="theme-switcher-button" type="button" class="theme-switcher-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 0 0 3.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.15-.15.33-.26.53-.33A3.75 3.75 0 0 1 17.25 3h.008c.621 0 1.125.504 1.125 1.125v5.25c0 .621-.504 1.125-1.125 1.125h-4.072c-.198 0-.387-.058-.561-.162L10.5 8.197Z" />
+                    </svg>
+                </button>
+                <div id="theme-dropdown-menu" class="theme-dropdown-menu"> 
+                    <ul>
+                        <li><button data-theme="light" class="theme-option-button"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25c0 1.31.934 2.342 2.11 2.342s2.11-1.032 2.11-2.342A2.25 2.25 0 0 0 12 12Z" /></svg>Light</button></li>
+                        <li><button data-theme="dark" class="theme-option-button"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21c3.975 0 7.403-2.088 9.002-5.168Z" /></svg>Dark</button></li>
+                        <li><button data-theme="system" class="theme-option-button"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h4.757c3.247 0 5.406 1.5 6.477 3.154" /></svg>System</button></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <div id="link-groups-container"> 
+            <div id="loading-placeholder"><p>Loading links...</p></div>
+        </div>
+    </div>
+
+    <footer class="page-footer">
+        <p>© <span id="currentYear"></span> My Link Hub. Crafted with Custom CSS.</p>
+    </footer>
+
+    <div id="card-action-dropdown" class="card-action-dropdown">
+        <button class="card-action-dropdown-item" data-action="edit">Edit...</button>
+        <button class="card-action-dropdown-item" data-action="delete">Delete...</button>
+    </div>
+
+    <div id="edit-card-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="edit-modal-title" class="modal-title">Edit Link</h2>
+                <button id="edit-modal-close-button" class="modal-close-button" aria-label="Close edit modal">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-link-id-storage">
+                <div class="form-group"><label for="edit-link-id">ID (Read-only)</label><input type="text" id="edit-link-id" name="id" disabled></div>
+                <div class="form-group"><label for="edit-link-url">URL</label><input type="text" id="edit-link-url" name="url" required></div>
+                <div class="form-group"><label for="edit-link-title">Title</label><input type="text" id="edit-link-title" name="title" required></div>
+                <div class="form-group"><label for="edit-link-template">Template</label><input type="text" id="edit-link-template" name="template"></div>
+                <div class="form-group">
+                    <label for="edit-link-data">Data (JSON format)</label>
+                    <textarea id="edit-link-data" name="data" rows="3"></textarea>
+                    <p style="font-size: 0.7rem; color: #64748b; margin-top: 0.25rem;">E.g., {"key": "value"}</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-modal-cancel-button" type="button" class="modal-button modal-button-secondary">Cancel</button>
+                <button id="edit-modal-save-button" type="button" class="modal-button modal-button-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="delete-confirm-modal-overlay" class="modal-overlay">
+        <div id="delete-confirm-modal" class="modal-content">
+            <div class="modal-header">
+                <h2 id="delete-confirm-modal-title" class="modal-title">Confirm Deletion</h2>
+                <button id="delete-modal-close-button" class="modal-close-button" aria-label="Close delete confirmation modal">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="delete-link-id-storage">
+                <p>Are you sure you want to delete this link?</p>
+                <p><strong><span id="delete-link-title-display"></span></strong></p>
+            </div>
+            <div class="modal-footer">
+                <button id="delete-modal-cancel-button" type="button" class="modal-button modal-button-secondary">Cancel</button>
+                <button id="delete-modal-confirm-button" type="button" class="modal-button modal-button-danger">Remove Link</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- THEME SWITCHER LOGIC ---
+        const themeSwitcherButton = document.getElementById('theme-switcher-button');
+        const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
+        const themeOptionButtons = document.querySelectorAll('.theme-option-button');
+        const htmlElement = document.documentElement; 
+
+        function applyTheme(theme) {
+            localStorage.setItem('theme', theme); 
+            updateDocumentTheme(theme);
+        }
+
+        function updateDocumentTheme(theme) {
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (theme === 'dark' || (theme === 'system' && systemPrefersDark)) {
+                htmlElement.classList.add('dark');
+            } else {
+                htmlElement.classList.remove('dark');
+            }
+        }
+        
+        if (themeSwitcherButton) {
+            themeSwitcherButton.addEventListener('click', (event) => {
+                event.stopPropagation(); 
+                if (themeDropdownMenu) themeDropdownMenu.classList.toggle('show');
+            });
+        }
+
+        // Global click listener to close dropdowns
+        document.addEventListener('click', (event) => {
+            // Close theme dropdown
+            if (themeDropdownMenu && themeDropdownMenu.classList.contains('show') && themeSwitcherButton && !themeSwitcherButton.contains(event.target) && !themeDropdownMenu.contains(event.target)) {
+                themeDropdownMenu.classList.remove('show');
+            }
+            // Close card action dropdown
+            const activeCardActionDropdown = document.getElementById('card-action-dropdown');
+            if (activeCardActionDropdown && activeCardActionDropdown.classList.contains('show')) {
+                const isClickInsideDropdown = activeCardActionDropdown.contains(event.target);
+                const isClickOnAnActionButton = event.target.closest('.card-action-button');
+                if (!isClickInsideDropdown && !isClickOnAnActionButton) {
+                    activeCardActionDropdown.classList.remove('show');
+                }
+            }
+        });
+        
+        themeOptionButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const selectedTheme = button.dataset.theme;
+                applyTheme(selectedTheme);
+                if (themeDropdownMenu) {
+                    themeDropdownMenu.classList.remove('show'); 
+                }
+            });
+        });
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            const currentTheme = localStorage.getItem('theme') || 'system';
+            if (currentTheme === 'system') {
+                updateDocumentTheme('system');
+            }
+        });
+
+        // --- LINK DATA (Modifiable) ---
+        // Restored full links array
+        let links = [
+            { id: 'yt-guc', url: "https://www.youtube.com/watch?v=3M6e6TG7nDA", title: "Google User Content - YouTube", template: "default", data: {} },
+            { id: 'reddit-arduino', url: "https://www.reddit.com/r/arduino/new/?feedViewType=compactView&rdt=34729", title: "Reddit - r/arduino/new", template: "default", data: {} },
+            { id: 'reddit-modq', url: "https://www.reddit.com/mod/queue", title: "Reddit - Mod Queue", template: "default", data: {} },
+            { id: 'chatgpt-main', url: "https://chatgpt.com/", title: "ChatGPT - Main", template: "default", data: {} },
+            { id: 'chatgpt-chat1', url: "https://chatgpt.com/c/681b5d0e-f324-800e-a09e-3ae80c22affc", title: "ChatGPT - Chat 681b5d", template: "default", data: {} },
+            { id: 'figma-wireframes', url: "https://www.figma.com/design/ihIhLU92Getzv2qDyULIui/Wireframes-Kit---Free-wireframing-Websites-and-SaaS-UI-UX--Community-?node-id=1140-6414&p=f&t=5N1q88XiIAUE4OhZ-0", title: "Figma - Wireframes Kit", template: "default", data: {} },
+            { id: 'gemini-app', url: "https://gemini.google.com/app", title: "Gemini", template: "default", data: {} },
+            { id: 'aistudio-newchat', url: "https://aistudio.google.com/prompts/new_chat?pli=1", title: "AI Studio - New Chat", template: "default", data: {} },
+            { id: 'firebase-studio', url: "https://studio.firebase.google.com/studio-08171228", title: "Firebase Studio", template: "default", data: {} },
+            { id: 'gh-ripred-ps', url: "https://github.com/ripred/Project-Sleuth", title: "GitHub - ripred/Project-Sleuth", template: "default", data: {} },
+            { id: 'gh-ripred-readme', url: "https://github.com/ripred/ripred/edit/main/README.md", title: "GitHub - ripred/ripred - Edit README", template: "default", data: {} },
+            { id: 'aistudio-apikey', url: "https://aistudio.google.com/app/apikey", title: "AI Studio - API Key", template: "default", data: {} },
+            { id: 'aistudio-live', url: "https://aistudio.google.com/live", title: "AI Studio - Live", template: "default", data: {} },
+            { id: 'grok-main', url: "https://grok.com/", title: "Grok", template: "default", data: {} },
+            { id: 'gh-ripred', url: "https://github.com/ripred", title: "GitHub - ripred", template: "default", data: {} },
+            { id: 'gh-user-img', url: "https://camo.githubusercontent.com/d70921493d8bcebc9fd59014af1707d3d2e66e3ccab70ed4c11762317e62e2f1/68747470733a2f2f6769746875622d70726f66696c652d7726f7068792e76657263656c2e6170702f3f757365726e616d653d726970726564267468656d653d6461726b687562266e6f2d62673d74727565266e6f2d6672616d653d7472756526636f6c756d6e3d34", title: "GitHub User Content - Image", template: "default", data: {} },
+            { id: 'gh-google-a2a', url: "https://github.com/google/A2A", title: "GitHub - google/A2A", template: "default", data: {} },
+            { id: 'mcp-java', url: "https://modelcontextprotocol.io/sdk/java/mcp-overview", title: "ModelContextProtocol - Java SDK Overview", template: "default", data: {} },
+            { id: 'mcp-tools', url: "https://modelcontextprotocol.io/docs/concepts/tools", title: "ModelContextProtocol - Concepts: Tools", template: "default", data: {} },
+            { id: 'mcp-python', url: "https://modelcontextprotocol.io/quickstart/server#python", title: "ModelContextProtocol - Quickstart: Server Python", template: "default", data: {} },
+            { id: 'aistudio-library', url: "https://aistudio.google.com/app/library", title: "AI Studio - Library", template: "default", data: {} },
+            { id: 'claude-chat1', url: "https://claude.ai/chat/11ea4849-9a6f-4867-9883-70833126729f", title: "Claude - Chat 11ea48", template: "default", data: {} },
+            { id: 'anthropic-console', url: "https://console.anthropic.com/login?selectAccount=true&returnTo=%2Fworkbench%2F4d37fa1b-52e7-4902-8843-cbc557066a75%3Ftab%3Dprompt", title: "Anthropic Console - Login/Workbench", template: "default", data: {} },
+            { id: 'ground-news', url: "https://ground.news/", title: "Ground News", template: "default", data: {} },
+            { id: 'manus-login', url: "https://manus.im/login", title: "Manus - Login", template: "default", data: {} },
+            { id: 'digg-privy', url: "https://privy.digg.com/oauth/v2/authorize?client_id=pv9vzvrtp545olzptgbcsm2z&redirect_uri=https%3A%2F%2Fgroundbreakers.digg.com%2Foauth2%2Fcallback&response_type=code&state=4e1539650d66301a8aa5d03948d84ccab1a95a5a958004f5032c0233b455b671", title: "Digg Privy - OAuth", template: "default", data: {} },
+            { id: 'smithery-ai', url: "https://smithery.ai/server/@wonderwhy-er/desktop-commander?code=82cc992e-2afc-45d1-acdc-fd42f20a5cab", title: "Smithery AI - Desktop Commander", template: "default", data: {} },
+            { id: 'chatgpt-gpts-editor', url: "https://chatgpt.com/gpts/editor/g-680daea2ee308191bf5560bf868174dd", title: "ChatGPT - GPTs Editor", template: "default", data: {} },
+            { id: 'anthropic-eng', url: "https://www.anthropic.com/engineering/building-effective-agents", title: "Anthropic - Building Effective Agents", template: "default", data: {} },
+            { id: 'context7', url: "https://context7.com/", title: "Context7", template: "default", data: {} },
+            { id: '123movies', url: "https://123moviestv.net/movie", title: "123MoviesTV - Movie", template: "default", data: {} },
+            { id: 'localhost-9002', url: "http://localhost:9002/", title: "Localhost :9002", template: "default", data: {} },
+            { id: 'nebula-explore', url: "https://nebula.tv/explore/videos", title: "Nebula - Explore Videos", template: "default", data: {} }
+        ];
+
+        // --- SVG ICONS ---
+        const localhostIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 101.061 1.06l8.69-8.69z" /><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15.25v-4.875a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75v4.875H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" /></svg>`;
+        const fallbackIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-full h-full"><path d="M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .976-1.138 2.5 2.5 0 0 1-.142-3.665l3-3Z" /><path d="M8.603 17.397a2.5 2.5 0 0 1-3.535-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 0 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865.75.75 0 0 0-.976 1.138 2.5 2.5 0 0 1 .142 3.665l-3 3Z" /></svg>`;
+        const newTabIconSvg = `<svg class="new-tab-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-4.5 0V6m0 0L18 10.5M13.5 6H18m-4.5 4.5L18 6"></path></svg>`;
+        const ellipsisIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg>`;
+
+        // --- UTILITY FUNCTIONS ---
+        function getDomain(urlString) {
+            try {
+                const url = new URL(urlString);
+                if (url.protocol === "file:") return "Local Files";
+                if (url.hostname === "localhost") return "Localhost";
+                return url.hostname.replace(/^www\./, '');
+            } catch (e) {
+                if (urlString.startsWith("http://localhost")) return "Localhost";
+                console.warn("[Util] Could not parse URL for domain:", urlString, e);
+                return "Other Links";
+            }
+        }
+
+        function getFaviconUrl(domain, fullUrl) {
+            const faviconSize = 16; 
+            if (domain === "Localhost") return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(localhostIconSvg)}`;
+            // Corrected YouTube favicon logic
+            if (domain === "googleusercontent.com" && fullUrl.toLowerCase().includes("youtube.com")) {
+                 return `https://www.google.com/s2/favicons?domain=youtube.com&sz=${faviconSize}`;
+            }
+            if (domain === "googleusercontent.com" || domain === "camo.githubusercontent.com") {
+                if (fullUrl.includes("github")) return `https://www.google.com/s2/favicons?domain=github.com&sz=${faviconSize}`;
+                return `https://www.google.com/s2/favicons?domain=google.com&sz=${faviconSize}`; // Default for other googleusercontent
+            }
+            return `https://www.google.com/s2/favicons?domain=${domain}&sz=${faviconSize}`;
+        }
+
+        // --- CARD ACTION DROPDOWN LOGIC ---
+        const cardActionDropdown = document.getElementById('card-action-dropdown');
+        let currentCardActionLinkId = null; 
+
+        function showCardActionDropdown(buttonElement, linkId) {
+            currentCardActionLinkId = linkId;
+            const rect = buttonElement.getBoundingClientRect();
+            cardActionDropdown.style.top = `${rect.bottom + window.scrollY}px`;
+            cardActionDropdown.style.left = `${rect.right + window.scrollX - cardActionDropdown.offsetWidth}px`;
+            cardActionDropdown.classList.add('show');
+        }
+
+        function hideCardActionDropdown() {
+            if (cardActionDropdown) cardActionDropdown.classList.remove('show');
+            currentCardActionLinkId = null;
+        }
+
+        if (cardActionDropdown) {
+            cardActionDropdown.addEventListener('click', (event) => {
+                event.stopPropagation(); 
+                const action = event.target.dataset.action;
+                if (action === 'edit') {
+                    if (currentCardActionLinkId) openEditDialog(currentCardActionLinkId);
+                } else if (action === 'delete') {
+                    if (currentCardActionLinkId) openDeleteConfirmDialog(currentCardActionLinkId);
+                }
+                hideCardActionDropdown();
+            });
+        }
+        
+        // --- CARD RENDERING ---
+        function renderCardContent(link) {
+            const faviconUrl = getFaviconUrl(getDomain(link.url), link.url);
+            const safeTitle = link.title || "Untitled"; 
+            const safeUrl = link.url || "#";    
+
+            return `
+                <button class="card-action-button" data-link-id="${link.id}" aria-label="Actions for link">
+                    ${ellipsisIconSvg}
+                </button>
+                <div class="link-card-header">
+                    <img src="${faviconUrl}" alt="" class="favicon-img" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                    <div class="favicon-fallback hidden">${fallbackIconSvg}</div>
+                    <h3 class="link-card-title" title="${safeTitle}">${safeTitle}</h3>
+                    ${newTabIconSvg}
+                </div>
+                <p class="link-card-url" title="${safeUrl}">${safeUrl}</p>
+            `;
+        }
+
+        // --- EDIT MODAL LOGIC ---
+        const editModalOverlay = document.getElementById('edit-card-modal-overlay');
+        const editModalCloseButton = document.getElementById('edit-modal-close-button');
+        const editModalCancelButton = document.getElementById('edit-modal-cancel-button');
+        const editModalSaveButton = document.getElementById('edit-modal-save-button');
+        const editLinkIdStorage = document.getElementById('edit-link-id-storage');
+        const editLinkIdField = document.getElementById('edit-link-id');
+        const editLinkUrlField = document.getElementById('edit-link-url');
+        const editLinkTitleField = document.getElementById('edit-link-title');
+        const editLinkTemplateField = document.getElementById('edit-link-template');
+        const editLinkDataField = document.getElementById('edit-link-data');
+
+        function openEditDialog(linkId) {
+            const linkToEdit = links.find(link => link.id === linkId);
+            if (!linkToEdit) { console.error("Link not found for editing:", linkId); return; }
+            editLinkIdStorage.value = linkToEdit.id; 
+            editLinkIdField.value = linkToEdit.id;
+            editLinkUrlField.value = linkToEdit.url;
+            editLinkTitleField.value = linkToEdit.title;
+            editLinkTemplateField.value = linkToEdit.template;
+            editLinkDataField.value = JSON.stringify(linkToEdit.data || {}, null, 2); 
+            if(editModalOverlay) editModalOverlay.classList.add('show');
+        }
+
+        function closeEditDialog() {
+            if(editModalOverlay) editModalOverlay.classList.remove('show');
+        }
+
+        if (editModalCloseButton) editModalCloseButton.addEventListener('click', closeEditDialog);
+        if (editModalCancelButton) editModalCancelButton.addEventListener('click', closeEditDialog);
+        if (editModalOverlay) {
+            editModalOverlay.addEventListener('click', (event) => {
+                if (event.target === editModalOverlay) closeEditDialog();
+            });
+        }
+
+        if (editModalSaveButton) {
+            editModalSaveButton.addEventListener('click', () => {
+                const linkIdToSave = editLinkIdStorage.value;
+                const linkIndex = links.findIndex(link => link.id === linkIdToSave);
+                if (linkIndex === -1) { console.error("Could not find link to save:", linkIdToSave); return; }
+                let parsedData = {};
+                const dataFieldValue = editLinkDataField.value.trim();
+                try {
+                    parsedData = dataFieldValue === '' ? {} : JSON.parse(dataFieldValue);
+                } catch (e) {
+                    alert("Error: Data field contains invalid JSON. Please correct it.\n\nExample: {\"key\": \"value\"}\nOr leave empty for {}.");
+                    console.error("Invalid JSON in data field:", e, "\nValue was:", dataFieldValue);
+                    return; 
+                }
+                links[linkIndex] = { ...links[linkIndex], url: editLinkUrlField.value, title: editLinkTitleField.value, template: editLinkTemplateField.value, data: parsedData };
+                renderAllLinkGroups(); 
+                closeEditDialog();
+            });
+        }
+
+        // --- DELETE CONFIRMATION MODAL LOGIC ---
+        const deleteConfirmModalOverlay = document.getElementById('delete-confirm-modal-overlay');
+        const deleteModalCloseButton = document.getElementById('delete-modal-close-button');
+        const deleteModalCancelButton = document.getElementById('delete-modal-cancel-button');
+        const deleteModalConfirmButton = document.getElementById('delete-modal-confirm-button');
+        const deleteLinkIdStorage = document.getElementById('delete-link-id-storage');
+        const deleteLinkTitleDisplay = document.getElementById('delete-link-title-display');
+
+        function openDeleteConfirmDialog(linkId) {
+            const linkToDelete = links.find(link => link.id === linkId);
+            if (!linkToDelete) { console.error("Link not found for deletion:", linkId); return; }
+            deleteLinkIdStorage.value = linkToDelete.id;
+            if (deleteLinkTitleDisplay) deleteLinkTitleDisplay.textContent = linkToDelete.title;
+            if (deleteConfirmModalOverlay) deleteConfirmModalOverlay.classList.add('show');
+        }
+
+        function closeDeleteConfirmDialog() {
+            if (deleteConfirmModalOverlay) deleteConfirmModalOverlay.classList.remove('show');
+            if (deleteLinkTitleDisplay) deleteLinkTitleDisplay.textContent = ''; 
+        }
+
+        if (deleteModalCloseButton) deleteModalCloseButton.addEventListener('click', closeDeleteConfirmDialog);
+        if (deleteModalCancelButton) deleteModalCancelButton.addEventListener('click', closeDeleteConfirmDialog);
+        if (deleteConfirmModalOverlay) {
+            deleteConfirmModalOverlay.addEventListener('click', (event) => {
+                if (event.target === deleteConfirmModalOverlay) closeDeleteConfirmDialog();
+            });
+        }
+        if (deleteModalConfirmButton) {
+            deleteModalConfirmButton.addEventListener('click', () => {
+                const linkIdToDelete = deleteLinkIdStorage.value;
+                const linkIndex = links.findIndex(link => link.id === linkIdToDelete);
+                if (linkIndex > -1) {
+                    links.splice(linkIndex, 1); 
+                    renderAllLinkGroups();
+                } else {
+                    console.error("Could not find link to delete:", linkIdToDelete);
+                }
+                closeDeleteConfirmDialog();
+            });
+        }
+        
+        // --- INITIALIZATION AND RENDERING ALL LINK GROUPS ---
+        function renderAllLinkGroups() {
+            const container = document.getElementById('link-groups-container');
+            const initialLoadingPlaceholder = document.getElementById('loading-placeholder'); 
+            
+            if (!container) { console.error("[Render] Link container not found!"); return; }
+            container.innerHTML = ''; 
+
+            if (links.length === 0) { 
+                if (initialLoadingPlaceholder) initialLoadingPlaceholder.remove(); 
+                const noLinksElem = document.createElement('p');
+                noLinksElem.className = 'no-links-placeholder';
+                noLinksElem.textContent = 'No links to display. Add some links to get started!';
+                container.appendChild(noLinksElem);
+                return;
+            } else if (initialLoadingPlaceholder) {
+                 initialLoadingPlaceholder.remove();
+            }
+
+            const groupedLinks = links.reduce((acc, link) => {
+                const domain = getDomain(link.url);
+                if (!acc[domain]) acc[domain] = [];
+                acc[domain].push(link);
+                return acc;
+            }, {});
+
+            const sortedDomains = Object.keys(groupedLinks).sort((a, b) => {
+                if (a === "Localhost") return -1;
+                if (b === "Localhost") return 1;
+                return a.localeCompare(b);
+            });
+
+            for (const domain of sortedDomains) {
+                const linksInGroup = groupedLinks[domain];
+                const groupSection = document.createElement('section');
+                groupSection.className = 'link-group-section'; 
+                
+                const groupTitle = document.createElement('h2');
+                groupTitle.className = 'link-group-title'; 
+                groupTitle.textContent = domain;
+                groupSection.appendChild(groupTitle);
+                
+                const cardsGrid = document.createElement('div');
+                cardsGrid.className = 'link-cards-grid'; 
+                
+                linksInGroup.forEach(link => {
+                    const cardLinkWrapper = document.createElement('a'); 
+                    cardLinkWrapper.href = link.url;
+                    cardLinkWrapper.target = '_blank';
+                    cardLinkWrapper.rel = 'noopener noreferrer';
+                    cardLinkWrapper.className = 'link-card'; 
+                    cardLinkWrapper.innerHTML = renderCardContent(link); 
+                    
+                    const actionButton = cardLinkWrapper.querySelector('.card-action-button');
+                    if (actionButton) {
+                        actionButton.addEventListener('click', (event) => {
+                            event.preventDefault(); 
+                            event.stopPropagation(); 
+                            if (cardActionDropdown.classList.contains('show') && currentCardActionLinkId !== link.id) {
+                                hideCardActionDropdown();
+                            }
+                            if (cardActionDropdown.classList.contains('show') && currentCardActionLinkId === link.id) {
+                                hideCardActionDropdown();
+                            } else {
+                                showCardActionDropdown(actionButton, link.id);
+                            }
+                        });
+                    }
+                    cardsGrid.appendChild(cardLinkWrapper);
+                });
+                groupSection.appendChild(cardsGrid);
+                container.appendChild(groupSection);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // localStorage.removeItem('myLinkHubLinks'); // For testing
+            try {
+                const savedLinks = localStorage.getItem('myLinkHubLinks');
+                if (savedLinks) {
+                    links = JSON.parse(savedLinks);
+                }
+            } catch (e) {
+                console.error("Error loading links from localStorage:", e);
+            }
+
+            const initialTheme = localStorage.getItem('theme') || 'system';
+            applyTheme(initialTheme); 
+
+            const loadingPlaceholder = document.getElementById('loading-placeholder');
+            if (links.length > 0 && loadingPlaceholder) { 
+                loadingPlaceholder.remove();
+            }
+            
+            renderAllLinkGroups(); 
+            
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) {
+                currentYearSpan.textContent = new Date().getFullYear();
+            }
+
+            window.addEventListener('beforeunload', () => {
+                try {
+                    localStorage.setItem('myLinkHubLinks', JSON.stringify(links));
+                } catch (e) {
+                    console.error("Error saving links to localStorage on unload:", e);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
