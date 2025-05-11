@@ -90,10 +90,18 @@
             color: #94a3b8; /* slate-400 */
             display: inline-flex;
             align-items: center;
-            vertical-align: middle; /* Align with text */
+            vertical-align: middle; 
+            opacity: 0; /* Initially hidden */
+            transition: opacity 0.2s ease-in-out;
+        }
+        /* Show edit icon on hover of parent containers */
+        .title-container:hover .edit-icon-button,
+        .subtitle-container:hover .edit-icon-button,
+        .link-group-header:hover .edit-icon-button {
+            opacity: 1;
         }
         .edit-icon-button svg {
-            width: 0.875em; /* Relative to font size */
+            width: 0.875em; 
             height: 0.875em;
         }
         .dark .edit-icon-button {
@@ -119,12 +127,22 @@
             margin-bottom: 1rem; 
             text-align: center;
             position: relative;
+            display: flex; /* Added for centering title/subtitle block */
+            flex-direction: column; /* Stack title and subtitle */
+            align-items: center; /* Center the block */
         }
         .page-header .title-container,
         .page-header .subtitle-container {
-            display: inline-flex; /* To keep edit icon next to text */
+            display: flex; /* Changed to flex for better alignment with icon */
             align-items: center;
+            justify-content: center; /* Center content within the container */
+            width: fit-content; /* Allow container to size to content */
+            max-width: 100%; /* Prevent overflow */
         }
+         .page-header .subtitle-container {
+            margin-top: 0.125rem; /* Keep existing margin */
+        }
+
         .page-header .title {
             font-size: 1.125rem; 
             line-height: 1.75rem;
@@ -136,7 +154,7 @@
         }
         .page-header .subtitle {
             color: #64748b; /* slate-500 */
-            margin-top: 0.125rem; 
+            /* margin-top: 0.125rem;  Removed, handled by subtitle-container */
             font-size: 0.75rem; 
         }
         .dark .page-header .subtitle {
@@ -308,7 +326,7 @@
         .link-group-header {
             display: flex;
             align-items: center;
-            justify-content: space-between; /* To push edit icon to the right if needed, or just use margin on icon */
+            justify-content: space-between; 
             margin-bottom: 0.375rem; 
             border-bottom: 1px solid #e0f2fe; /* sky-100 */
             padding-bottom: 0.25rem; 
@@ -317,14 +335,14 @@
         .dark .link-group-header {
             border-bottom-color: #0c4a6e; /* sky-800 */
         }
-        .link-group-title-text { /* Wrapper for the title text itself */
+        .link-group-title-text { 
             font-size: 0.75rem; 
             font-weight: 600; 
             color: #0284c7; /* sky-600 */
             text-transform: capitalize;
             transition: color 0.3s ease-in-out;
-            flex-grow: 1; /* Allow title to take space */
-            min-width: 0; /* For truncation if needed */
+            flex-grow: 1; 
+            min-width: 0; 
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -957,11 +975,10 @@
         function getFaviconUrl(domain, fullUrl) {
             const faviconSize = 16; 
             if (domain === "Localhost") return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(localhostIconSvg)}`;
-            // Simplified and corrected favicon logic for user content domains
             if (domain === "googleusercontent.com" || domain === "camo.githubusercontent.com") {
-                if (fullUrl.includes("youtube.com")) return `https://www.google.com/s2/favicons?domain=youtube.com&sz=${faviconSize}`;
+                if (fullUrl.includes("youtube.com")) return `https://www.google.com/s2/favicons?domain=youtube.com&sz=$${faviconSize}`; // Corrected placeholder
                 if (fullUrl.includes("github.com")) return `https://www.google.com/s2/favicons?domain=github.com&sz=${faviconSize}`;
-                return `https://www.google.com/s2/favicons?domain=google.com&sz=${faviconSize}`; // Default for other google user content
+                return `https://www.google.com/s2/favicons?domain=google.com&sz=${faviconSize}`; 
             }
             return `https://www.google.com/s2/favicons?domain=${domain}&sz=${faviconSize}`;
         }
@@ -976,6 +993,13 @@
         function makeEditable(element, saveCallback, type = 'text') {
             element.setAttribute('contenteditable', 'true');
             element.focus();
+            // Select all text in the element when it becomes editable
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(element);
+            selection.removeAllRanges();
+            selection.addRange(range);
+
             const originalValue = type === 'innerHTML' ? element.innerHTML : element.textContent;
 
             const onBlur = () => {
@@ -983,12 +1007,12 @@
             };
 
             const onKeyDown = (event) => {
-                if (event.key === 'Enter') {
-                    event.preventDefault(); // Prevent new line in contenteditable
+                if (event.key === 'Enter' && !event.shiftKey) { // Allow Shift+Enter for multiline if needed, but here we want single line
+                    event.preventDefault(); 
                     finishEdit();
                 } else if (event.key === 'Escape') {
-                    element.textContent = originalValue; // Revert
-                    finishEdit(true); // Pass true to indicate cancellation
+                    element.textContent = originalValue; 
+                    finishEdit(true); 
                 }
             };
 
@@ -1010,11 +1034,11 @@
 
         // --- PAGE TITLE & SUBTITLE EDITING ---
         function updatePageTitles() {
-            const title = appConfig.pageTitle || "My Link Hub"; // Fallback if empty
-            const subtitle = appConfig.pageSubtitle || ""; // Allow empty
+            const title = appConfig.pageTitle || "My Link Hub"; 
+            const subtitle = appConfig.pageSubtitle || ""; 
 
             if (pageMainTitleElement) pageMainTitleElement.textContent = title;
-            if (documentTitleElement) documentTitleElement.textContent = title; // Update browser tab title
+            if (documentTitleElement) documentTitleElement.textContent = title; 
             if (footerPageTitleElement) footerPageTitleElement.textContent = title;
             if (pageMainSubtitleElement) pageMainSubtitleElement.textContent = subtitle;
         }
@@ -1055,7 +1079,7 @@
                     pageSubtitle: appConfig.pageSubtitle,
                     links: appConfig.links,
                     nextCustomLinkId: appConfig.nextCustomLinkId,
-                    groupOrder: appConfig.groupOrder // Now an array of objects
+                    groupOrder: appConfig.groupOrder 
                 };
                 localStorage.setItem('myLinkHubAppConfig', JSON.stringify(configToSave));
                 console.info("App config saved.");
@@ -1073,21 +1097,20 @@
                     appConfig.pageSubtitle = loadedConfig.pageSubtitle || "Your configurable, themed dashboard.";
                     appConfig.links = loadedConfig.links || [];
                     appConfig.nextCustomLinkId = typeof loadedConfig.nextCustomLinkId === 'number' ? loadedConfig.nextCustomLinkId : 1;
-                    // Ensure groupOrder is an array of objects with domain and displayTitle
                     appConfig.groupOrder = (loadedConfig.groupOrder || []).map(item => {
-                        if (typeof item === 'string') { // Legacy format
+                        if (typeof item === 'string') { 
                             return { domain: item, displayTitle: item };
                         }
                         return { domain: item.domain, displayTitle: item.displayTitle || item.domain };
                     });
                     console.info("App config loaded from localStorage.");
                 }
-                updatePageTitles(); // Apply loaded titles
+                updatePageTitles(); 
                 reconcileGroupOrder(); 
             } catch (e) {
                 console.error("Error loading configuration from localStorage:", e);
-                appConfig.pageTitle = "My Link Hub"; // Default
-                appConfig.pageSubtitle = "Your configurable, themed dashboard."; // Default
+                appConfig.pageTitle = "My Link Hub"; 
+                appConfig.pageSubtitle = "Your configurable, themed dashboard."; 
                 appConfig.links = appConfig.links || []; 
                 appConfig.nextCustomLinkId = 1;
                 appConfig.groupOrder = [];
@@ -1099,10 +1122,9 @@
         function reconcileGroupOrder() {
             const domainsFromLinks = [...new Set(appConfig.links.map(link => getDomain(link.url)))];
             
-            // Filter out groups from appConfig.groupOrder whose domains no longer exist in links
             let validOrderedGroups = (appConfig.groupOrder || [])
                 .filter(group => group && typeof group.domain === 'string' && domainsFromLinks.includes(group.domain))
-                .map(group => ({ // Ensure structure
+                .map(group => ({ 
                     domain: group.domain,
                     displayTitle: group.displayTitle || group.domain 
                 }));
@@ -1110,13 +1132,11 @@
             const currentGroupedDomains = validOrderedGroups.map(group => group.domain);
             const newDomains = domainsFromLinks.filter(domain => !currentGroupedDomains.includes(domain));
 
-            // Create new group objects for new domains
             const newDomainGroups = newDomains.map(domain => ({
                 domain: domain,
-                displayTitle: domain // Default displayTitle is the domain itself
+                displayTitle: domain 
             }));
 
-            // Sort only the new domain groups before appending
             newDomainGroups.sort((a, b) => {
                 if (a.domain === "Localhost") return -1;
                 if (b.domain === "Localhost") return 1;
@@ -1131,7 +1151,7 @@
         }
         
         function downloadConfiguration() {
-            reconcileGroupOrder(); // Ensure order is consistent
+            reconcileGroupOrder(); 
             const configData = {
                 pageTitle: appConfig.pageTitle,
                 pageSubtitle: appConfig.pageSubtitle,
@@ -1166,14 +1186,13 @@
                         appConfig.links = importedConfig.links;
                         appConfig.nextCustomLinkId = typeof importedConfig.nextCustomLinkId === 'number' ? importedConfig.nextCustomLinkId : 1;
                         
-                        // Import groupOrder, ensuring new object structure
                         appConfig.groupOrder = (importedConfig.groupOrder || []).map(item => {
-                            if (typeof item === 'string') { // Handle legacy string array
+                            if (typeof item === 'string') { 
                                 return { domain: item, displayTitle: item };
                             }
                             return { 
                                 domain: item.domain, 
-                                displayTitle: item.displayTitle || item.domain // Fallback for displayTitle
+                                displayTitle: item.displayTitle || item.domain 
                             };
                         });
                         
@@ -1435,7 +1454,7 @@
             const target = event.target.closest('.link-group-section');
             if (target) {
                 draggedGroupElement = target;
-                event.dataTransfer.setData('text/plain', target.dataset.domain); // Still use domain for transfer ID
+                event.dataTransfer.setData('text/plain', target.dataset.domain); 
                 event.dataTransfer.effectAllowed = 'move';
                 setTimeout(() => {
                     draggedGroupElement.classList.add('dragging');
@@ -1483,7 +1502,6 @@
             const children = Array.from(linkGroupsContainer.children);
             const newVisualIndex = children.indexOf(placeholderElement);
 
-            // Find the dragged group object in appConfig.groupOrder
             const draggedGroupObjIndex = appConfig.groupOrder.findIndex(g => g.domain === draggedDomain);
             if (draggedGroupObjIndex === -1) {
                 console.error("Dragged group not found in appConfig.groupOrder:", draggedDomain);
@@ -1494,7 +1512,6 @@
             }
             const [draggedGroupObject] = appConfig.groupOrder.splice(draggedGroupObjIndex, 1);
 
-            // Insert the dragged group object at the new position
             appConfig.groupOrder.splice(newVisualIndex, 0, draggedGroupObject);
             
             draggedGroupElement.classList.remove('dragging');
@@ -1545,13 +1562,12 @@
 
             reconcileGroupOrder(); 
 
-            // Render groups based on appConfig.groupOrder
             appConfig.groupOrder.forEach(groupInfo => {
                 const domain = groupInfo.domain;
-                const displayTitle = groupInfo.displayTitle || domain; // Fallback to domain if displayTitle is empty
+                const displayTitle = groupInfo.displayTitle || domain; 
                 const linksInGroup = groupedLinksByDomain[domain];
 
-                if (!linksInGroup || linksInGroup.length === 0) return; // Skip if no links for this domain
+                if (!linksInGroup || linksInGroup.length === 0) return; 
 
                 const groupSection = document.createElement('section');
                 groupSection.className = 'link-group-section'; 
@@ -1565,7 +1581,7 @@
                 const groupTitleText = document.createElement('h2');
                 groupTitleText.className = 'link-group-title-text'; 
                 groupTitleText.textContent = displayTitle;
-                groupTitleText.title = `Links from ${domain}`; // Inner title for the text part
+                groupTitleText.title = `Links from ${domain}`; 
 
                 const editGroupTitleButton = document.createElement('button');
                 editGroupTitleButton.className = 'edit-icon-button';
@@ -1574,14 +1590,14 @@
                 editGroupTitleButton.setAttribute('aria-label', `Edit title for ${displayTitle} group`);
                 
                 editGroupTitleButton.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevent drag start
+                    e.stopPropagation(); 
                     makeEditable(groupTitleText, (newTitle) => {
                         const groupToUpdate = appConfig.groupOrder.find(g => g.domain === domain);
                         if (groupToUpdate) {
-                            groupToUpdate.displayTitle = newTitle.trim() || domain; // Fallback to domain if empty
-                            groupTitleText.textContent = groupToUpdate.displayTitle; // Update immediately
-                            groupSection.title = `Link group for "${groupToUpdate.displayTitle}". Drag to rearrange.`; // Update section tooltip
-                            editGroupTitleButton.title = `Edit title for "${groupToUpdate.displayTitle}" group`; // Update button tooltip
+                            groupToUpdate.displayTitle = newTitle.trim() || domain; 
+                            groupTitleText.textContent = groupToUpdate.displayTitle; 
+                            groupSection.title = `Link group for "${groupToUpdate.displayTitle}". Drag to rearrange.`; 
+                            editGroupTitleButton.title = `Edit title for "${groupToUpdate.displayTitle}" group`; 
                             saveAppConfig();
                         }
                     });
