@@ -22,7 +22,7 @@
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            font-size: 0.75rem; /* text-xs */
+            font-size: 0.75rem; 
             line-height: 1rem;
             background-color: #e2e8f0; /* slate-200 */
             color: #334155; /* slate-700 */
@@ -33,18 +33,18 @@
         }
 
         .dark body {
-            background-color: #0f172a; /* dark:bg-slate-900 */
-            color: #cbd5e1; /* dark:text-slate-300 */
+            background-color: #0f172a; /* slate-900 */
+            color: #cbd5e1; /* slate-300 */
         }
 
-        /* Minimalist scrollbar (existing) */
+        /* Minimalist scrollbar */
         ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: #e2e8f0; }
-        ::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #0ea5e9; }
-        .dark ::-webkit-scrollbar-track { background: #334155; }
-        .dark ::-webkit-scrollbar-thumb { background: #0ea5e9; }
-        .dark ::-webkit-scrollbar-thumb:hover { background: #38bdf8; }
+        ::-webkit-scrollbar-track { background: #e2e8f0; } /* slate-200 */
+        ::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 3px; } /* sky-400 */
+        ::-webkit-scrollbar-thumb:hover { background: #0ea5e9; } /* sky-500 */
+        .dark ::-webkit-scrollbar-track { background: #334155; } /* slate-700 */
+        .dark ::-webkit-scrollbar-thumb { background: #0ea5e9; } /* sky-500 */
+        .dark ::-webkit-scrollbar-thumb:hover { background: #38bdf8; } /* sky-400 */
 
         /* --- Utility Classes --- */
         .hidden { display: none !important; }
@@ -90,68 +90,87 @@
             font-size: 1.125rem; 
             line-height: 1.75rem;
             font-weight: 700; 
-            color: #0369a1; 
+            color: #0369a1; /* sky-700 */
         }
         .dark .page-header .title {
-            color: #0ea5e9; 
+            color: #0ea5e9; /* sky-500 */
         }
         .page-header .subtitle {
-            color: #64748b; 
+            color: #64748b; /* slate-500 */
             margin-top: 0.125rem; 
             font-size: 0.75rem; 
         }
         .dark .page-header .subtitle {
-            color: #94a3b8; 
+            color: #94a3b8; /* slate-400 */
         }
-
-        /* --- Theme Switcher --- */
-        .theme-switcher-container {
+        .header-actions-container { 
             position: absolute;
             top: 0;
             right: 0;
-            margin-top: 0;
-            margin-right: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem; 
         }
-        .theme-switcher-button {
+
+
+        /* --- Theme Switcher & Action Buttons --- */
+        .theme-switcher-button, /* Reusing for all header buttons */
+        .add-new-link-button,
+        .config-action-button { 
             padding: 0.5rem; 
             border-radius: 0.375rem; 
             background: none;
             border: none;
             cursor: pointer;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
         }
-        .theme-switcher-button:hover {
-            background-color: #cbd5e1; 
+        .theme-switcher-button:hover,
+        .add-new-link-button:hover,
+        .config-action-button:hover {
+            background-color: #cbd5e1; /* slate-300 */
         }
-        .dark .theme-switcher-button:hover {
-            background-color: #334155; 
+        .dark .theme-switcher-button:hover,
+        .dark .add-new-link-button:hover,
+        .dark .config-action-button:hover {
+            background-color: #334155; /* slate-700 */
         }
-        .theme-switcher-button:focus {
+        .theme-switcher-button:focus,
+        .add-new-link-button:focus,
+        .config-action-button:focus {
             outline: none;
-            box-shadow: 0 0 0 2px #0ea5e9; 
+            box-shadow: 0 0 0 2px #0ea5e9; /* sky-500 */
         }
-        .theme-switcher-button svg {
+        .theme-switcher-button svg,
+        .add-new-link-button svg,
+        .config-action-button svg { 
             width: 1.25rem; 
             height: 1.25rem; 
-            color: #475569; 
+            color: #475569; /* slate-600 */
             display: block; 
         }
-        .dark .theme-switcher-button svg {
-            color: #94a3b8; 
+        .dark .theme-switcher-button svg,
+        .dark .add-new-link-button svg,
+        .dark .config-action-button svg {
+            color: #94a3b8; /* slate-400 */
         }
+
         .theme-dropdown-menu {
             display: none; 
             position: absolute;
-            right: 0;
-            margin-top: 0.5rem; 
+            top: calc(100% + 0.25rem); 
+            right: 0; 
+            margin-top: 0.25rem; 
             width: 10rem; 
-            background-color: #ffffff; 
+            background-color: #ffffff; /* white */
             border-radius: 0.375rem; 
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04), 0 0 0 1px rgba(0,0,0,0.05);
             overflow: hidden; 
             z-index: 50;
         }
         .dark .theme-dropdown-menu {
-            background-color: #1e293b; 
+            background-color: #1e293b; /* slate-800 */
         }
         .theme-dropdown-menu.show {
             display: block;
@@ -166,20 +185,20 @@
             padding: 0.5rem 0.75rem; 
             font-size: 0.875rem; 
             line-height: 1.25rem;
-            color: #334155; 
+            color: #334155; /* slate-700 */
             background: none;
             border: none;
             text-align: left;
             cursor: pointer;
         }
         .dark .theme-option-button {
-            color: #cbd5e1; 
+            color: #cbd5e1; /* slate-300 */
         }
         .theme-option-button:hover {
-            background-color: #f1f5f9; 
+            background-color: #f1f5f9; /* slate-100 */
         }
         .dark .theme-option-button:hover {
-            background-color: #334155; 
+            background-color: #334155; /* slate-700 */
         }
         .theme-option-button svg {
             width: 1rem; 
@@ -196,21 +215,21 @@
         }
         .no-links-placeholder {
             text-align: center;
-            color: #94a3b8; 
+            color: #94a3b8; /* slate-400 */
             grid-column: 1 / -1; 
             padding: 1rem;
             font-size: 0.875rem; 
         }
         .dark .no-links-placeholder {
-            color: #64748b; 
+            color: #64748b; /* slate-500 */
         }
         #loading-placeholder {
             text-align: center;
-            color: #94a3b8; 
+            color: #94a3b8; /* slate-400 */
             grid-column: 1 / -1; 
         }
         .dark #loading-placeholder {
-            color: #64748b; 
+            color: #64748b; /* slate-500 */
         }
 
         .link-group-section {
@@ -222,27 +241,46 @@
             -webkit-backdrop-filter: blur(4px);
             display: flex;
             flex-direction: column;
-            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, opacity 0.2s ease-in-out, border 0.2s ease-in-out;
+            cursor: grab; /* Indicate draggable */
         }
         .dark .link-group-section {
-            background-color: rgba(30,41,59,0.7); 
+            background-color: rgba(30,41,59,0.7); /* slate-800 with opacity */
             box-shadow: 0 4px 6px -1px rgba(15,23,42,0.3), 0 2px 4px -1px rgba(15,23,42,0.25);
         }
+        .link-group-section.dragging { /* Style for the group being dragged */
+            opacity: 0.6;
+            border: 2px dashed #0ea5e9; /* sky-500 */
+            cursor: grabbing;
+        }
+        .drag-over-placeholder { /* Visual placeholder for drop target */
+            height: 60px; 
+            background-color: #e0f2fe; /* sky-100 */
+            border: 2px dashed #38bdf8; /* sky-400 */
+            border-radius: 0.375rem;
+            margin-bottom: 0.75rem; /* Match gap */
+            box-sizing: border-box;
+        }
+        .dark .drag-over-placeholder {
+            background-color: #0c4a6e80; /* sky-800 with opacity */
+            border-color: #0ea5e9; /* sky-500 */
+        }
+
 
         .link-group-title {
             font-size: 0.75rem; 
             font-weight: 600; 
-            color: #0284c7; 
+            color: #0284c7; /* sky-600 */
             margin-bottom: 0.375rem; 
-            border-bottom: 1px solid #e0f2fe; 
+            border-bottom: 1px solid #e0f2fe; /* sky-100 */
             padding-bottom: 0.25rem; 
             text-transform: capitalize;
             flex-shrink: 0;
             transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out;
         }
         .dark .link-group-title {
-            color: #38bdf8; 
-            border-bottom-color: #0c4a6e; 
+            color: #38bdf8; /* sky-400 */
+            border-bottom-color: #0c4a6e; /* sky-800 */
         }
 
         .link-cards-grid {
@@ -256,21 +294,21 @@
             padding: 0.375rem; 
             border-radius: 0.25rem; 
             box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); 
-            background-color: #f8fafc; 
+            background-color: #f8fafc; /* slate-50 */
             transition: all 0.2s ease-in-out;
             text-decoration: none;
             position: relative; 
         }
         .dark .link-card {
-            background-color: #334155; 
+            background-color: #334155; /* slate-700 */
         }
         .link-card:hover {
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
-            background-color: #f0f9ff; 
+            background-color: #f0f9ff; /* sky-50 */
             transform: translateY(-1px); 
         }
         .dark .link-card:hover {
-            background-color: #0369a1; 
+            background-color: #0369a1; /* sky-700 */
         }
 
         .card-action-button { 
@@ -286,7 +324,7 @@
             z-index: 10; 
         }
         .dark .card-action-button {
-            background-color: rgba(51, 65, 85, 0.5); 
+            background-color: rgba(51, 65, 85, 0.5); /* slate-700 with opacity */
         }
         .link-card:hover .card-action-button {
             display: block;
@@ -294,24 +332,23 @@
         .card-action-button svg {
             width: 0.75rem; 
             height: 0.75rem; 
-            color: #64748b; 
+            color: #64748b; /* slate-500 */
             display: block; 
         }
         .dark .card-action-button svg {
-            color: #94a3b8; 
+            color: #94a3b8; /* slate-400 */
         }
         .card-action-button:hover svg {
-            color: #0ea5e9; 
+            color: #0ea5e9; /* sky-500 */
         }
         .dark .card-action-button:hover svg {
-            color: #38bdf8; 
+            color: #38bdf8; /* sky-400 */
         }
 
-        /* Card Action Dropdown Menu */
         .card-action-dropdown {
             display: none; 
             position: absolute;
-            background-color: #fff;
+            background-color: #fff; /* white */
             border-radius: 0.375rem; 
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
             z-index: 20; 
@@ -319,8 +356,8 @@
             overflow: hidden;
         }
         .dark .card-action-dropdown {
-            background-color: #1e293b; 
-            border: 1px solid #334155; 
+            background-color: #1e293b; /* slate-800 */
+            border: 1px solid #334155; /* slate-700 */
         }
         .card-action-dropdown.show {
             display: block;
@@ -330,22 +367,21 @@
             width: 100%;
             padding: 0.375rem 0.625rem; 
             font-size: 0.75rem; 
-            color: #334155; 
+            color: #334155; /* slate-700 */
             background: none;
             border: none;
             text-align: left;
             cursor: pointer;
         }
         .dark .card-action-dropdown-item {
-            color: #cbd5e1; 
+            color: #cbd5e1; /* slate-300 */
         }
         .card-action-dropdown-item:hover {
-            background-color: #f1f5f9; 
+            background-color: #f1f5f9; /* slate-100 */
         }
         .dark .card-action-dropdown-item:hover {
-            background-color: #334155; 
+            background-color: #334155; /* slate-700 */
         }
-
 
         .link-card-header {
             display: flex;
@@ -373,16 +409,16 @@
         .favicon-fallback svg {
             width: 100%;
             height: 100%;
-            color: #94a3b8; 
+            color: #94a3b8; /* slate-400 */
         }
         .dark .favicon-fallback svg {
-            color: #64748b; 
+            color: #64748b; /* slate-500 */
         }
 
         .link-card-title {
             font-size: 11px; 
             font-weight: 500; 
-            color: #475569; 
+            color: #475569; /* slate-600 */
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -391,60 +427,59 @@
             padding-right: 1rem; 
         }
         .dark .link-card-title {
-            color: #cbd5e1; 
+            color: #cbd5e1; /* slate-300 */
         }
         .link-card:hover .link-card-title {
-            color: #0369a1; 
+            color: #0369a1; /* sky-700 */
         }
         .dark .link-card:hover .link-card-title {
-            color: #38bdf8; 
+            color: #38bdf8; /* sky-400 */
         }
 
         .new-tab-icon {
             width: 0.5rem; 
             height: 0.5rem; 
-            color: #94a3b8; 
+            color: #94a3b8; /* slate-400 */
             margin-left: 0.25rem; 
             flex-shrink: 0;
         }
         .dark .new-tab-icon {
-            color: #64748b; 
+            color: #64748b; /* slate-500 */
         }
         .link-card:hover .new-tab-icon {
-            color: #0ea5e9; 
+            color: #0ea5e9; /* sky-500 */
         }
         .dark .link-card:hover .new-tab-icon {
-            color: #38bdf8; 
+            color: #38bdf8; /* sky-400 */
         }
 
         .link-card-url {
             font-size: 9px; 
-            color: #94a3b8; 
+            color: #94a3b8; /* slate-400 */
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
         .dark .link-card-url {
-            color: #64748b; 
+            color: #64748b; /* slate-500 */
         }
-
 
         /* --- Footer --- */
         .page-footer {
             padding-top: 0.5rem; 
             padding-bottom: 0.5rem;
-            border-top: 1px solid #cbd5e1; 
+            border-top: 1px solid #cbd5e1; /* slate-300 */
             text-align: center;
             font-size: 0.75rem; 
-            color: #64748b; 
-            background-color: #f1f5f9; 
+            color: #64748b; /* slate-500 */
+            background-color: #f1f5f9; /* slate-100 */
             transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
             margin-top: auto; 
         }
         .dark .page-footer {
-            border-top-color: #334155; 
-            color: #94a3b8; 
-            background-color: #1e293b; 
+            border-top-color: #334155; /* slate-700 */
+            color: #94a3b8; /* slate-400 */
+            background-color: #1e293b; /* slate-800 */
         }
 
         /* --- Editor Modal & Delete Confirmation Modal --- */
@@ -464,7 +499,7 @@
             display: flex;
         }
         .modal-content { 
-            background-color: #ffffff;
+            background-color: #ffffff; /* white */
             padding: 1.5rem; 
             border-radius: 0.5rem; 
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); 
@@ -474,7 +509,7 @@
             overflow-y: auto;
         }
         .dark .modal-content {
-            background-color: #1e293b; 
+            background-color: #1e293b; /* slate-800 */
         }
         .modal-header {
             display: flex;
@@ -482,10 +517,10 @@
             align-items: center;
             margin-bottom: 1rem; 
             padding-bottom: 0.5rem; 
-            border-bottom: 1px solid #e5e7eb; 
+            border-bottom: 1px solid #e5e7eb; /* gray-200 */
         }
         .dark .modal-header {
-            border-bottom-color: #334155; 
+            border-bottom-color: #334155; /* slate-700 */
         }
         .modal-title {
             font-size: 1.125rem; 
@@ -496,10 +531,10 @@
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #6b7280; 
+            color: #6b7280; /* gray-500 */
         }
         .dark .modal-close-button {
-            color: #9ca3af; 
+            color: #9ca3af; /* gray-400 */
         }
         .modal-body .form-group { 
             margin-bottom: 1rem; 
@@ -514,25 +549,26 @@
         .modal-body textarea { 
             width: 100%;
             padding: 0.5rem 0.75rem; 
-            border: 1px solid #d1d5db; 
+            border: 1px solid #d1d5db; /* gray-300 */
             border-radius: 0.375rem; 
             font-size: 0.875rem; 
-            background-color: #fff;
-            color: #1f2937;
+            background-color: #fff; /* white */
+            color: #1f2937; /* gray-800 */
         }
         .modal-body input[type="text"]:disabled { 
-            background-color: #f3f4f6; 
+            background-color: #f3f4f6; /* gray-100 */
             cursor: not-allowed;
+            color: #6b7280; /* gray-500 */
         }
         .dark .modal-body input[type="text"], 
         .dark .modal-body textarea { 
-            background-color: #334155; 
-            border-color: #4b5563; 
-            color: #e5e7eb; 
+            background-color: #334155; /* slate-700 */
+            border-color: #4b5563; /* slate-600 */
+            color: #e5e7eb; /* gray-200 */
         }
         .dark .modal-body input[type="text"]:disabled { 
-            background-color: #1f293b; 
-            color: #6b7280;
+            background-color: #1f293b; /* slate-800 */
+            color: #4b5563; /* slate-600 */
         }
         .modal-body textarea { 
             min-height: 80px;
@@ -564,36 +600,35 @@
             transition: background-color 0.2s ease, border-color 0.2s ease;
         }
         .modal-button-primary { 
-            background-color: #0ea5e9; 
+            background-color: #0ea5e9; /* sky-500 */
             color: white;
         }
         .modal-button-primary:hover {
-            background-color: #0284c7; 
+            background-color: #0284c7; /* sky-600 */
         }
         .modal-button-danger { 
-            background-color: #ef4444; 
+            background-color: #ef4444; /* red-500 */
             color: white;
         }
         .modal-button-danger:hover {
-            background-color: #dc2626; 
+            background-color: #dc2626; /* red-600 */
         }
         .modal-button-secondary {
-            background-color: #e5e7eb; 
-            color: #1f2937; 
-            border-color: #d1d5db;
+            background-color: #e5e7eb; /* gray-200 */
+            color: #1f2937; /* gray-800 */
+            border-color: #d1d5db; /* gray-300 */
         }
         .dark .modal-button-secondary {
-            background-color: #334155; 
-            color: #e5e7eb; 
-            border-color: #4b5563;
+            background-color: #334155; /* slate-700 */
+            color: #e5e7eb; /* gray-200 */
+            border-color: #4b5563; /* slate-600 */
         }
         .modal-button-secondary:hover {
-            background-color: #d1d5db; 
+            background-color: #d1d5db; /* gray-300 */
         }
         .dark .modal-button-secondary:hover {
-            background-color: #4b5563; 
+            background-color: #4b5563; /* slate-600 */
         }
-
 
         /* --- Responsive Styles --- */
         @media (min-width: 640px) { /* sm */
@@ -633,18 +668,23 @@
             <h1 class="title">My Link Hub</h1>
             <p class="subtitle">Your configurable, themed dashboard.</p>
             
-            <div class="theme-switcher-container">
-                <button id="theme-switcher-button" type="button" class="theme-switcher-button">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 0 0 5.304 0l6.401-6.402M6.75 21A3.75 3.75 0 0 1 3 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 0 0 3.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.15-.15.33-.26.53-.33A3.75 3.75 0 0 1 17.25 3h.008c.621 0 1.125.504 1.125 1.125v5.25c0 .621-.504 1.125-1.125 1.125h-4.072c-.198 0-.387-.058-.561-.162L10.5 8.197Z" />
-                    </svg>
-                </button>
-                <div id="theme-dropdown-menu" class="theme-dropdown-menu"> 
-                    <ul>
-                        <li><button data-theme="light" class="theme-option-button"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25c0 1.31.934 2.342 2.11 2.342s2.11-1.032 2.11-2.342A2.25 2.25 0 0 0 12 12Z" /></svg>Light</button></li>
-                        <li><button data-theme="dark" class="theme-option-button"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21c3.975 0 7.403-2.088 9.002-5.168Z" /></svg>Dark</button></li>
-                        <li><button data-theme="system" class="theme-option-button"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h4.757c3.247 0 5.406 1.5 6.477 3.154" /></svg>System</button></li>
-                    </ul>
+            <div class="header-actions-container">
+                <button id="upload-config-button" type="button" class="config-action-button" aria-label="Upload configuration">
+                    </button>
+                <button id="download-config-button" type="button" class="config-action-button" aria-label="Download configuration">
+                    </button>
+                <button id="add-new-link-button" type="button" class="add-new-link-button" aria-label="Add new link">
+                    </button>
+                <div class="relative"> 
+                    <button id="theme-switcher-button" type="button" class="theme-switcher-button" aria-label="Switch theme">
+                        </button>
+                    <div id="theme-dropdown-menu" class="theme-dropdown-menu"> 
+                        <ul>
+                            <li><button data-theme="light" class="theme-option-button"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1em; height:1em; margin-right:0.5em;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25c0 1.31.934 2.342 2.11 2.342s2.11-1.032 2.11-2.342A2.25 2.25 0 0 0 12 12Z" /></svg>Light</button></li>
+                            <li><button data-theme="dark" class="theme-option-button"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1em; height:1em; margin-right:0.5em;"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21c3.975 0 7.403-2.088 9.002-5.168Z" /></svg>Dark</button></li>
+                            <li><button data-theme="system" class="theme-option-button"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1em; height:1em; margin-right:0.5em;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h4.757c3.247 0 5.406 1.5 6.477 3.154" /></svg>System</button></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </header>
@@ -658,6 +698,8 @@
         <p>© <span id="currentYear"></span> My Link Hub. Crafted with Custom CSS.</p>
     </footer>
 
+    <input type="file" id="config-file-input" accept=".json" style="display: none;">
+
     <div id="card-action-dropdown" class="card-action-dropdown">
         <button class="card-action-dropdown-item" data-action="edit">Edit...</button>
         <button class="card-action-dropdown-item" data-action="delete">Delete...</button>
@@ -666,12 +708,15 @@
     <div id="edit-card-modal-overlay" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="edit-modal-title" class="modal-title">Edit Link</h2>
+                <h2 id="edit-modal-title" class="modal-title">Edit Link</h2> 
                 <button id="edit-modal-close-button" class="modal-close-button" aria-label="Close edit modal">×</button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="edit-link-id-storage">
-                <div class="form-group"><label for="edit-link-id">ID (Read-only)</label><input type="text" id="edit-link-id" name="id" disabled></div>
+                <input type="hidden" id="edit-link-id-storage"> 
+                <div class="form-group">
+                    <label for="edit-link-id">ID</label>
+                    <input type="text" id="edit-link-id" name="id" disabled placeholder=""> 
+                </div>
                 <div class="form-group"><label for="edit-link-url">URL</label><input type="text" id="edit-link-url" name="url" required></div>
                 <div class="form-group"><label for="edit-link-title">Title</label><input type="text" id="edit-link-title" name="title" required></div>
                 <div class="form-group"><label for="edit-link-template">Template</label><input type="text" id="edit-link-template" name="template"></div>
@@ -683,7 +728,7 @@
             </div>
             <div class="modal-footer">
                 <button id="edit-modal-cancel-button" type="button" class="modal-button modal-button-secondary">Cancel</button>
-                <button id="edit-modal-save-button" type="button" class="modal-button modal-button-primary">Save Changes</button>
+                <button id="edit-modal-save-button" type="button" class="modal-button modal-button-primary">Save Changes</button> 
             </div>
         </div>
     </div>
@@ -708,6 +753,60 @@
 
 
     <script>
+        // --- APP CONFIGURATION ---
+        const appConfig = {
+            nextCustomLinkId: 1, 
+            links: [
+                { id: 'yt-guc', url: "https://www.youtube.com/watch?v=3M6e6TG7nDA", title: "Google User Content - YouTube", template: "default", data: {} },
+                { id: 'reddit-arduino', url: "https://www.reddit.com/r/arduino/new/?feedViewType=compactView&rdt=34729", title: "Reddit - r/arduino/new", template: "default", data: {} },
+                { id: 'reddit-modq', url: "https://www.reddit.com/mod/queue", title: "Reddit - Mod Queue", template: "default", data: {} },
+                { id: 'chatgpt-main', url: "https://chatgpt.com/", title: "ChatGPT - Main", template: "default", data: {} },
+                { id: 'chatgpt-chat1', url: "https://chatgpt.com/c/681b5d0e-f324-800e-a09e-3ae80c22affc", title: "ChatGPT - Chat 681b5d", template: "default", data: {} },
+                { id: 'figma-wireframes', url: "https://www.figma.com/design/ihIhLU92Getzv2qDyULIui/Wireframes-Kit---Free-wireframing-Websites-and-SaaS-UI-UX--Community-?node-id=1140-6414&p=f&t=5N1q88XiIAUE4OhZ-0", title: "Figma - Wireframes Kit", template: "default", data: {} },
+                { id: 'gemini-app', url: "https://gemini.google.com/app", title: "Gemini", template: "default", data: {} },
+                { id: 'aistudio-newchat', url: "https://aistudio.google.com/prompts/new_chat?pli=1", title: "AI Studio - New Chat", template: "default", data: {} },
+                { id: 'firebase-studio', url: "https://studio.firebase.google.com/studio-08171228", title: "Firebase Studio", template: "default", data: {} },
+                { id: 'gh-ripred-ps', url: "https://github.com/ripred/Project-Sleuth", title: "GitHub - ripred/Project-Sleuth", template: "default", data: {} },
+                { id: 'gh-ripred-readme', url: "https://github.com/ripred/ripred/edit/main/README.md", title: "GitHub - ripred/ripred - Edit README", template: "default", data: {} },
+                { id: 'aistudio-apikey', url: "https://aistudio.google.com/app/apikey", title: "AI Studio - API Key", template: "default", data: {} },
+                { id: 'aistudio-live', url: "https://aistudio.google.com/live", title: "AI Studio - Live", template: "default", data: {} },
+                { id: 'grok-main', url: "https://grok.com/", title: "Grok", template: "default", data: {} },
+                { id: 'gh-ripred', url: "https://github.com/ripred", title: "GitHub - ripred", template: "default", data: {} },
+                { id: 'gh-user-img', url: "https://camo.githubusercontent.com/d70921493d8bcebc9fd59014af1707d3d2e66e3ccab70ed4c11762317e62e2f1/68747470733a2f2f6769746875622d70726f66696c652d7726f7068792e76657263656c2e6170702f3f757365726e616d653d726970726564267468656d653d6461726b687562266e6f2d62673d74727565266e6f2d6672616d653d7472756526636f6c756d6e3d34", title: "GitHub User Content - Image", template: "default", data: {} },
+                { id: 'gh-google-a2a', url: "https://github.com/google/A2A", title: "GitHub - google/A2A", template: "default", data: {} },
+                { id: 'mcp-java', url: "https://modelcontextprotocol.io/sdk/java/mcp-overview", title: "ModelContextProtocol - Java SDK Overview", template: "default", data: {} },
+                { id: 'mcp-tools', url: "https://modelcontextprotocol.io/docs/concepts/tools", title: "ModelContextProtocol - Concepts: Tools", template: "default", data: {} },
+                { id: 'mcp-python', url: "https://modelcontextprotocol.io/quickstart/server#python", title: "ModelContextProtocol - Quickstart: Server Python", template: "default", data: {} },
+                { id: 'aistudio-library', url: "https://aistudio.google.com/app/library", title: "AI Studio - Library", template: "default", data: {} },
+                { id: 'claude-chat1', url: "https://claude.ai/chat/11ea4849-9a6f-4867-9883-70833126729f", title: "Claude - Chat 11ea48", template: "default", data: {} },
+                { id: 'anthropic-console', url: "https://console.anthropic.com/login?selectAccount=true&returnTo=%2Fworkbench%2F4d37fa1b-52e7-4902-8843-cbc557066a75%3Ftab%3Dprompt", title: "Anthropic Console - Login/Workbench", template: "default", data: {} },
+                { id: 'ground-news', url: "https://ground.news/", title: "Ground News", template: "default", data: {} },
+                { id: 'manus-login', url: "https://manus.im/login", title: "Manus - Login", template: "default", data: {} },
+                { id: 'digg-privy', url: "https://privy.digg.com/oauth/v2/authorize?client_id=pv9vzvrtp545olzptgbcsm2z&redirect_uri=https%3A%2F%2Fgroundbreakers.digg.com%2Foauth2%2Fcallback&response_type=code&state=4e1539650d66301a8aa5d03948d84ccab1a95a5a958004f5032c0233b455b671", title: "Digg Privy - OAuth", template: "default", data: {} },
+                { id: 'smithery-ai', url: "https://smithery.ai/server/@wonderwhy-er/desktop-commander?code=82cc992e-2afc-45d1-acdc-fd42f20a5cab", title: "Smithery AI - Desktop Commander", template: "default", data: {} },
+                { id: 'chatgpt-gpts-editor', url: "https://chatgpt.com/gpts/editor/g-680daea2ee308191bf5560bf868174dd", title: "ChatGPT - GPTs Editor", template: "default", data: {} },
+                { id: 'anthropic-eng', url: "https://www.anthropic.com/engineering/building-effective-agents", title: "Anthropic - Building Effective Agents", template: "default", data: {} },
+                { id: 'context7', url: "https://context7.com/", title: "Context7", template: "default", data: {} },
+                { id: '123movies', url: "https://123moviestv.net/movie", title: "123MoviesTV - Movie", template: "default", data: {} },
+                { id: 'localhost-9002', url: "http://localhost:9002/", title: "Localhost :9002", template: "default", data: {} },
+                { id: 'nebula-explore', url: "https://nebula.tv/explore/videos", title: "Nebula - Explore Videos", template: "default", data: {} }
+            ],
+            groupOrder: [] // Stores the order of domain groups
+        };
+
+
+        // --- SVG ICONS ---
+        const sunIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25c0 1.31.934 2.342 2.11 2.342s2.11-1.032 2.11-2.342A2.25 2.25 0 0 0 12 12Z" /></svg>`;
+        const moonIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21c3.975 0 7.403-2.088 9.002-5.168Z" /></svg>`;
+        const plusIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>`;
+        const uploadIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>`;
+        const downloadIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>`;
+        const localhostIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 101.061 1.06l8.69-8.69z" /><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15.25v-4.875a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75v4.875H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" /></svg>`;
+        const fallbackIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-full h-full"><path d="M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .976-1.138 2.5 2.5 0 0 1-.142-3.665l3-3Z" /><path d="M8.603 17.397a2.5 2.5 0 0 1-3.535-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 0 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865.75.75 0 0 0-.976 1.138 2.5 2.5 0 0 1 .142 3.665l-3 3Z" /></svg>`;
+        const newTabIconSvg = `<svg class="new-tab-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-4.5 0V6m0 0L18 10.5M13.5 6H18m-4.5 4.5L18 6"></path></svg>`;
+        const ellipsisIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg>`;
+
+
         // --- THEME SWITCHER LOGIC ---
         const themeSwitcherButton = document.getElementById('theme-switcher-button');
         const themeDropdownMenu = document.getElementById('theme-dropdown-menu');
@@ -721,10 +820,14 @@
 
         function updateDocumentTheme(theme) {
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (theme === 'dark' || (theme === 'system' && systemPrefersDark)) {
+            const isDarkMode = theme === 'dark' || (theme === 'system' && systemPrefersDark);
+            
+            if (isDarkMode) {
                 htmlElement.classList.add('dark');
+                if (themeSwitcherButton) themeSwitcherButton.innerHTML = moonIconSvg;
             } else {
                 htmlElement.classList.remove('dark');
+                if (themeSwitcherButton) themeSwitcherButton.innerHTML = sunIconSvg;
             }
         }
         
@@ -735,7 +838,6 @@
             });
         }
 
-        // Global click listener to close dropdowns
         document.addEventListener('click', (event) => {
             // Close theme dropdown
             if (themeDropdownMenu && themeDropdownMenu.classList.contains('show') && themeSwitcherButton && !themeSwitcherButton.contains(event.target) && !themeDropdownMenu.contains(event.target)) {
@@ -747,7 +849,7 @@
                 const isClickInsideDropdown = activeCardActionDropdown.contains(event.target);
                 const isClickOnAnActionButton = event.target.closest('.card-action-button');
                 if (!isClickInsideDropdown && !isClickOnAnActionButton) {
-                    activeCardActionDropdown.classList.remove('show');
+                    hideCardActionDropdown();
                 }
             }
         });
@@ -756,62 +858,17 @@
             button.addEventListener('click', () => {
                 const selectedTheme = button.dataset.theme;
                 applyTheme(selectedTheme);
-                if (themeDropdownMenu) {
-                    themeDropdownMenu.classList.remove('show'); 
-                }
+                if (themeDropdownMenu) themeDropdownMenu.classList.remove('show'); 
             });
         });
 
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
             const currentTheme = localStorage.getItem('theme') || 'system';
             if (currentTheme === 'system') {
-                updateDocumentTheme('system');
+                updateDocumentTheme('system'); 
             }
         });
-
-        // --- LINK DATA (Modifiable) ---
-        // Restored full links array
-        let links = [
-            { id: 'yt-guc', url: "https://www.youtube.com/watch?v=3M6e6TG7nDA", title: "Google User Content - YouTube", template: "default", data: {} },
-            { id: 'reddit-arduino', url: "https://www.reddit.com/r/arduino/new/?feedViewType=compactView&rdt=34729", title: "Reddit - r/arduino/new", template: "default", data: {} },
-            { id: 'reddit-modq', url: "https://www.reddit.com/mod/queue", title: "Reddit - Mod Queue", template: "default", data: {} },
-            { id: 'chatgpt-main', url: "https://chatgpt.com/", title: "ChatGPT - Main", template: "default", data: {} },
-            { id: 'chatgpt-chat1', url: "https://chatgpt.com/c/681b5d0e-f324-800e-a09e-3ae80c22affc", title: "ChatGPT - Chat 681b5d", template: "default", data: {} },
-            { id: 'figma-wireframes', url: "https://www.figma.com/design/ihIhLU92Getzv2qDyULIui/Wireframes-Kit---Free-wireframing-Websites-and-SaaS-UI-UX--Community-?node-id=1140-6414&p=f&t=5N1q88XiIAUE4OhZ-0", title: "Figma - Wireframes Kit", template: "default", data: {} },
-            { id: 'gemini-app', url: "https://gemini.google.com/app", title: "Gemini", template: "default", data: {} },
-            { id: 'aistudio-newchat', url: "https://aistudio.google.com/prompts/new_chat?pli=1", title: "AI Studio - New Chat", template: "default", data: {} },
-            { id: 'firebase-studio', url: "https://studio.firebase.google.com/studio-08171228", title: "Firebase Studio", template: "default", data: {} },
-            { id: 'gh-ripred-ps', url: "https://github.com/ripred/Project-Sleuth", title: "GitHub - ripred/Project-Sleuth", template: "default", data: {} },
-            { id: 'gh-ripred-readme', url: "https://github.com/ripred/ripred/edit/main/README.md", title: "GitHub - ripred/ripred - Edit README", template: "default", data: {} },
-            { id: 'aistudio-apikey', url: "https://aistudio.google.com/app/apikey", title: "AI Studio - API Key", template: "default", data: {} },
-            { id: 'aistudio-live', url: "https://aistudio.google.com/live", title: "AI Studio - Live", template: "default", data: {} },
-            { id: 'grok-main', url: "https://grok.com/", title: "Grok", template: "default", data: {} },
-            { id: 'gh-ripred', url: "https://github.com/ripred", title: "GitHub - ripred", template: "default", data: {} },
-            { id: 'gh-user-img', url: "https://camo.githubusercontent.com/d70921493d8bcebc9fd59014af1707d3d2e66e3ccab70ed4c11762317e62e2f1/68747470733a2f2f6769746875622d70726f66696c652d7726f7068792e76657263656c2e6170702f3f757365726e616d653d726970726564267468656d653d6461726b687562266e6f2d62673d74727565266e6f2d6672616d653d7472756526636f6c756d6e3d34", title: "GitHub User Content - Image", template: "default", data: {} },
-            { id: 'gh-google-a2a', url: "https://github.com/google/A2A", title: "GitHub - google/A2A", template: "default", data: {} },
-            { id: 'mcp-java', url: "https://modelcontextprotocol.io/sdk/java/mcp-overview", title: "ModelContextProtocol - Java SDK Overview", template: "default", data: {} },
-            { id: 'mcp-tools', url: "https://modelcontextprotocol.io/docs/concepts/tools", title: "ModelContextProtocol - Concepts: Tools", template: "default", data: {} },
-            { id: 'mcp-python', url: "https://modelcontextprotocol.io/quickstart/server#python", title: "ModelContextProtocol - Quickstart: Server Python", template: "default", data: {} },
-            { id: 'aistudio-library', url: "https://aistudio.google.com/app/library", title: "AI Studio - Library", template: "default", data: {} },
-            { id: 'claude-chat1', url: "https://claude.ai/chat/11ea4849-9a6f-4867-9883-70833126729f", title: "Claude - Chat 11ea48", template: "default", data: {} },
-            { id: 'anthropic-console', url: "https://console.anthropic.com/login?selectAccount=true&returnTo=%2Fworkbench%2F4d37fa1b-52e7-4902-8843-cbc557066a75%3Ftab%3Dprompt", title: "Anthropic Console - Login/Workbench", template: "default", data: {} },
-            { id: 'ground-news', url: "https://ground.news/", title: "Ground News", template: "default", data: {} },
-            { id: 'manus-login', url: "https://manus.im/login", title: "Manus - Login", template: "default", data: {} },
-            { id: 'digg-privy', url: "https://privy.digg.com/oauth/v2/authorize?client_id=pv9vzvrtp545olzptgbcsm2z&redirect_uri=https%3A%2F%2Fgroundbreakers.digg.com%2Foauth2%2Fcallback&response_type=code&state=4e1539650d66301a8aa5d03948d84ccab1a95a5a958004f5032c0233b455b671", title: "Digg Privy - OAuth", template: "default", data: {} },
-            { id: 'smithery-ai', url: "https://smithery.ai/server/@wonderwhy-er/desktop-commander?code=82cc992e-2afc-45d1-acdc-fd42f20a5cab", title: "Smithery AI - Desktop Commander", template: "default", data: {} },
-            { id: 'chatgpt-gpts-editor', url: "https://chatgpt.com/gpts/editor/g-680daea2ee308191bf5560bf868174dd", title: "ChatGPT - GPTs Editor", template: "default", data: {} },
-            { id: 'anthropic-eng', url: "https://www.anthropic.com/engineering/building-effective-agents", title: "Anthropic - Building Effective Agents", template: "default", data: {} },
-            { id: 'context7', url: "https://context7.com/", title: "Context7", template: "default", data: {} },
-            { id: '123movies', url: "https://123moviestv.net/movie", title: "123MoviesTV - Movie", template: "default", data: {} },
-            { id: 'localhost-9002', url: "http://localhost:9002/", title: "Localhost :9002", template: "default", data: {} },
-            { id: 'nebula-explore', url: "https://nebula.tv/explore/videos", title: "Nebula - Explore Videos", template: "default", data: {} }
-        ];
-
-        // --- SVG ICONS ---
-        const localhostIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 101.061 1.06l8.69-8.69z" /><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15.25v-4.875a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75v4.875H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" /></svg>`;
-        const fallbackIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-full h-full"><path d="M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .976-1.138 2.5 2.5 0 0 1-.142-3.665l3-3Z" /><path d="M8.603 17.397a2.5 2.5 0 0 1-3.535-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 0 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865.75.75 0 0 0-.976 1.138 2.5 2.5 0 0 1 .142 3.665l-3 3Z" /></svg>`;
-        const newTabIconSvg = `<svg class="new-tab-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-4.5 0V6m0 0L18 10.5M13.5 6H18m-4.5 4.5L18 6"></path></svg>`;
-        const ellipsisIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg>`;
+        
 
         // --- UTILITY FUNCTIONS ---
         function getDomain(urlString) {
@@ -821,7 +878,7 @@
                 if (url.hostname === "localhost") return "Localhost";
                 return url.hostname.replace(/^www\./, '');
             } catch (e) {
-                if (urlString.startsWith("http://localhost")) return "Localhost";
+                if (String(urlString).startsWith("http://localhost")) return "Localhost";
                 console.warn("[Util] Could not parse URL for domain:", urlString, e);
                 return "Other Links";
             }
@@ -830,16 +887,162 @@
         function getFaviconUrl(domain, fullUrl) {
             const faviconSize = 16; 
             if (domain === "Localhost") return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(localhostIconSvg)}`;
-            // Corrected YouTube favicon logic
-            if (domain === "googleusercontent.com" && fullUrl.toLowerCase().includes("youtube.com")) {
-                 return `https://www.google.com/s2/favicons?domain=youtube.com&sz=${faviconSize}`;
+            if (domain === "googleusercontent.com" && fullUrl.toLowerCase().includes("youtube.com")) { 
+                 return `https://www.google.com/s2/favicons?domain=youtube.com&sz=$${faviconSize}`;
             }
             if (domain === "googleusercontent.com" || domain === "camo.githubusercontent.com") {
                 if (fullUrl.includes("github")) return `https://www.google.com/s2/favicons?domain=github.com&sz=${faviconSize}`;
-                return `https://www.google.com/s2/favicons?domain=google.com&sz=${faviconSize}`; // Default for other googleusercontent
+                return `https://www.google.com/s2/favicons?domain=google.com&sz=${faviconSize}`;
             }
             return `https://www.google.com/s2/favicons?domain=${domain}&sz=${faviconSize}`;
         }
+        
+        function generateUniqueId() {
+            const newId = `custom-link-${appConfig.nextCustomLinkId}`;
+            appConfig.nextCustomLinkId++; 
+            return newId;
+        }
+
+        // --- CONFIGURATION MANAGEMENT (SAVE/LOAD/IMPORT/EXPORT) ---
+        const uploadConfigButton = document.getElementById('upload-config-button');
+        const downloadConfigButton = document.getElementById('download-config-button');
+        const configFileImportInput = document.getElementById('config-file-input');
+
+        function saveAppConfig() {
+            try {
+                reconcileGroupOrder(); // Ensure groupOrder is consistent before saving
+                const configToSave = {
+                    links: appConfig.links,
+                    nextCustomLinkId: appConfig.nextCustomLinkId,
+                    groupOrder: appConfig.groupOrder
+                };
+                localStorage.setItem('myLinkHubAppConfig', JSON.stringify(configToSave));
+                console.info("App config saved.");
+            } catch (e) {
+                console.error("Error saving app configuration to localStorage:", e);
+            }
+        }
+
+        function loadAppConfig() {
+            try {
+                const savedConfigJson = localStorage.getItem('myLinkHubAppConfig');
+                if (savedConfigJson) {
+                    const loadedConfig = JSON.parse(savedConfigJson);
+                    appConfig.links = loadedConfig.links || [];
+                    appConfig.nextCustomLinkId = typeof loadedConfig.nextCustomLinkId === 'number' ? loadedConfig.nextCustomLinkId : 1;
+                    appConfig.groupOrder = loadedConfig.groupOrder || [];
+                    console.info("App config loaded from localStorage.");
+                }
+                reconcileGroupOrder(); // Always reconcile after load or if no saved data
+            } catch (e) {
+                console.error("Error loading configuration from localStorage:", e);
+                // Reset to defaults or minimal state if loading fails
+                appConfig.links = appConfig.links || []; // Keep default if already set
+                appConfig.nextCustomLinkId = 1;
+                appConfig.groupOrder = [];
+                reconcileGroupOrder();
+            }
+        }
+        
+        function reconcileGroupOrder() {
+            const domainsFromLinks = [...new Set(appConfig.links.map(link => getDomain(link.url)))];
+
+            let validOrderedDomains = appConfig.groupOrder ? appConfig.groupOrder.filter(domain => domainsFromLinks.includes(domain)) : [];
+            const newDomains = domainsFromLinks.filter(domain => !validOrderedDomains.includes(domain));
+
+            newDomains.sort((a, b) => {
+                if (a === "Localhost") return -1;
+                if (b === "Localhost") return 1;
+                if (a === "Local Files") return (b === "Localhost" ? 1 : -1);
+                if (b === "Local Files") return (a === "Localhost" ? -1 : 1);
+                if (a === "Other Links") return 1; // Other Links last
+                if (b === "Other Links") return -1;
+                return a.localeCompare(b);
+            });
+
+            appConfig.groupOrder = [...validOrderedDomains, ...newDomains];
+        }
+        
+        function downloadConfiguration() {
+            const configData = {
+                links: appConfig.links,
+                nextCustomLinkId: appConfig.nextCustomLinkId,
+                groupOrder: appConfig.groupOrder // Include groupOrder in download
+            };
+            const jsonString = JSON.stringify(configData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'linkhub_config.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            console.info("Configuration downloaded.");
+        }
+
+        function handleConfigFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importedConfig = JSON.parse(e.target.result);
+                    if (importedConfig && Array.isArray(importedConfig.links)) {
+                        appConfig.links = importedConfig.links;
+                        appConfig.nextCustomLinkId = typeof importedConfig.nextCustomLinkId === 'number' ? importedConfig.nextCustomLinkId : 1;
+                        // If groupOrder is in the imported file, use it, otherwise reconcile
+                        appConfig.groupOrder = Array.isArray(importedConfig.groupOrder) ? importedConfig.groupOrder : [];
+                        
+                        // Recalculate nextCustomLinkId based on imported links to avoid collisions
+                        let maxId = 0;
+                        appConfig.links.forEach(link => {
+                            if (link.id && typeof link.id === 'string' && link.id.startsWith('custom-link-')) {
+                                const numPart = parseInt(link.id.replace('custom-link-', ''), 10);
+                                if (!isNaN(numPart) && numPart > maxId) {
+                                    maxId = numPart;
+                                }
+                            }
+                        });
+                        appConfig.nextCustomLinkId = maxId + 1;
+
+                        reconcileGroupOrder(); // Crucial to update order based on new links
+                        saveAppConfig();      // Save the newly imported and reconciled config
+                        renderAllLinkGroups();
+                        console.info("Configuration imported successfully.");
+                        // Consider adding a user-facing success message here
+                    } else {
+                        console.error("Invalid config file format: 'links' array not found.");
+                        // Consider adding a user-facing error message
+                    }
+                } catch (error) {
+                    console.error("Error parsing config file:", error);
+                    // Consider adding a user-facing error message
+                } finally {
+                    configFileImportInput.value = ''; // Reset file input
+                }
+            };
+            reader.onerror = () => {
+                console.error("Error reading config file.");
+                configFileImportInput.value = ''; // Reset file input
+            };
+            reader.readAsText(file);
+        }
+
+        if (uploadConfigButton) {
+            uploadConfigButton.innerHTML = uploadIconSvg;
+            uploadConfigButton.addEventListener('click', () => configFileImportInput.click());
+        }
+        if (downloadConfigButton) {
+            downloadConfigButton.innerHTML = downloadIconSvg;
+            downloadConfigButton.addEventListener('click', downloadConfiguration);
+        }
+        if (configFileImportInput) {
+            configFileImportInput.addEventListener('change', handleConfigFileImport);
+        }
+
 
         // --- CARD ACTION DROPDOWN LOGIC ---
         const cardActionDropdown = document.getElementById('card-action-dropdown');
@@ -891,32 +1094,60 @@
             `;
         }
 
-        // --- EDIT MODAL LOGIC ---
+        // --- EDIT/ADD MODAL LOGIC ---
         const editModalOverlay = document.getElementById('edit-card-modal-overlay');
+        const editModalTitleElement = document.getElementById('edit-modal-title');
         const editModalCloseButton = document.getElementById('edit-modal-close-button');
         const editModalCancelButton = document.getElementById('edit-modal-cancel-button');
         const editModalSaveButton = document.getElementById('edit-modal-save-button');
-        const editLinkIdStorage = document.getElementById('edit-link-id-storage');
-        const editLinkIdField = document.getElementById('edit-link-id');
+        const editLinkIdStorage = document.getElementById('edit-link-id-storage'); 
+        const editLinkIdField = document.getElementById('edit-link-id'); 
         const editLinkUrlField = document.getElementById('edit-link-url');
         const editLinkTitleField = document.getElementById('edit-link-title');
         const editLinkTemplateField = document.getElementById('edit-link-template');
         const editLinkDataField = document.getElementById('edit-link-data');
+        const addNewLinkButton = document.getElementById('add-new-link-button');
 
-        function openEditDialog(linkId) {
-            const linkToEdit = links.find(link => link.id === linkId);
+        function openEditDialog(linkId) { 
+            const linkToEdit = appConfig.links.find(link => link.id === linkId);
             if (!linkToEdit) { console.error("Link not found for editing:", linkId); return; }
+            
+            editModalTitleElement.textContent = "Edit Link";
+            editModalSaveButton.textContent = "Save Changes";
+            
             editLinkIdStorage.value = linkToEdit.id; 
-            editLinkIdField.value = linkToEdit.id;
+            editLinkIdField.value = linkToEdit.id; 
+            editLinkIdField.placeholder = "";
             editLinkUrlField.value = linkToEdit.url;
             editLinkTitleField.value = linkToEdit.title;
             editLinkTemplateField.value = linkToEdit.template;
             editLinkDataField.value = JSON.stringify(linkToEdit.data || {}, null, 2); 
+            
             if(editModalOverlay) editModalOverlay.classList.add('show');
         }
 
-        function closeEditDialog() {
+        function openAddNewLinkDialog() { 
+            editModalTitleElement.textContent = "Add New Link";
+            editModalSaveButton.textContent = "Add Link";
+
+            editLinkIdStorage.value = ""; 
+            editLinkIdField.value = ""; 
+            editLinkIdField.placeholder = "will be auto-generated...";
+            editLinkUrlField.value = "";
+            editLinkTitleField.value = "";
+            editLinkTemplateField.value = "default"; 
+            editLinkDataField.value = "{}"; 
+
+            if(editModalOverlay) editModalOverlay.classList.add('show');
+        }
+
+        function closeEditDialog() { 
             if(editModalOverlay) editModalOverlay.classList.remove('show');
+        }
+
+        if (addNewLinkButton) {
+            addNewLinkButton.innerHTML = plusIconSvg; 
+            addNewLinkButton.addEventListener('click', openAddNewLinkDialog);
         }
 
         if (editModalCloseButton) editModalCloseButton.addEventListener('click', closeEditDialog);
@@ -929,19 +1160,39 @@
 
         if (editModalSaveButton) {
             editModalSaveButton.addEventListener('click', () => {
-                const linkIdToSave = editLinkIdStorage.value;
-                const linkIndex = links.findIndex(link => link.id === linkIdToSave);
-                if (linkIndex === -1) { console.error("Could not find link to save:", linkIdToSave); return; }
+                const storedLinkId = editLinkIdStorage.value;
+                let linkIndex = -1;
+                if (storedLinkId) { 
+                    linkIndex = appConfig.links.findIndex(link => link.id === storedLinkId);
+                }
+
                 let parsedData = {};
                 const dataFieldValue = editLinkDataField.value.trim();
                 try {
                     parsedData = dataFieldValue === '' ? {} : JSON.parse(dataFieldValue);
                 } catch (e) {
-                    alert("Error: Data field contains invalid JSON. Please correct it.\n\nExample: {\"key\": \"value\"}\nOr leave empty for {}.");
+                    // Simple feedback for now, ideally replace with a non-blocking message
                     console.error("Invalid JSON in data field:", e, "\nValue was:", dataFieldValue);
+                    alert("Error: Data field contains invalid JSON. Please correct it.\n\nExample: {\"key\": \"value\"}\nOr leave empty for {}.");
                     return; 
                 }
-                links[linkIndex] = { ...links[linkIndex], url: editLinkUrlField.value, title: editLinkTitleField.value, template: editLinkTemplateField.value, data: parsedData };
+
+                const newLinkData = {
+                    url: editLinkUrlField.value,
+                    title: editLinkTitleField.value,
+                    template: editLinkTemplateField.value,
+                    data: parsedData
+                };
+
+                if (linkIndex > -1) { 
+                    appConfig.links[linkIndex] = { ...appConfig.links[linkIndex], ...newLinkData };
+                } else { 
+                    newLinkData.id = generateUniqueId();
+                    appConfig.links.push(newLinkData);
+                }
+                
+                reconcileGroupOrder(); // New link might mean new domain or changed domain
+                saveAppConfig();
                 renderAllLinkGroups(); 
                 closeEditDialog();
             });
@@ -956,7 +1207,7 @@
         const deleteLinkTitleDisplay = document.getElementById('delete-link-title-display');
 
         function openDeleteConfirmDialog(linkId) {
-            const linkToDelete = links.find(link => link.id === linkId);
+            const linkToDelete = appConfig.links.find(link => link.id === linkId);
             if (!linkToDelete) { console.error("Link not found for deletion:", linkId); return; }
             deleteLinkIdStorage.value = linkToDelete.id;
             if (deleteLinkTitleDisplay) deleteLinkTitleDisplay.textContent = linkToDelete.title;
@@ -978,9 +1229,11 @@
         if (deleteModalConfirmButton) {
             deleteModalConfirmButton.addEventListener('click', () => {
                 const linkIdToDelete = deleteLinkIdStorage.value;
-                const linkIndex = links.findIndex(link => link.id === linkIdToDelete);
+                const linkIndex = appConfig.links.findIndex(link => link.id === linkIdToDelete);
                 if (linkIndex > -1) {
-                    links.splice(linkIndex, 1); 
+                    appConfig.links.splice(linkIndex, 1); 
+                    reconcileGroupOrder(); // Domain might have been removed
+                    saveAppConfig();
                     renderAllLinkGroups();
                 } else {
                     console.error("Could not find link to delete:", linkIdToDelete);
@@ -989,42 +1242,139 @@
             });
         }
         
+        // --- DRAG AND DROP LOGIC FOR LINK GROUPS ---
+        const linkGroupsContainer = document.getElementById('link-groups-container');
+        let draggedGroupElement = null;
+        let placeholderElement = null;
+
+        function createDragPlaceholder() {
+            const ph = document.createElement('div');
+            ph.className = 'drag-over-placeholder';
+            // Potentially set height based on dragged element or a fixed reasonable height
+            return ph;
+        }
+        
+        linkGroupsContainer.addEventListener('dragstart', (event) => {
+            const target = event.target.closest('.link-group-section');
+            if (target) {
+                draggedGroupElement = target;
+                event.dataTransfer.setData('text/plain', target.dataset.domain);
+                event.dataTransfer.effectAllowed = 'move';
+                // Timeout to allow browser to render drag image before class changes opacity
+                setTimeout(() => {
+                    draggedGroupElement.classList.add('dragging');
+                }, 0);
+                
+                if (!placeholderElement) {
+                    placeholderElement = createDragPlaceholder();
+                }
+            }
+        });
+
+        linkGroupsContainer.addEventListener('dragover', (event) => {
+            event.preventDefault(); // Necessary to allow dropping
+            if (!draggedGroupElement) return;
+
+            const targetGroup = event.target.closest('.link-group-section');
+            
+            if (targetGroup && targetGroup !== draggedGroupElement) {
+                 const rect = targetGroup.getBoundingClientRect();
+                 const isAfter = event.clientY > rect.top + rect.height / 2;
+                 if (isAfter) {
+                     targetGroup.parentNode.insertBefore(placeholderElement, targetGroup.nextSibling);
+                 } else {
+                     targetGroup.parentNode.insertBefore(placeholderElement, targetGroup);
+                 }
+                 placeholderElement.style.display = 'block'; // Make sure it's visible
+            } else if (!targetGroup && placeholderElement.parentNode !== linkGroupsContainer) { 
+                // If dragging over empty space in container, append placeholder
+                linkGroupsContainer.appendChild(placeholderElement);
+                placeholderElement.style.display = 'block';
+            }
+        });
+        
+        linkGroupsContainer.addEventListener('dragleave', (event) => {
+            // Only remove placeholder if leaving the container itself or a non-group area
+            if (!event.target.closest('.link-group-section') && event.relatedTarget && !event.relatedTarget.closest('#link-groups-container')) {
+                 if (placeholderElement && placeholderElement.parentNode) {
+                    placeholderElement.style.display = 'none'; // Hide instead of remove to reuse
+                }
+            }
+        });
+
+        linkGroupsContainer.addEventListener('drop', (event) => {
+            event.preventDefault();
+            if (!draggedGroupElement || !placeholderElement || !placeholderElement.parentNode) return;
+
+            const draggedDomain = event.dataTransfer.getData('text/plain');
+            const oldIndex = appConfig.groupOrder.indexOf(draggedDomain);
+            appConfig.groupOrder.splice(oldIndex, 1); // Remove from old position
+
+            const children = Array.from(linkGroupsContainer.children);
+            let newIndex = children.indexOf(placeholderElement);
+            
+            // Adjust newIndex if placeholder was after the dragged element's original position
+            // This logic can be tricky; simpler is to just insert based on placeholder's final visual spot.
+
+            appConfig.groupOrder.splice(newIndex, 0, draggedDomain);
+
+            draggedGroupElement.classList.remove('dragging');
+            placeholderElement.style.display = 'none'; // Hide it
+            // No need to move draggedGroupElement here, renderAllLinkGroups will rebuild
+            
+            saveAppConfig();
+            renderAllLinkGroups(); // Re-render to reflect new order
+            
+            draggedGroupElement = null; 
+        });
+
+        linkGroupsContainer.addEventListener('dragend', (event) => {
+            if (draggedGroupElement) {
+                draggedGroupElement.classList.remove('dragging');
+            }
+            if (placeholderElement && placeholderElement.parentNode) {
+                 placeholderElement.style.display = 'none'; // Ensure placeholder is hidden
+            }
+            draggedGroupElement = null;
+        });
+
+
         // --- INITIALIZATION AND RENDERING ALL LINK GROUPS ---
         function renderAllLinkGroups() {
             const container = document.getElementById('link-groups-container');
             const initialLoadingPlaceholder = document.getElementById('loading-placeholder'); 
             
             if (!container) { console.error("[Render] Link container not found!"); return; }
-            container.innerHTML = ''; 
+            container.innerHTML = ''; // Clear previous content
 
-            if (links.length === 0) { 
-                if (initialLoadingPlaceholder) initialLoadingPlaceholder.remove(); 
+            if (appConfig.links.length === 0) { 
+                if (initialLoadingPlaceholder && initialLoadingPlaceholder.parentNode) initialLoadingPlaceholder.remove(); 
                 const noLinksElem = document.createElement('p');
                 noLinksElem.className = 'no-links-placeholder';
-                noLinksElem.textContent = 'No links to display. Add some links to get started!';
+                noLinksElem.textContent = 'No links to display. Click the "+" button to add one, or upload a configuration file!';
                 container.appendChild(noLinksElem);
                 return;
-            } else if (initialLoadingPlaceholder) {
+            } else if (initialLoadingPlaceholder && initialLoadingPlaceholder.parentNode) {
                  initialLoadingPlaceholder.remove();
             }
 
-            const groupedLinks = links.reduce((acc, link) => {
+            const groupedLinks = appConfig.links.reduce((acc, link) => { 
                 const domain = getDomain(link.url);
                 if (!acc[domain]) acc[domain] = [];
                 acc[domain].push(link);
                 return acc;
             }, {});
 
-            const sortedDomains = Object.keys(groupedLinks).sort((a, b) => {
-                if (a === "Localhost") return -1;
-                if (b === "Localhost") return 1;
-                return a.localeCompare(b);
-            });
+            reconcileGroupOrder(); // Ensure appConfig.groupOrder is up-to-date
 
-            for (const domain of sortedDomains) {
+            const domainsToRender = appConfig.groupOrder.filter(domain => groupedLinks[domain] && groupedLinks[domain].length > 0);
+
+            for (const domain of domainsToRender) {
                 const linksInGroup = groupedLinks[domain];
                 const groupSection = document.createElement('section');
                 groupSection.className = 'link-group-section'; 
+                groupSection.dataset.domain = domain; // For drag-and-drop identification
+                groupSection.setAttribute('draggable', 'true'); // Make the group draggable
                 
                 const groupTitle = document.createElement('h2');
                 groupTitle.className = 'link-group-title'; 
@@ -1065,21 +1415,13 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // localStorage.removeItem('myLinkHubLinks'); // For testing
-            try {
-                const savedLinks = localStorage.getItem('myLinkHubLinks');
-                if (savedLinks) {
-                    links = JSON.parse(savedLinks);
-                }
-            } catch (e) {
-                console.error("Error loading links from localStorage:", e);
-            }
+            loadAppConfig(); // Load config from localStorage (includes links and groupOrder)
 
             const initialTheme = localStorage.getItem('theme') || 'system';
             applyTheme(initialTheme); 
 
             const loadingPlaceholder = document.getElementById('loading-placeholder');
-            if (links.length > 0 && loadingPlaceholder) { 
+            if (appConfig.links.length > 0 && loadingPlaceholder && loadingPlaceholder.parentNode) { 
                 loadingPlaceholder.remove();
             }
             
@@ -1090,13 +1432,8 @@
                 currentYearSpan.textContent = new Date().getFullYear();
             }
 
-            window.addEventListener('beforeunload', () => {
-                try {
-                    localStorage.setItem('myLinkHubLinks', JSON.stringify(links));
-                } catch (e) {
-                    console.error("Error saving links to localStorage on unload:", e);
-                }
-            });
+            // Save config on unload
+            window.addEventListener('beforeunload', saveAppConfig);
         });
     </script>
 </body>
