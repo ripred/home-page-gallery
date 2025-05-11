@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Enhanced Link Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>My Enhanced Link Hub</title> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         /* --- Reset and Base Styles --- */
         *, *::before, *::after {
@@ -72,6 +71,41 @@
         .rounded { border-radius: 0.25rem; }
         .rounded-lg { border-radius: 0.5rem; }
 
+        /* --- Editable Content Styles --- */
+        [contenteditable="true"] {
+            outline: 1px dashed #0ea5e9; /* sky-500 */
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            background-color: rgba(224, 242, 254, 0.5); /* sky-100 with opacity */
+        }
+        .dark [contenteditable="true"] {
+            background-color: rgba(12, 74, 110, 0.5); /* sky-800 with opacity */
+        }
+        .edit-icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.125rem;
+            margin-left: 0.25rem;
+            color: #94a3b8; /* slate-400 */
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle; /* Align with text */
+        }
+        .edit-icon-button svg {
+            width: 0.875em; /* Relative to font size */
+            height: 0.875em;
+        }
+        .dark .edit-icon-button {
+            color: #64748b; /* slate-500 */
+        }
+        .edit-icon-button:hover {
+            color: #0ea5e9; /* sky-500 */
+        }
+        .dark .edit-icon-button:hover {
+            color: #38bdf8; /* sky-400 */
+        }
+
 
         /* --- Main Layout --- */
         .main-content-wrapper {
@@ -85,6 +119,11 @@
             margin-bottom: 1rem; 
             text-align: center;
             position: relative;
+        }
+        .page-header .title-container,
+        .page-header .subtitle-container {
+            display: inline-flex; /* To keep edit icon next to text */
+            align-items: center;
         }
         .page-header .title {
             font-size: 1.125rem; 
@@ -114,7 +153,7 @@
 
 
         /* --- Theme Switcher & Action Buttons --- */
-        .theme-switcher-button, /* Reusing for all header buttons */
+        .theme-switcher-button,
         .add-new-link-button,
         .config-action-button { 
             padding: 0.5rem; 
@@ -242,46 +281,58 @@
             display: flex;
             flex-direction: column;
             transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, opacity 0.2s ease-in-out, border 0.2s ease-in-out;
-            cursor: grab; /* Indicate draggable */
+            cursor: grab; 
         }
         .dark .link-group-section {
-            background-color: rgba(30,41,59,0.7); /* slate-800 with opacity */
+            background-color: rgba(30,41,59,0.7); 
             box-shadow: 0 4px 6px -1px rgba(15,23,42,0.3), 0 2px 4px -1px rgba(15,23,42,0.25);
         }
-        .link-group-section.dragging { /* Style for the group being dragged */
+        .link-group-section.dragging { 
             opacity: 0.6;
             border: 2px dashed #0ea5e9; /* sky-500 */
             cursor: grabbing;
         }
-        .drag-over-placeholder { /* Visual placeholder for drop target */
+        .drag-over-placeholder { 
             height: 60px; 
             background-color: #e0f2fe; /* sky-100 */
             border: 2px dashed #38bdf8; /* sky-400 */
             border-radius: 0.375rem;
-            margin-bottom: 0.75rem; /* Match gap */
+            margin-bottom: 0.75rem; 
             box-sizing: border-box;
         }
         .dark .drag-over-placeholder {
-            background-color: #0c4a6e80; /* sky-800 with opacity */
+            background-color: #0c4a6e80; 
             border-color: #0ea5e9; /* sky-500 */
         }
 
-
-        .link-group-title {
-            font-size: 0.75rem; 
-            font-weight: 600; 
-            color: #0284c7; /* sky-600 */
+        .link-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* To push edit icon to the right if needed, or just use margin on icon */
             margin-bottom: 0.375rem; 
             border-bottom: 1px solid #e0f2fe; /* sky-100 */
             padding-bottom: 0.25rem; 
-            text-transform: capitalize;
             flex-shrink: 0;
-            transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out;
         }
-        .dark .link-group-title {
-            color: #38bdf8; /* sky-400 */
+        .dark .link-group-header {
             border-bottom-color: #0c4a6e; /* sky-800 */
         }
+        .link-group-title-text { /* Wrapper for the title text itself */
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            color: #0284c7; /* sky-600 */
+            text-transform: capitalize;
+            transition: color 0.3s ease-in-out;
+            flex-grow: 1; /* Allow title to take space */
+            min-width: 0; /* For truncation if needed */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .dark .link-group-title-text {
+            color: #38bdf8; /* sky-400 */
+        }
+
 
         .link-cards-grid {
             display: grid;
@@ -324,7 +375,7 @@
             z-index: 10; 
         }
         .dark .card-action-button {
-            background-color: rgba(51, 65, 85, 0.5); /* slate-700 with opacity */
+            background-color: rgba(51, 65, 85, 0.5); 
         }
         .link-card:hover .card-action-button {
             display: block;
@@ -639,7 +690,7 @@
             .page-header .subtitle { font-size: 0.875rem; line-height: 1.25rem; } 
             #link-groups-container { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } 
             .link-group-section { padding: 0.75rem; } 
-            .link-group-title { font-size: 0.875rem; line-height: 1.25rem; margin-bottom: 0.5rem; } 
+            .link-group-title-text { font-size: 0.875rem; line-height: 1.25rem; } 
             .link-cards-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; } 
         }
         @media (min-width: 768px) { /* md */
@@ -665,24 +716,32 @@
 <body> 
     <div class="main-content-wrapper">
         <header class="page-header">
-            <h1 class="title">My Link Hub</h1>
-            <p class="subtitle">Your configurable, themed dashboard.</p>
+            <div class="title-container">
+                <h1 id="page-main-title" class="title">My Link Hub</h1>
+                <button id="edit-page-title-button" class="edit-icon-button" aria-label="Edit page title" title="Edit page title">
+                    </button>
+            </div>
+            <div class="subtitle-container">
+                <p id="page-main-subtitle" class="subtitle">Your configurable, themed dashboard.</p>
+                <button id="edit-page-subtitle-button" class="edit-icon-button" aria-label="Edit page subtitle" title="Edit page subtitle">
+                    </button>
+            </div>
             
             <div class="header-actions-container">
-                <button id="upload-config-button" type="button" class="config-action-button" aria-label="Upload configuration">
+                <button id="upload-config-button" type="button" class="config-action-button" aria-label="Upload configuration" title="Upload configuration (JSON)">
                     </button>
-                <button id="download-config-button" type="button" class="config-action-button" aria-label="Download configuration">
+                <button id="download-config-button" type="button" class="config-action-button" aria-label="Download configuration" title="Download current configuration (JSON)">
                     </button>
-                <button id="add-new-link-button" type="button" class="add-new-link-button" aria-label="Add new link">
+                <button id="add-new-link-button" type="button" class="add-new-link-button" aria-label="Add new link" title="Add a new link card">
                     </button>
                 <div class="relative"> 
-                    <button id="theme-switcher-button" type="button" class="theme-switcher-button" aria-label="Switch theme">
+                    <button id="theme-switcher-button" type="button" class="theme-switcher-button" aria-label="Switch theme" title="Change color theme">
                         </button>
                     <div id="theme-dropdown-menu" class="theme-dropdown-menu"> 
                         <ul>
-                            <li><button data-theme="light" class="theme-option-button"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1em; height:1em; margin-right:0.5em;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25c0 1.31.934 2.342 2.11 2.342s2.11-1.032 2.11-2.342A2.25 2.25 0 0 0 12 12Z" /></svg>Light</button></li>
-                            <li><button data-theme="dark" class="theme-option-button"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1em; height:1em; margin-right:0.5em;"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21c3.975 0 7.403-2.088 9.002-5.168Z" /></svg>Dark</button></li>
-                            <li><button data-theme="system" class="theme-option-button"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1em; height:1em; margin-right:0.5em;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h4.757c3.247 0 5.406 1.5 6.477 3.154" /></svg>System</button></li>
+                            <li><button data-theme="light" class="theme-option-button" title="Switch to Light Theme"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1em; height:1em; margin-right:0.5em;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25c0 1.31.934 2.342 2.11 2.342s2.11-1.032 2.11-2.342A2.25 2.25 0 0 0 12 12Z" /></svg>Light</button></li>
+                            <li><button data-theme="dark" class="theme-option-button" title="Switch to Dark Theme"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1em; height:1em; margin-right:0.5em;"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21c3.975 0 7.403-2.088 9.002-5.168Z" /></svg>Dark</button></li>
+                            <li><button data-theme="system" class="theme-option-button" title="Use system preference for theme"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width:1em; height:1em; margin-right:0.5em;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h4.757c3.247 0 5.406 1.5 6.477 3.154" /></svg>System</button></li>
                         </ul>
                     </div>
                 </div>
@@ -695,40 +754,40 @@
     </div>
 
     <footer class="page-footer">
-        <p>© <span id="currentYear"></span> My Link Hub. Crafted with Custom CSS.</p>
+        <p>© <span id="currentYear"></span> <span id="footer-page-title">My Link Hub</span>. Crafted with Custom CSS.</p>
     </footer>
 
     <input type="file" id="config-file-input" accept=".json" style="display: none;">
 
     <div id="card-action-dropdown" class="card-action-dropdown">
-        <button class="card-action-dropdown-item" data-action="edit">Edit...</button>
-        <button class="card-action-dropdown-item" data-action="delete">Delete...</button>
+        <button class="card-action-dropdown-item" data-action="edit" title="Edit this link's details">Edit...</button>
+        <button class="card-action-dropdown-item" data-action="delete" title="Delete this link">Delete...</button>
     </div>
 
     <div id="edit-card-modal-overlay" class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="edit-modal-title" class="modal-title">Edit Link</h2> 
-                <button id="edit-modal-close-button" class="modal-close-button" aria-label="Close edit modal">×</button>
+                <button id="edit-modal-close-button" class="modal-close-button" aria-label="Close edit modal" title="Close dialog">×</button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="edit-link-id-storage"> 
                 <div class="form-group">
                     <label for="edit-link-id">ID</label>
-                    <input type="text" id="edit-link-id" name="id" disabled placeholder=""> 
+                    <input type="text" id="edit-link-id" name="id" disabled placeholder="" title="Unique ID (not editable)"> 
                 </div>
-                <div class="form-group"><label for="edit-link-url">URL</label><input type="text" id="edit-link-url" name="url" required></div>
-                <div class="form-group"><label for="edit-link-title">Title</label><input type="text" id="edit-link-title" name="title" required></div>
-                <div class="form-group"><label for="edit-link-template">Template</label><input type="text" id="edit-link-template" name="template"></div>
+                <div class="form-group"><label for="edit-link-url">URL</label><input type="text" id="edit-link-url" name="url" required title="Full URL for the link"></div>
+                <div class="form-group"><label for="edit-link-title">Title</label><input type="text" id="edit-link-title" name="title" required title="Display title for the link card"></div>
+                <div class="form-group"><label for="edit-link-template">Template</label><input type="text" id="edit-link-template" name="template" title="Template for card (currently 'default')"></div>
                 <div class="form-group">
                     <label for="edit-link-data">Data (JSON format)</label>
-                    <textarea id="edit-link-data" name="data" rows="3"></textarea>
+                    <textarea id="edit-link-data" name="data" rows="3" title="Custom JSON data associated with the link"></textarea>
                     <p style="font-size: 0.7rem; color: #64748b; margin-top: 0.25rem;">E.g., {"key": "value"}</p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="edit-modal-cancel-button" type="button" class="modal-button modal-button-secondary">Cancel</button>
-                <button id="edit-modal-save-button" type="button" class="modal-button modal-button-primary">Save Changes</button> 
+                <button id="edit-modal-cancel-button" type="button" class="modal-button modal-button-secondary" title="Discard changes">Cancel</button>
+                <button id="edit-modal-save-button" type="button" class="modal-button modal-button-primary" title="Save changes to this link">Save Changes</button> 
             </div>
         </div>
     </div>
@@ -737,7 +796,7 @@
         <div id="delete-confirm-modal" class="modal-content">
             <div class="modal-header">
                 <h2 id="delete-confirm-modal-title" class="modal-title">Confirm Deletion</h2>
-                <button id="delete-modal-close-button" class="modal-close-button" aria-label="Close delete confirmation modal">×</button>
+                <button id="delete-modal-close-button" class="modal-close-button" aria-label="Close delete confirmation modal" title="Close dialog">×</button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="delete-link-id-storage">
@@ -745,8 +804,8 @@
                 <p><strong><span id="delete-link-title-display"></span></strong></p>
             </div>
             <div class="modal-footer">
-                <button id="delete-modal-cancel-button" type="button" class="modal-button modal-button-secondary">Cancel</button>
-                <button id="delete-modal-confirm-button" type="button" class="modal-button modal-button-danger">Remove Link</button>
+                <button id="delete-modal-cancel-button" type="button" class="modal-button modal-button-secondary" title="Do not delete">Cancel</button>
+                <button id="delete-modal-confirm-button" type="button" class="modal-button modal-button-danger" title="Permanently delete this link">Remove Link</button>
             </div>
         </div>
     </div>
@@ -755,8 +814,10 @@
     <script>
         // --- APP CONFIGURATION ---
         const appConfig = {
+            pageTitle: "My Link Hub", // Default page title
+            pageSubtitle: "Your configurable, themed dashboard.", // Default page subtitle
             nextCustomLinkId: 1, 
-            links: [
+            links: [ // Default links, user updated
                 { id: 'yt-guc', url: "https://www.youtube.com/watch?v=3M6e6TG7nDA", title: "Google User Content - YouTube", template: "default", data: {} },
                 { id: 'reddit-arduino', url: "https://www.reddit.com/r/arduino/new/?feedViewType=compactView&rdt=34729", title: "Reddit - r/arduino/new", template: "default", data: {} },
                 { id: 'reddit-modq', url: "https://www.reddit.com/mod/queue", title: "Reddit - Mod Queue", template: "default", data: {} },
@@ -791,7 +852,8 @@
                 { id: 'localhost-9002', url: "http://localhost:9002/", title: "Localhost :9002", template: "default", data: {} },
                 { id: 'nebula-explore', url: "https://nebula.tv/explore/videos", title: "Nebula - Explore Videos", template: "default", data: {} }
             ],
-            groupOrder: [] // Stores the order of domain groups
+            // groupOrder is now an array of objects: { domain: string, displayTitle: string }
+            groupOrder: [] 
         };
 
 
@@ -801,10 +863,20 @@
         const plusIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>`;
         const uploadIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>`;
         const downloadIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>`;
+        const editIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg>`;
         const localhostIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 101.061 1.06l8.69-8.69z" /><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15.25v-4.875a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75v4.875H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" /></svg>`;
         const fallbackIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-full h-full"><path d="M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .976-1.138 2.5 2.5 0 0 1-.142-3.665l3-3Z" /><path d="M8.603 17.397a2.5 2.5 0 0 1-3.535-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 0 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865.75.75 0 0 0-.976 1.138 2.5 2.5 0 0 1 .142 3.665l-3 3Z" /></svg>`;
         const newTabIconSvg = `<svg class="new-tab-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-4.5 0V6m0 0L18 10.5M13.5 6H18m-4.5 4.5L18 6"></path></svg>`;
         const ellipsisIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg>`;
+
+
+        // --- DOM ELEMENTS ---
+        const pageMainTitleElement = document.getElementById('page-main-title');
+        const pageMainSubtitleElement = document.getElementById('page-main-subtitle');
+        const editPageTitleButton = document.getElementById('edit-page-title-button');
+        const editPageSubtitleButton = document.getElementById('edit-page-subtitle-button');
+        const footerPageTitleElement = document.getElementById('footer-page-title');
+        const documentTitleElement = document.querySelector('title');
 
 
         // --- THEME SWITCHER LOGIC ---
@@ -839,11 +911,9 @@
         }
 
         document.addEventListener('click', (event) => {
-            // Close theme dropdown
             if (themeDropdownMenu && themeDropdownMenu.classList.contains('show') && themeSwitcherButton && !themeSwitcherButton.contains(event.target) && !themeDropdownMenu.contains(event.target)) {
                 themeDropdownMenu.classList.remove('show');
             }
-            // Close card action dropdown
             const activeCardActionDropdown = document.getElementById('card-action-dropdown');
             if (activeCardActionDropdown && activeCardActionDropdown.classList.contains('show')) {
                 const isClickInsideDropdown = activeCardActionDropdown.contains(event.target);
@@ -887,12 +957,11 @@
         function getFaviconUrl(domain, fullUrl) {
             const faviconSize = 16; 
             if (domain === "Localhost") return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(localhostIconSvg)}`;
-            if (domain === "googleusercontent.com" && fullUrl.toLowerCase().includes("youtube.com")) { 
-                 return `https://www.google.com/s2/favicons?domain=youtube.com&sz=$${faviconSize}`;
-            }
+            // Simplified and corrected favicon logic for user content domains
             if (domain === "googleusercontent.com" || domain === "camo.githubusercontent.com") {
-                if (fullUrl.includes("github")) return `https://www.google.com/s2/favicons?domain=github.com&sz=${faviconSize}`;
-                return `https://www.google.com/s2/favicons?domain=google.com&sz=${faviconSize}`;
+                if (fullUrl.includes("youtube.com")) return `https://www.google.com/s2/favicons?domain=youtube.com&sz=${faviconSize}`;
+                if (fullUrl.includes("github.com")) return `https://www.google.com/s2/favicons?domain=github.com&sz=${faviconSize}`;
+                return `https://www.google.com/s2/favicons?domain=google.com&sz=${faviconSize}`; // Default for other google user content
             }
             return `https://www.google.com/s2/favicons?domain=${domain}&sz=${faviconSize}`;
         }
@@ -903,6 +972,76 @@
             return newId;
         }
 
+        // --- EDITABLE CONTENT HANDLING ---
+        function makeEditable(element, saveCallback, type = 'text') {
+            element.setAttribute('contenteditable', 'true');
+            element.focus();
+            const originalValue = type === 'innerHTML' ? element.innerHTML : element.textContent;
+
+            const onBlur = () => {
+                finishEdit();
+            };
+
+            const onKeyDown = (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevent new line in contenteditable
+                    finishEdit();
+                } else if (event.key === 'Escape') {
+                    element.textContent = originalValue; // Revert
+                    finishEdit(true); // Pass true to indicate cancellation
+                }
+            };
+
+            const finishEdit = (cancelled = false) => {
+                element.setAttribute('contenteditable', 'false');
+                element.removeEventListener('blur', onBlur);
+                element.removeEventListener('keydown', onKeyDown);
+                if (!cancelled) {
+                    const newValue = type === 'innerHTML' ? element.innerHTML : element.textContent;
+                    if (newValue !== originalValue) {
+                        saveCallback(newValue);
+                    }
+                }
+            };
+
+            element.addEventListener('blur', onBlur);
+            element.addEventListener('keydown', onKeyDown);
+        }
+
+        // --- PAGE TITLE & SUBTITLE EDITING ---
+        function updatePageTitles() {
+            const title = appConfig.pageTitle || "My Link Hub"; // Fallback if empty
+            const subtitle = appConfig.pageSubtitle || ""; // Allow empty
+
+            if (pageMainTitleElement) pageMainTitleElement.textContent = title;
+            if (documentTitleElement) documentTitleElement.textContent = title; // Update browser tab title
+            if (footerPageTitleElement) footerPageTitleElement.textContent = title;
+            if (pageMainSubtitleElement) pageMainSubtitleElement.textContent = subtitle;
+        }
+
+        if (editPageTitleButton && pageMainTitleElement) {
+            editPageTitleButton.innerHTML = editIconSvg;
+            editPageTitleButton.addEventListener('click', () => {
+                makeEditable(pageMainTitleElement, (newTitle) => {
+                    appConfig.pageTitle = newTitle.trim();
+                    updatePageTitles();
+                    saveAppConfig();
+                });
+            });
+        }
+
+        if (editPageSubtitleButton && pageMainSubtitleElement) {
+            editPageSubtitleButton.innerHTML = editIconSvg;
+            editPageSubtitleButton.addEventListener('click', () => {
+                makeEditable(pageMainSubtitleElement, (newSubtitle) => {
+                    appConfig.pageSubtitle = newSubtitle.trim();
+                    updatePageTitles();
+                    saveAppConfig();
+                });
+            });
+        }
+
+
         // --- CONFIGURATION MANAGEMENT (SAVE/LOAD/IMPORT/EXPORT) ---
         const uploadConfigButton = document.getElementById('upload-config-button');
         const downloadConfigButton = document.getElementById('download-config-button');
@@ -910,11 +1049,13 @@
 
         function saveAppConfig() {
             try {
-                reconcileGroupOrder(); // Ensure groupOrder is consistent before saving
+                reconcileGroupOrder(); 
                 const configToSave = {
+                    pageTitle: appConfig.pageTitle,
+                    pageSubtitle: appConfig.pageSubtitle,
                     links: appConfig.links,
                     nextCustomLinkId: appConfig.nextCustomLinkId,
-                    groupOrder: appConfig.groupOrder
+                    groupOrder: appConfig.groupOrder // Now an array of objects
                 };
                 localStorage.setItem('myLinkHubAppConfig', JSON.stringify(configToSave));
                 console.info("App config saved.");
@@ -928,46 +1069,75 @@
                 const savedConfigJson = localStorage.getItem('myLinkHubAppConfig');
                 if (savedConfigJson) {
                     const loadedConfig = JSON.parse(savedConfigJson);
+                    appConfig.pageTitle = loadedConfig.pageTitle || "My Link Hub";
+                    appConfig.pageSubtitle = loadedConfig.pageSubtitle || "Your configurable, themed dashboard.";
                     appConfig.links = loadedConfig.links || [];
                     appConfig.nextCustomLinkId = typeof loadedConfig.nextCustomLinkId === 'number' ? loadedConfig.nextCustomLinkId : 1;
-                    appConfig.groupOrder = loadedConfig.groupOrder || [];
+                    // Ensure groupOrder is an array of objects with domain and displayTitle
+                    appConfig.groupOrder = (loadedConfig.groupOrder || []).map(item => {
+                        if (typeof item === 'string') { // Legacy format
+                            return { domain: item, displayTitle: item };
+                        }
+                        return { domain: item.domain, displayTitle: item.displayTitle || item.domain };
+                    });
                     console.info("App config loaded from localStorage.");
                 }
-                reconcileGroupOrder(); // Always reconcile after load or if no saved data
+                updatePageTitles(); // Apply loaded titles
+                reconcileGroupOrder(); 
             } catch (e) {
                 console.error("Error loading configuration from localStorage:", e);
-                // Reset to defaults or minimal state if loading fails
-                appConfig.links = appConfig.links || []; // Keep default if already set
+                appConfig.pageTitle = "My Link Hub"; // Default
+                appConfig.pageSubtitle = "Your configurable, themed dashboard."; // Default
+                appConfig.links = appConfig.links || []; 
                 appConfig.nextCustomLinkId = 1;
                 appConfig.groupOrder = [];
+                updatePageTitles();
                 reconcileGroupOrder();
             }
         }
         
         function reconcileGroupOrder() {
             const domainsFromLinks = [...new Set(appConfig.links.map(link => getDomain(link.url)))];
+            
+            // Filter out groups from appConfig.groupOrder whose domains no longer exist in links
+            let validOrderedGroups = (appConfig.groupOrder || [])
+                .filter(group => group && typeof group.domain === 'string' && domainsFromLinks.includes(group.domain))
+                .map(group => ({ // Ensure structure
+                    domain: group.domain,
+                    displayTitle: group.displayTitle || group.domain 
+                }));
 
-            let validOrderedDomains = appConfig.groupOrder ? appConfig.groupOrder.filter(domain => domainsFromLinks.includes(domain)) : [];
-            const newDomains = domainsFromLinks.filter(domain => !validOrderedDomains.includes(domain));
+            const currentGroupedDomains = validOrderedGroups.map(group => group.domain);
+            const newDomains = domainsFromLinks.filter(domain => !currentGroupedDomains.includes(domain));
 
-            newDomains.sort((a, b) => {
-                if (a === "Localhost") return -1;
-                if (b === "Localhost") return 1;
-                if (a === "Local Files") return (b === "Localhost" ? 1 : -1);
-                if (b === "Local Files") return (a === "Localhost" ? -1 : 1);
-                if (a === "Other Links") return 1; // Other Links last
-                if (b === "Other Links") return -1;
-                return a.localeCompare(b);
+            // Create new group objects for new domains
+            const newDomainGroups = newDomains.map(domain => ({
+                domain: domain,
+                displayTitle: domain // Default displayTitle is the domain itself
+            }));
+
+            // Sort only the new domain groups before appending
+            newDomainGroups.sort((a, b) => {
+                if (a.domain === "Localhost") return -1;
+                if (b.domain === "Localhost") return 1;
+                if (a.domain === "Local Files") return (b.domain === "Localhost" ? 1 : -1);
+                if (b.domain === "Local Files") return (a.domain === "Localhost" ? -1 : 1);
+                if (a.domain === "Other Links") return 1;
+                if (b.domain === "Other Links") return -1;
+                return a.domain.localeCompare(b.domain);
             });
 
-            appConfig.groupOrder = [...validOrderedDomains, ...newDomains];
+            appConfig.groupOrder = [...validOrderedGroups, ...newDomainGroups];
         }
         
         function downloadConfiguration() {
+            reconcileGroupOrder(); // Ensure order is consistent
             const configData = {
+                pageTitle: appConfig.pageTitle,
+                pageSubtitle: appConfig.pageSubtitle,
                 links: appConfig.links,
                 nextCustomLinkId: appConfig.nextCustomLinkId,
-                groupOrder: appConfig.groupOrder // Include groupOrder in download
+                groupOrder: appConfig.groupOrder 
             };
             const jsonString = JSON.stringify(configData, null, 2);
             const blob = new Blob([jsonString], { type: 'application/json' });
@@ -991,42 +1161,51 @@
                 try {
                     const importedConfig = JSON.parse(e.target.result);
                     if (importedConfig && Array.isArray(importedConfig.links)) {
+                        appConfig.pageTitle = importedConfig.pageTitle || "My Link Hub";
+                        appConfig.pageSubtitle = importedConfig.pageSubtitle || "Your configurable, themed dashboard.";
                         appConfig.links = importedConfig.links;
                         appConfig.nextCustomLinkId = typeof importedConfig.nextCustomLinkId === 'number' ? importedConfig.nextCustomLinkId : 1;
-                        // If groupOrder is in the imported file, use it, otherwise reconcile
-                        appConfig.groupOrder = Array.isArray(importedConfig.groupOrder) ? importedConfig.groupOrder : [];
                         
-                        // Recalculate nextCustomLinkId based on imported links to avoid collisions
+                        // Import groupOrder, ensuring new object structure
+                        appConfig.groupOrder = (importedConfig.groupOrder || []).map(item => {
+                            if (typeof item === 'string') { // Handle legacy string array
+                                return { domain: item, displayTitle: item };
+                            }
+                            return { 
+                                domain: item.domain, 
+                                displayTitle: item.displayTitle || item.domain // Fallback for displayTitle
+                            };
+                        });
+                        
                         let maxId = 0;
                         appConfig.links.forEach(link => {
                             if (link.id && typeof link.id === 'string' && link.id.startsWith('custom-link-')) {
                                 const numPart = parseInt(link.id.replace('custom-link-', ''), 10);
-                                if (!isNaN(numPart) && numPart > maxId) {
-                                    maxId = numPart;
-                                }
+                                if (!isNaN(numPart) && numPart > maxId) maxId = numPart;
                             }
                         });
                         appConfig.nextCustomLinkId = maxId + 1;
 
-                        reconcileGroupOrder(); // Crucial to update order based on new links
-                        saveAppConfig();      // Save the newly imported and reconciled config
+                        updatePageTitles();
+                        reconcileGroupOrder(); 
+                        saveAppConfig();      
                         renderAllLinkGroups();
                         console.info("Configuration imported successfully.");
-                        // Consider adding a user-facing success message here
                     } else {
                         console.error("Invalid config file format: 'links' array not found.");
-                        // Consider adding a user-facing error message
+                        alert("Error: Invalid config file. 'links' array not found.");
                     }
                 } catch (error) {
                     console.error("Error parsing config file:", error);
-                    // Consider adding a user-facing error message
+                    alert("Error: Could not parse config file. Ensure it's valid JSON.");
                 } finally {
-                    configFileImportInput.value = ''; // Reset file input
+                    configFileImportInput.value = ''; 
                 }
             };
             reader.onerror = () => {
                 console.error("Error reading config file.");
-                configFileImportInput.value = ''; // Reset file input
+                alert("Error: Could not read the selected file.");
+                configFileImportInput.value = ''; 
             };
             reader.readAsText(file);
         }
@@ -1081,7 +1260,7 @@
             const safeUrl = link.url || "#";    
 
             return `
-                <button class="card-action-button" data-link-id="${link.id}" aria-label="Actions for link">
+                <button class="card-action-button" data-link-id="${link.id}" aria-label="Actions for link ${safeTitle}" title="More actions for ${safeTitle}">
                     ${ellipsisIconSvg}
                 </button>
                 <div class="link-card-header">
@@ -1171,7 +1350,6 @@
                 try {
                     parsedData = dataFieldValue === '' ? {} : JSON.parse(dataFieldValue);
                 } catch (e) {
-                    // Simple feedback for now, ideally replace with a non-blocking message
                     console.error("Invalid JSON in data field:", e, "\nValue was:", dataFieldValue);
                     alert("Error: Data field contains invalid JSON. Please correct it.\n\nExample: {\"key\": \"value\"}\nOr leave empty for {}.");
                     return; 
@@ -1191,7 +1369,7 @@
                     appConfig.links.push(newLinkData);
                 }
                 
-                reconcileGroupOrder(); // New link might mean new domain or changed domain
+                reconcileGroupOrder(); 
                 saveAppConfig();
                 renderAllLinkGroups(); 
                 closeEditDialog();
@@ -1232,7 +1410,7 @@
                 const linkIndex = appConfig.links.findIndex(link => link.id === linkIdToDelete);
                 if (linkIndex > -1) {
                     appConfig.links.splice(linkIndex, 1); 
-                    reconcileGroupOrder(); // Domain might have been removed
+                    reconcileGroupOrder(); 
                     saveAppConfig();
                     renderAllLinkGroups();
                 } else {
@@ -1250,7 +1428,6 @@
         function createDragPlaceholder() {
             const ph = document.createElement('div');
             ph.className = 'drag-over-placeholder';
-            // Potentially set height based on dragged element or a fixed reasonable height
             return ph;
         }
         
@@ -1258,9 +1435,8 @@
             const target = event.target.closest('.link-group-section');
             if (target) {
                 draggedGroupElement = target;
-                event.dataTransfer.setData('text/plain', target.dataset.domain);
+                event.dataTransfer.setData('text/plain', target.dataset.domain); // Still use domain for transfer ID
                 event.dataTransfer.effectAllowed = 'move';
-                // Timeout to allow browser to render drag image before class changes opacity
                 setTimeout(() => {
                     draggedGroupElement.classList.add('dragging');
                 }, 0);
@@ -1272,9 +1448,8 @@
         });
 
         linkGroupsContainer.addEventListener('dragover', (event) => {
-            event.preventDefault(); // Necessary to allow dropping
+            event.preventDefault(); 
             if (!draggedGroupElement) return;
-
             const targetGroup = event.target.closest('.link-group-section');
             
             if (targetGroup && targetGroup !== draggedGroupElement) {
@@ -1285,19 +1460,17 @@
                  } else {
                      targetGroup.parentNode.insertBefore(placeholderElement, targetGroup);
                  }
-                 placeholderElement.style.display = 'block'; // Make sure it's visible
+                 placeholderElement.style.display = 'block'; 
             } else if (!targetGroup && placeholderElement.parentNode !== linkGroupsContainer) { 
-                // If dragging over empty space in container, append placeholder
                 linkGroupsContainer.appendChild(placeholderElement);
                 placeholderElement.style.display = 'block';
             }
         });
         
         linkGroupsContainer.addEventListener('dragleave', (event) => {
-            // Only remove placeholder if leaving the container itself or a non-group area
             if (!event.target.closest('.link-group-section') && event.relatedTarget && !event.relatedTarget.closest('#link-groups-container')) {
                  if (placeholderElement && placeholderElement.parentNode) {
-                    placeholderElement.style.display = 'none'; // Hide instead of remove to reuse
+                    placeholderElement.style.display = 'none'; 
                 }
             }
         });
@@ -1307,23 +1480,28 @@
             if (!draggedGroupElement || !placeholderElement || !placeholderElement.parentNode) return;
 
             const draggedDomain = event.dataTransfer.getData('text/plain');
-            const oldIndex = appConfig.groupOrder.indexOf(draggedDomain);
-            appConfig.groupOrder.splice(oldIndex, 1); // Remove from old position
-
             const children = Array.from(linkGroupsContainer.children);
-            let newIndex = children.indexOf(placeholderElement);
+            const newVisualIndex = children.indexOf(placeholderElement);
+
+            // Find the dragged group object in appConfig.groupOrder
+            const draggedGroupObjIndex = appConfig.groupOrder.findIndex(g => g.domain === draggedDomain);
+            if (draggedGroupObjIndex === -1) {
+                console.error("Dragged group not found in appConfig.groupOrder:", draggedDomain);
+                if (draggedGroupElement) draggedGroupElement.classList.remove('dragging');
+                if (placeholderElement) placeholderElement.style.display = 'none';
+                draggedGroupElement = null;
+                return;
+            }
+            const [draggedGroupObject] = appConfig.groupOrder.splice(draggedGroupObjIndex, 1);
+
+            // Insert the dragged group object at the new position
+            appConfig.groupOrder.splice(newVisualIndex, 0, draggedGroupObject);
             
-            // Adjust newIndex if placeholder was after the dragged element's original position
-            // This logic can be tricky; simpler is to just insert based on placeholder's final visual spot.
-
-            appConfig.groupOrder.splice(newIndex, 0, draggedDomain);
-
             draggedGroupElement.classList.remove('dragging');
-            placeholderElement.style.display = 'none'; // Hide it
-            // No need to move draggedGroupElement here, renderAllLinkGroups will rebuild
+            placeholderElement.style.display = 'none'; 
             
             saveAppConfig();
-            renderAllLinkGroups(); // Re-render to reflect new order
+            renderAllLinkGroups(); 
             
             draggedGroupElement = null; 
         });
@@ -1333,7 +1511,7 @@
                 draggedGroupElement.classList.remove('dragging');
             }
             if (placeholderElement && placeholderElement.parentNode) {
-                 placeholderElement.style.display = 'none'; // Ensure placeholder is hidden
+                 placeholderElement.style.display = 'none'; 
             }
             draggedGroupElement = null;
         });
@@ -1345,7 +1523,7 @@
             const initialLoadingPlaceholder = document.getElementById('loading-placeholder'); 
             
             if (!container) { console.error("[Render] Link container not found!"); return; }
-            container.innerHTML = ''; // Clear previous content
+            container.innerHTML = ''; 
 
             if (appConfig.links.length === 0) { 
                 if (initialLoadingPlaceholder && initialLoadingPlaceholder.parentNode) initialLoadingPlaceholder.remove(); 
@@ -1358,28 +1536,60 @@
                  initialLoadingPlaceholder.remove();
             }
 
-            const groupedLinks = appConfig.links.reduce((acc, link) => { 
+            const groupedLinksByDomain = appConfig.links.reduce((acc, link) => { 
                 const domain = getDomain(link.url);
                 if (!acc[domain]) acc[domain] = [];
                 acc[domain].push(link);
                 return acc;
             }, {});
 
-            reconcileGroupOrder(); // Ensure appConfig.groupOrder is up-to-date
+            reconcileGroupOrder(); 
 
-            const domainsToRender = appConfig.groupOrder.filter(domain => groupedLinks[domain] && groupedLinks[domain].length > 0);
+            // Render groups based on appConfig.groupOrder
+            appConfig.groupOrder.forEach(groupInfo => {
+                const domain = groupInfo.domain;
+                const displayTitle = groupInfo.displayTitle || domain; // Fallback to domain if displayTitle is empty
+                const linksInGroup = groupedLinksByDomain[domain];
 
-            for (const domain of domainsToRender) {
-                const linksInGroup = groupedLinks[domain];
+                if (!linksInGroup || linksInGroup.length === 0) return; // Skip if no links for this domain
+
                 const groupSection = document.createElement('section');
                 groupSection.className = 'link-group-section'; 
-                groupSection.dataset.domain = domain; // For drag-and-drop identification
-                groupSection.setAttribute('draggable', 'true'); // Make the group draggable
+                groupSection.dataset.domain = domain; 
+                groupSection.setAttribute('draggable', 'true'); 
+                groupSection.title = `Link group for "${displayTitle}". Drag to rearrange.`;
                 
-                const groupTitle = document.createElement('h2');
-                groupTitle.className = 'link-group-title'; 
-                groupTitle.textContent = domain;
-                groupSection.appendChild(groupTitle);
+                const groupHeader = document.createElement('div');
+                groupHeader.className = 'link-group-header';
+
+                const groupTitleText = document.createElement('h2');
+                groupTitleText.className = 'link-group-title-text'; 
+                groupTitleText.textContent = displayTitle;
+                groupTitleText.title = `Links from ${domain}`; // Inner title for the text part
+
+                const editGroupTitleButton = document.createElement('button');
+                editGroupTitleButton.className = 'edit-icon-button';
+                editGroupTitleButton.innerHTML = editIconSvg;
+                editGroupTitleButton.title = `Edit title for "${displayTitle}" group`;
+                editGroupTitleButton.setAttribute('aria-label', `Edit title for ${displayTitle} group`);
+                
+                editGroupTitleButton.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent drag start
+                    makeEditable(groupTitleText, (newTitle) => {
+                        const groupToUpdate = appConfig.groupOrder.find(g => g.domain === domain);
+                        if (groupToUpdate) {
+                            groupToUpdate.displayTitle = newTitle.trim() || domain; // Fallback to domain if empty
+                            groupTitleText.textContent = groupToUpdate.displayTitle; // Update immediately
+                            groupSection.title = `Link group for "${groupToUpdate.displayTitle}". Drag to rearrange.`; // Update section tooltip
+                            editGroupTitleButton.title = `Edit title for "${groupToUpdate.displayTitle}" group`; // Update button tooltip
+                            saveAppConfig();
+                        }
+                    });
+                });
+
+                groupHeader.appendChild(groupTitleText);
+                groupHeader.appendChild(editGroupTitleButton);
+                groupSection.appendChild(groupHeader);
                 
                 const cardsGrid = document.createElement('div');
                 cardsGrid.className = 'link-cards-grid'; 
@@ -1391,6 +1601,7 @@
                     cardLinkWrapper.rel = 'noopener noreferrer';
                     cardLinkWrapper.className = 'link-card'; 
                     cardLinkWrapper.innerHTML = renderCardContent(link); 
+                    cardLinkWrapper.title = `Open ${link.title || link.url} in a new tab`;
                     
                     const actionButton = cardLinkWrapper.querySelector('.card-action-button');
                     if (actionButton) {
@@ -1411,11 +1622,11 @@
                 });
                 groupSection.appendChild(cardsGrid);
                 container.appendChild(groupSection);
-            }
+            });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadAppConfig(); // Load config from localStorage (includes links and groupOrder)
+            loadAppConfig(); 
 
             const initialTheme = localStorage.getItem('theme') || 'system';
             applyTheme(initialTheme); 
@@ -1432,7 +1643,6 @@
                 currentYearSpan.textContent = new Date().getFullYear();
             }
 
-            // Save config on unload
             window.addEventListener('beforeunload', saveAppConfig);
         });
     </script>
