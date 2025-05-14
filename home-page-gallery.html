@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Enhanced Link Hub</title> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Home Page with Favorites</title> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         /* --- Reset and Base Styles --- */
         *, *::before, *::after {
@@ -820,7 +820,7 @@
 <body> 
     <div class="main-content-wrapper" id="main-content-wrapper"> <header class="page-header" id="page-header-main">
             <div class="title-container" id="page-main-title-container">
-                <h1 id="page-main-title" class="title">My Link Hub</h1>
+                <h1 id="page-main-title" class="title">Faviotes</h1>
             </div>
             <div class="subtitle-container" id="page-main-subtitle-container">
                 <p id="page-main-subtitle" class="subtitle">Your configurable, themed dashboard.</p>
@@ -844,7 +844,7 @@
     </div>
 
     <footer class="page-footer">
-        <p>© <span id="currentYear"></span> <span id="footer-page-title">My Link Hub</span>. Crafted with Custom CSS.</p>
+        <p>© <span id="currentYear"></span> <span id="footer-page-title">Favorites</span>. Crafted with Custom CSS.</p>
     </footer>
 
     <input type="file" id="config-file-input" accept=".json" style="display: none;">
@@ -1000,7 +1000,7 @@
     <script>
         // --- APP CONFIGURATION ---
         const appConfig = {
-            pageTitle: "My Link Hub",
+            pageTitle: "Favorits Home Page",
             pageSubtitle: "Your configurable, themed dashboard.",
             showPageTitle: true, 
             showPageSubtitle: true, 
@@ -1226,7 +1226,7 @@
         }
 
         function updatePageTitlesAndVisibility() {
-            const title = appConfig.pageTitle || "My Link Hub"; 
+            const title = appConfig.pageTitle || "Favorites"; 
             const subtitle = appConfig.pageSubtitle || ""; 
 
             if (pageMainTitleElement) pageMainTitleElement.textContent = title;
@@ -1278,7 +1278,7 @@
 
         function loadAppConfig() {
             const initialDefaultConfig = { 
-                pageTitle: "My Link Hub",
+                pageTitle: "Favorites",
                 pageSubtitle: "Your configurable, themed dashboard.",
                 showPageTitle: true,
                 showPageSubtitle: true,
@@ -1424,7 +1424,7 @@
                 try {
                     const importedConfig = JSON.parse(e.target.result);
                     const baseConfigForImport = { 
-                        pageTitle: "My Link Hub", pageSubtitle: "Your configurable, themed dashboard.",
+                        pageTitle: "Favorites", pageSubtitle: "Your configurable, themed dashboard.",
                         showPageTitle: true, showPageSubtitle: true, showFlatGrid: false, // Base for new setting
                         currentTheme: "system",
                         links: appConfig.links, 
