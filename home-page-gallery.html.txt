@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Enhanced Link Hub</title> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- Reset and Base Styles --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-size: 0.75rem; 
+            line-height: 1rem;
+            background-color: #e2e8f0; /* slate-200 */
+            color: #334155; /* slate-700 */
+            transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .dark body {
+            background-color: #0f172a; /* slate-900 */
+            color: #cbd5e1; /* slate-300 */
+        }
+
+        /* Minimalist scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #e2e8f0; } /* slate-200 */
+        ::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 3px; } /* sky-400 */
+        ::-webkit-scrollbar-thumb:hover { background: #0ea5e9; } /* sky-500 */
+        .dark ::-webkit-scrollbar-track { background: #334155; } /* slate-700 */
+        .dark ::-webkit-scrollbar-thumb { background: #0ea5e9; } /* sky-500 */
+        .dark ::-webkit-scrollbar-thumb:hover { background: #38bdf8; } /* sky-400 */
+
+        /* --- Utility Classes --- */
+        .hidden { display: none !important; }
+        .block { display: block; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .flex-col { flex-direction: column; }
+        .flex-grow { flex-grow: 1; }
+        .shrink-0 { flex-shrink: 0; }
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .w-full { width: 100%; }
+        .min-w-0 { min-width: 0; }
+        .overflow-hidden { overflow: hidden; }
+        .truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .capitalize { text-transform: capitalize; }
+        .rounded-sm { border-radius: 0.125rem; }
+        .rounded-md { border-radius: 0.375rem; }
+        .rounded { border-radius: 0.25rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+
+        /* --- Editable Content Styles (used for group titles only now) --- */
+        [contenteditable="true"].link-group-title-text {
+            outline: 1px dashed #0ea5e9; /* sky-500 */
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            background-color: rgba(224, 242, 254, 0.5); /* sky-100 with opacity */
+        }
+        .dark [contenteditable="true"].link-group-title-text {
+            background-color: rgba(12, 74, 110, 0.5); /* sky-800 with opacity */
+        }
+        .edit-icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.125rem;
+            margin-left: 0.25rem;
+            color: #94a3b8; /* slate-400 */
+            display: inline-flex;
+            align-items: center;
+            vertical-align: middle; 
+            opacity: 0; 
+            transition: opacity 0.2s ease-in-out;
+        }
+        .link-group-header:hover .edit-icon-button {
+            opacity: 1;
+        }
+        .edit-icon-button svg {
+            width: 0.875em; 
+            height: 0.875em;
+        }
+        .dark .edit-icon-button {
+            color: #64748b; /* slate-500 */
+        }
+        .edit-icon-button:hover {
+            color: #0ea5e9; /* sky-500 */
+        }
+        .dark .edit-icon-button:hover {
+            color: #38bdf8; /* sky-400 */
+        }
+
+
+        /* --- Main Layout --- */
+        .main-content-wrapper {
+            flex-grow: 1;
+            width: 100%;
+            padding: 0.75rem 0.5rem; 
+            position: relative; /* For background pseudo-element */
+            background-color: transparent; /* Default, shows body theme */
+            z-index: 0; /* Context for pseudo-element */
+            transition: background-color 0.3s ease-in-out;
+        }
+        .main-content-wrapper::before { /* For image backgrounds with opacity */
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: -1; 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            pointer-events: none;
+            opacity: 0; /* Initially no opacity/image */
+            background-image: var(--main-content-bg-image, none);
+            transition: opacity 0.3s ease-in-out;
+        }
+        .main-content-wrapper.bg-type-solid {
+            background-color: var(--main-content-bg-color, transparent);
+        }
+        .main-content-wrapper.bg-type-solid::before {
+            background-image: none;
+            opacity: 0;
+        }
+        .main-content-wrapper.bg-type-image::before {
+            opacity: var(--main-content-bg-image-opacity, 0.25); /* Default opacity if not set by JS */
+        }
+        .main-content-wrapper.bg-type-image { /* Ensure wrapper itself is transparent for image to show */
+            background-color: transparent !important; 
+        }
+        .main-content-wrapper.bg-type-theme { /* Explicitly theme default */
+            background-color: transparent;
+        }
+        .main-content-wrapper.bg-type-theme::before {
+            background-image: none;
+            opacity: 0;
+        }
+
+
+        /* --- Header --- */
+        .page-header {
+            margin-bottom: 1rem; 
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 40px; 
+            justify-content: center;
+            transition: height 0.3s ease-in-out, min-height 0.3s ease-in-out;
+        }
+        .page-header.no-title-subtitle {
+            height: calc(1.25rem + 1rem + 30px); 
+            min-height: calc(1.25rem + 1rem + 30px);
+            justify-content: center; 
+            margin-bottom: 0.5rem; 
+        }
+        .page-header.no-title-subtitle .header-actions-container {
+            position: relative; 
+            top: auto;
+            right: auto;
+            padding: 0; 
+            width: auto; 
+            margin-left: auto; 
+            margin-right: 0.5rem; 
+        }
+
+
+        .page-header .title-container,
+        .page-header .subtitle-container {
+            display: flex; 
+            align-items: center;
+            justify-content: center; 
+            width: fit-content; 
+            max-width: 100%; 
+        }
+         .page-header .subtitle-container {
+            margin-top: 0.125rem; 
+        }
+
+        .page-header .title {
+            font-size: 1.125rem; 
+            line-height: 1.75rem;
+            font-weight: 700; 
+            color: #0369a1; /* sky-700 */
+        }
+        .dark .page-header .title {
+            color: #0ea5e9; /* sky-500 */
+        }
+        .page-header .subtitle {
+            color: #64748b; /* slate-500 */
+            font-size: 0.75rem; 
+        }
+        .dark .page-header .subtitle {
+            color: #94a3b8; /* slate-400 */
+        }
+        .header-actions-container { 
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem; 
+            padding: 0.25rem; 
+        }
+
+
+        /* --- Action Buttons (Generic) --- */
+        .action-button { 
+            padding: 0.5rem; 
+            border-radius: 0.375rem; 
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+        }
+        .action-button:hover {
+            background-color: #cbd5e1; /* slate-300 */
+        }
+        .dark .action-button:hover {
+            background-color: #334155; /* slate-700 */
+        }
+        .action-button:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #0ea5e9; /* sky-500 */
+        }
+        .action-button svg { 
+            width: 1.25rem; 
+            height: 1.25rem; 
+            color: #475569; /* slate-600 */
+            display: block; 
+        }
+        .dark .action-button svg {
+            color: #94a3b8; /* slate-400 */
+        }
+        
+        /* --- Link Groups & Flat View Container --- */
+        #link-groups-container {
+            display: grid;
+            gap: 0.75rem; 
+            position: relative; 
+            z-index: 1;
+        }
+        /* Default (grouped view) columns */
+        #link-groups-container.grouped-view-active {
+            grid-template-columns: repeat(1, minmax(0, 1fr)); 
+        }
+
+        /* Flat view columns (targets cards directly) */
+        #link-groups-container.flat-view-active {
+            grid-template-columns: repeat(2, minmax(0, 1fr)); /* Mobile default for cards */
+            gap: 0.5rem; /* Gap between cards in flat view */
+        }
+
+        .no-links-placeholder {
+            text-align: center;
+            color: #94a3b8; /* slate-400 */
+            grid-column: 1 / -1; 
+            padding: 1rem;
+            font-size: 0.875rem; 
+        }
+        .dark .no-links-placeholder {
+            color: #64748b; /* slate-500 */
+        }
+        #loading-placeholder {
+            text-align: center;
+            color: #94a3b8; /* slate-400 */
+            grid-column: 1 / -1; 
+        }
+        .dark #loading-placeholder {
+            color: #64748b; /* slate-500 */
+        }
+
+        .link-group-section {
+            background-color: rgba(255,255,255,0.7); 
+            padding: 0.5rem; 
+            border-radius: 0.375rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, opacity 0.2s ease-in-out, border 0.2s ease-in-out;
+            cursor: grab; 
+        }
+        .dark .link-group-section {
+            background-color: rgba(30,41,59,0.7); 
+            box-shadow: 0 4px 6px -1px rgba(15,23,42,0.3), 0 2px 4px -1px rgba(15,23,42,0.25);
+        }
+        .link-group-section.dragging { 
+            opacity: 0.6;
+            border: 2px dashed #0ea5e9; /* sky-500 */
+            cursor: grabbing;
+        }
+        .drag-over-placeholder { 
+            background-color: #e0f2fe; /* sky-100 */
+            border: 2px dashed #38bdf8; /* sky-400 */
+            border-radius: 0.375rem;
+            margin-bottom: 0.75rem; 
+            box-sizing: border-box;
+            min-height: 50px; /* Give placeholder some height */
+        }
+        .dark .drag-over-placeholder {
+            background-color: #0c4a6e80; 
+            border-color: #0ea5e9; /* sky-500 */
+        }
+
+        .link-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; 
+            margin-bottom: 0.375rem; 
+            border-bottom: 1px solid #e0f2fe; /* sky-100 */
+            padding-bottom: 0.25rem; 
+            flex-shrink: 0;
+        }
+        .dark .link-group-header {
+            border-bottom-color: #0c4a6e; /* sky-800 */
+        }
+        .link-group-title-text { 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            color: #0284c7; /* sky-600 */
+            text-transform: capitalize;
+            transition: color 0.3s ease-in-out;
+            flex-grow: 1; 
+            min-width: 0; 
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .dark .link-group-title-text {
+            color: #38bdf8; /* sky-400 */
+        }
+
+
+        .link-cards-grid { /* Used inside .link-group-section */
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr)); 
+            gap: 0.375rem; 
+        }
+
+        .link-card {
+            display: block;
+            padding: 0.375rem; 
+            border-radius: 0.25rem; 
+            box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); 
+            background-color: #f8fafc; /* slate-50 */
+            transition: all 0.2s ease-in-out;
+            text-decoration: none;
+            position: relative; 
+        }
+        .dark .link-card {
+            background-color: #334155; /* slate-700 */
+        }
+        .link-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+            background-color: #f0f9ff; /* sky-50 */
+            transform: translateY(-1px); 
+        }
+        .dark .link-card:hover {
+            background-color: #0369a1; /* sky-700 */
+        }
+
+        .card-action-button { 
+            position: absolute;
+            top: 0.125rem; 
+            right: 0.125rem; 
+            padding: 0.125rem;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            display: none; 
+            z-index: 10; 
+        }
+        .dark .card-action-button {
+            background-color: rgba(51, 65, 85, 0.5); 
+        }
+        .link-card:hover .card-action-button {
+            display: block;
+        }
+        .card-action-button svg {
+            width: 0.75rem; 
+            height: 0.75rem; 
+            color: #64748b; /* slate-500 */
+            display: block; 
+        }
+        .dark .card-action-button svg {
+            color: #94a3b8; /* slate-400 */
+        }
+        .card-action-button:hover svg {
+            color: #0ea5e9; /* sky-500 */
+        }
+        .dark .card-action-button:hover svg {
+            color: #38bdf8; /* sky-400 */
+        }
+
+        .card-action-dropdown {
+            display: none; 
+            position: absolute;
+            background-color: #fff; /* white */
+            border-radius: 0.375rem; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); 
+            z-index: 20; 
+            width: 100px; 
+            overflow: hidden;
+        }
+        .dark .card-action-dropdown {
+            background-color: #1e293b; /* slate-800 */
+            border: 1px solid #334155; /* slate-700 */
+        }
+        .card-action-dropdown.show {
+            display: block;
+        }
+        .card-action-dropdown-item {
+            display: block;
+            width: 100%;
+            padding: 0.375rem 0.625rem; 
+            font-size: 0.75rem; 
+            color: #334155; /* slate-700 */
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+        }
+        .dark .card-action-dropdown-item {
+            color: #cbd5e1; /* slate-300 */
+        }
+        .card-action-dropdown-item:hover {
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .dark .card-action-dropdown-item:hover {
+            background-color: #334155; /* slate-700 */
+        }
+
+        .link-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.125rem; 
+        }
+        .favicon-img {
+            min-width: 16px; 
+            width: 0.875rem; 
+            height: 0.875rem; 
+            margin-right: 0.25rem; 
+            border-radius: 0.125rem; 
+            flex-shrink: 0;
+        }
+        .favicon-fallback {
+            width: 0.875rem; 
+            height: 0.875rem; 
+            margin-right: 0.25rem; 
+            border-radius: 0.125rem; 
+            flex-shrink: 0;
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+        }
+        .favicon-fallback svg {
+            width: 100%;
+            height: 100%;
+            color: #94a3b8; /* slate-400 */
+        }
+        .dark .favicon-fallback svg {
+            color: #64748b; /* slate-500 */
+        }
+
+        .link-card-title {
+            font-size: 11px; 
+            font-weight: 500; 
+            color: #475569; /* slate-600 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex-grow: 1;
+            min-width: 0;
+            padding-right: 1rem; 
+        }
+        .dark .link-card-title {
+            color: #cbd5e1; /* slate-300 */
+        }
+        .link-card:hover .link-card-title {
+            color: #0369a1; /* sky-700 */
+        }
+        .dark .link-card:hover .link-card-title {
+            color: #38bdf8; /* sky-400 */
+        }
+
+        .new-tab-icon {
+            width: 0.5rem; 
+            height: 0.5rem; 
+            color: #94a3b8; /* slate-400 */
+            margin-left: 0.25rem; 
+            flex-shrink: 0;
+        }
+        .dark .new-tab-icon {
+            color: #64748b; /* slate-500 */
+        }
+        .link-card:hover .new-tab-icon {
+            color: #0ea5e9; /* sky-500 */
+        }
+        .dark .link-card:hover .new-tab-icon {
+            color: #38bdf8; /* sky-400 */
+        }
+
+        .link-card-url {
+            font-size: 9px; 
+            color: #94a3b8; /* slate-400 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .dark .link-card-url {
+            color: #64748b; /* slate-500 */
+        }
+
+        /* --- Footer --- */
+        .page-footer {
+            padding-top: 0.5rem; 
+            padding-bottom: 0.5rem;
+            border-top: 1px solid #cbd5e1; /* slate-300 */
+            text-align: center;
+            font-size: 0.75rem; 
+            color: #64748b; /* slate-500 */
+            background-color: #f1f5f9; /* slate-100 */
+            transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+            margin-top: auto; 
+            position: relative; 
+            z-index: 1;
+        }
+        .dark .page-footer {
+            border-top-color: #334155; /* slate-700 */
+            color: #94a3b8; /* slate-400 */
+            background-color: #1e293b; /* slate-800 */
+        }
+
+        /* --- MODAL STYLES (Generic) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; 
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-content { 
+            background-color: #ffffff; /* white */
+            padding: 1.5rem; 
+            border-radius: 0.5rem; 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); 
+            width: 90%;
+            max-width: 500px; 
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .dark .modal-content {
+            background-color: #1e293b; /* slate-800 */
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem; 
+            padding-bottom: 0.5rem; 
+            border-bottom: 1px solid #e5e7eb; /* gray-200 */
+        }
+        .dark .modal-header {
+            border-bottom-color: #334155; /* slate-700 */
+        }
+        .modal-title {
+            font-size: 1.125rem; 
+            font-weight: 600; 
+        }
+        .modal-close-button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            line-height: 1;
+            cursor: pointer;
+            color: #6b7280; /* gray-500 */
+            padding: 0.25rem;
+        }
+        .dark .modal-close-button {
+            color: #9ca3af; /* gray-400 */
+        }
+        .modal-body .form-group { 
+            margin-bottom: 1rem; 
+        }
+        .modal-body label { 
+            display: block;
+            font-size: 0.875rem; 
+            font-weight: 500; 
+            margin-bottom: 0.25rem; 
+        }
+        .modal-body input[type="text"], 
+        .modal-body input[type="color"],
+        .modal-body textarea { 
+            width: 100%;
+            padding: 0.5rem 0.75rem; 
+            border: 1px solid #d1d5db; /* gray-300 */
+            border-radius: 0.375rem; 
+            font-size: 0.875rem; 
+            background-color: #fff; /* white */
+            color: #1f2937; /* gray-800 */
+        }
+        .modal-body input[type="color"] {
+            padding: 0.25rem; 
+            height: 2.5rem; 
+        }
+        .modal-body input[type="range"] { /* Basic styling for range input */
+            padding: 0; /* Override default padding for range */
+            accent-color: #0ea5e9; /* sky-500 */
+        }
+
+        .modal-body input[type="text"]:disabled { 
+            background-color: #f3f4f6; /* gray-100 */
+            cursor: not-allowed;
+            color: #6b7280; /* gray-500 */
+        }
+        .dark .modal-body input[type="text"], 
+        .dark .modal-body input[type="color"],
+        .dark .modal-body textarea { 
+            background-color: #334155; /* slate-700 */
+            border-color: #4b5563; /* slate-600 */
+            color: #e5e7eb; /* gray-200 */
+        }
+        .dark .modal-body input[type="text"]:disabled { 
+            background-color: #1f293b; /* slate-800 */
+            color: #4b5563; /* slate-600 */
+        }
+        .modal-body textarea { 
+            min-height: 80px;
+            font-family: monospace;
+        }
+        .modal-body .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        .modal-body .checkbox-group input[type="checkbox"] {
+            margin-right: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            accent-color: #0ea5e9; /* sky-500 */
+        }
+        .modal-body .checkbox-group label {
+            font-weight: normal;
+            font-size: 0.875rem;
+            margin-bottom: 0; 
+        }
+        .modal-body .radio-group-label {
+            font-size: 0.875rem; 
+            font-weight: 500; 
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .modal-body .radio-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.375rem;
+        }
+        .modal-body .radio-option input[type="radio"] {
+            margin-right: 0.5rem;
+            accent-color: #0ea5e9; /* sky-500 */
+        }
+        .modal-body .radio-option label {
+            font-weight: normal;
+            font-size: 0.875rem;
+            margin-bottom: 0;
+        }
+        .modal-body .settings-subsection-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid #e5e7eb; /* gray-200 */
+        }
+        .dark .modal-body .settings-subsection-title {
+            border-bottom-color: #334155; /* slate-700 */
+        }
+        .modal-body .background-option-details {
+            margin-top: 0.5rem;
+            margin-left: 1.5rem; 
+        }
+        .modal-body .background-option-details input[type="file"] {
+            font-size: 0.75rem;
+            padding: 0.3rem;
+        }
+        
+        #delete-confirm-modal .modal-body p {
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        #delete-confirm-modal .modal-body strong { 
+            font-weight: 600;
+            word-break: break-all; 
+        }
+
+        .modal-footer {
+            margin-top: 1.5rem; 
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem; 
+        }
+        .modal-button {
+            padding: 0.5rem 1rem; 
+            border-radius: 0.375rem; 
+            font-size: 0.875rem; 
+            font-weight: 500; 
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+        .modal-button-primary { 
+            background-color: #0ea5e9; /* sky-500 */
+            color: white;
+        }
+        .modal-button-primary:hover {
+            background-color: #0284c7; /* sky-600 */
+        }
+        .modal-button-danger { 
+            background-color: #ef4444; /* red-500 */
+            color: white;
+        }
+        .modal-button-danger:hover {
+            background-color: #dc2626; /* red-600 */
+        }
+        .modal-button-secondary {
+            background-color: #e5e7eb; /* gray-200 */
+            color: #1f2937; /* gray-800 */
+            border-color: #d1d5db; /* gray-300 */
+        }
+        .dark .modal-button-secondary {
+            background-color: #334155; /* slate-700 */
+            color: #e5e7eb; /* gray-200 */
+            border-color: #4b5563; /* slate-600 */
+        }
+        .modal-button-secondary:hover {
+            background-color: #d1d5db; /* gray-300 */
+        }
+        .dark .modal-button-secondary:hover {
+            background-color: #4b5563; /* slate-600 */
+        }
+
+        /* --- Responsive Styles --- */
+        @media (min-width: 640px) { /* sm */
+            body { font-size: 0.875rem; line-height: 1.25rem; } 
+            .main-content-wrapper { padding-left: 0.75rem; padding-right: 0.75rem; padding-top: 1rem; padding-bottom: 1rem; } 
+            .page-header { margin-bottom: 1.5rem; } 
+            .page-header.no-title-subtitle { margin-bottom: 0.75rem; }
+            .page-header .title { font-size: 1.25rem; line-height: 1.75rem; } 
+            .page-header .subtitle { font-size: 0.875rem; line-height: 1.25rem; } 
+            
+            /* Grouped view columns */
+            #link-groups-container.grouped-view-active { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } 
+            /* Flat view columns for cards */
+            #link-groups-container.flat-view-active { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+            .link-group-section { padding: 0.75rem; } 
+            .link-group-title-text { font-size: 0.875rem; line-height: 1.25rem; } 
+            .link-cards-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; } 
+        }
+        @media (min-width: 768px) { /* md */
+            #link-groups-container.grouped-view-active { grid-template-columns: repeat(3, minmax(0, 1fr)); } 
+            #link-groups-container.flat-view-active { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+            .link-cards-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } 
+        }
+        @media (min-width: 1024px) { /* lg */
+            .main-content-wrapper { padding-left: 1rem; padding-right: 1rem; } 
+            #link-groups-container.grouped-view-active { grid-template-columns: repeat(4, minmax(0, 1fr)); } 
+            #link-groups-container.flat-view-active { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+            .link-cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } /* Cards within a group */
+        }
+        @media (min-width: 1280px) { /* xl */
+            #link-groups-container.grouped-view-active { grid-template-columns: repeat(5, minmax(0, 1fr)); } 
+            #link-groups-container.flat-view-active { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+            .link-cards-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } /* Cards within a group */
+        }
+        @media (min-width: 1536px) { /* 2xl */
+            #link-groups-container.grouped-view-active { grid-template-columns: repeat(6, minmax(0, 1fr)); } 
+            #link-groups-container.flat-view-active { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+            .link-cards-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } /* Cards within a group */
+        }
+
+    </style>
+</head>
+<body> 
+    <div class="main-content-wrapper" id="main-content-wrapper"> <header class="page-header" id="page-header-main">
+            <div class="title-container" id="page-main-title-container">
+                <h1 id="page-main-title" class="title">My Link Hub</h1>
+            </div>
+            <div class="subtitle-container" id="page-main-subtitle-container">
+                <p id="page-main-subtitle" class="subtitle">Your configurable, themed dashboard.</p>
+            </div>
+            
+            <div class="header-actions-container">
+                <button id="add-new-link-button" type="button" class="action-button" aria-label="Add new link" title="Add a new link card">
+                </button>
+                <button id="upload-config-button" type="button" class="action-button" aria-label="Upload configuration" title="Upload configuration (JSON)">
+                </button>
+                <button id="download-config-button" type="button" class="action-button" aria-label="Download configuration" title="Download current configuration (JSON)">
+                </button>
+                <button id="system-settings-button" type="button" class="action-button" aria-label="Open system settings" title="Open System Settings">
+                </button>
+            </div>
+        </header>
+
+        <div id="link-groups-container"> 
+            <div id="loading-placeholder"><p>Loading links...</p></div>
+        </div>
+    </div>
+
+    <footer class="page-footer">
+        <p>© <span id="currentYear"></span> <span id="footer-page-title">My Link Hub</span>. Crafted with Custom CSS.</p>
+    </footer>
+
+    <input type="file" id="config-file-input" accept=".json" style="display: none;">
+    <input type="file" id="background-image-input" accept="image/*" style="display:none;">
+
+
+    <div id="card-action-dropdown" class="card-action-dropdown">
+        <button class="card-action-dropdown-item" data-action="edit" title="Edit this link's details">Edit...</button>
+        <button class="card-action-dropdown-item" data-action="delete" title="Delete this link">Delete...</button>
+    </div>
+
+    <div id="edit-card-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="edit-modal-title" class="modal-title">Edit Link</h2> 
+                <button id="edit-modal-close-button" class="modal-close-button" aria-label="Close edit modal" title="Close dialog">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-link-id-storage"> 
+                <div class="form-group">
+                    <label for="edit-link-id">ID</label>
+                    <input type="text" id="edit-link-id" name="id" disabled placeholder="" title="Unique ID (not editable)"> 
+                </div>
+                <div class="form-group"><label for="edit-link-url">URL</label><input type="text" id="edit-link-url" name="url" required title="Full URL for the link"></div>
+                <div class="form-group"><label for="edit-link-title">Title</label><input type="text" id="edit-link-title" name="title" required title="Display title for the link card"></div>
+                <div class="form-group"><label for="edit-link-template">Template</label><input type="text" id="edit-link-template" name="template" title="Template for card (currently 'default')"></div>
+                <div class="form-group">
+                    <label for="edit-link-data">Data (JSON format)</label>
+                    <textarea id="edit-link-data" name="data" rows="3" title="Custom JSON data associated with the link"></textarea>
+                    <p style="font-size: 0.7rem; color: #64748b; margin-top: 0.25rem;">E.g., {"key": "value"}</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="edit-modal-cancel-button" type="button" class="modal-button modal-button-secondary" title="Discard changes">Cancel</button>
+                <button id="edit-modal-save-button" type="button" class="modal-button modal-button-primary" title="Save changes to this link">Save Changes</button> 
+            </div>
+        </div>
+    </div>
+
+    <div id="delete-confirm-modal-overlay" class="modal-overlay">
+        <div id="delete-confirm-modal" class="modal-content">
+            <div class="modal-header">
+                <h2 id="delete-confirm-modal-title" class="modal-title">Confirm Deletion</h2>
+                <button id="delete-modal-close-button" class="modal-close-button" aria-label="Close delete confirmation modal" title="Close dialog">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="delete-link-id-storage">
+                <p>Are you sure you want to delete this link?</p>
+                <p><strong><span id="delete-link-title-display"></span></strong></p>
+            </div>
+            <div class="modal-footer">
+                <button id="delete-modal-cancel-button" type="button" class="modal-button modal-button-secondary" title="Do not delete">Cancel</button>
+                <button id="delete-modal-confirm-button" type="button" class="modal-button modal-button-danger" title="Permanently delete this link">Remove Link</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="system-settings-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">System Settings</h2>
+                <button id="system-settings-modal-close-button" class="modal-close-button" aria-label="Close system settings modal" title="Close dialog">×</button>
+            </div>
+            <div class="modal-body">
+                <h3 class="settings-subsection-title">Display</h3>
+                <div class="form-group">
+                    <label for="settings-page-title">Page Title</label>
+                    <input type="text" id="settings-page-title" name="pageTitle" title="Main title of the page">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="settings-show-page-title" name="showPageTitle">
+                        <label for="settings-show-page-title">Show Page Title</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="settings-page-subtitle">Page Subtitle</label>
+                    <input type="text" id="settings-page-subtitle" name="pageSubtitle" title="Subtitle displayed below the main title">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="settings-show-page-subtitle" name="showPageSubtitle">
+                        <label for="settings-show-page-subtitle">Show Page Subtitle</label>
+                    </div>
+                </div>
+                <div class="form-group"> <div class="checkbox-group">
+                        <input type="checkbox" id="settings-show-flat-grid" name="showFlatGrid">
+                        <label for="settings-show-flat-grid">Display all links in a single grid (no groups)</label>
+                    </div>
+                </div>
+                
+                <h3 class="settings-subsection-title">Appearance</h3>
+                <div class="form-group">
+                    <p class="radio-group-label">Theme</p>
+                    <div class="radio-option">
+                        <input type="radio" id="theme-light" name="themeSelection" value="light">
+                        <label for="theme-light">Light</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="theme-dark" name="themeSelection" value="dark">
+                        <label for="theme-dark">Dark</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="theme-system" name="themeSelection" value="system">
+                        <label for="theme-system">System Default</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <p class="radio-group-label">Content Background</p>
+                    <div class="radio-option">
+                        <input type="radio" id="bg-type-theme" name="backgroundTypeSelection" value="theme">
+                        <label for="bg-type-theme">Theme Default (Transparent)</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="bg-type-solid" name="backgroundTypeSelection" value="solid">
+                        <label for="bg-type-solid">Solid Color</label>
+                    </div>
+                    <div id="background-color-picker-container" class="background-option-details hidden form-group">
+                        <label for="settings-background-color">Background Color</label>
+                        <input type="color" id="settings-background-color" name="backgroundColor" title="Choose solid background color for content area">
+                    </div>
+
+                    <div class="radio-option">
+                        <input type="radio" id="bg-type-local" name="backgroundTypeSelection" value="localImage">
+                        <label for="bg-type-local">Local Image</label> </div>
+                    <div id="background-local-image-container" class="background-option-details hidden form-group">
+                        <label for="settings-background-local-image-trigger">Choose Image File</label>
+                        <button type="button" id="settings-background-local-image-trigger" class="modal-button modal-button-secondary" style="display: block; width:auto; margin-bottom: 0.25rem;">Select Image...</button>
+                        <span id="local-image-filename" style="font-size:0.7rem; color: #64748b;">No file chosen.</span>
+                    </div>
+
+                    <div class="radio-option">
+                        <input type="radio" id="bg-type-online" name="backgroundTypeSelection" value="onlineImage">
+                        <label for="bg-type-online">Online Image (Random)</label> </div>
+                     <div id="background-online-image-container" class="background-option-details hidden">
+                        <p style="font-size:0.7rem; color: #64748b;">A random image from Picsum Photos will be used. A new one is fetched when saved.</p>
+                    </div>
+                    
+                    <div id="background-image-opacity-container" class="background-option-details hidden form-group" style="margin-top: 0.75rem;">
+                        <label for="settings-background-image-opacity">Image Opacity</label>
+                        <div class="flex items-center gap-2">
+                            <input type="range" id="settings-background-image-opacity" name="backgroundImageOpacity" min="0" max="1" step="0.01" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-sky-500" title="Adjust background image opacity">
+                            <span id="settings-background-image-opacity-value" class="text-sm text-gray-600 dark:text-gray-400 w-12 text-right">25%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="system-settings-modal-cancel-button" type="button" class="modal-button modal-button-secondary" title="Discard changes">Cancel</button>
+                <button id="system-settings-modal-save-button" type="button" class="modal-button modal-button-primary" title="Save system settings">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- APP CONFIGURATION ---
+        const appConfig = {
+            pageTitle: "My Link Hub",
+            pageSubtitle: "Your configurable, themed dashboard.",
+            showPageTitle: true, 
+            showPageSubtitle: true, 
+            showFlatGrid: false, // New setting for flat grid view
+            currentTheme: "system", 
+            nextCustomLinkId: 1, 
+            links: [ 
+                { id: 'yt-guc', url: "https://www.youtube.com/watch?v=3M6e6TG7nDA", title: "Google User Content - YouTube", template: "default", data: {} },
+                { id: 'reddit-arduino', url: "https://www.reddit.com/r/arduino/new/?feedViewType=compactView&rdt=34729", title: "Reddit - r/arduino/new", template: "default", data: {} },
+                { id: 'reddit-modq', url: "https://www.reddit.com/mod/queue", title: "Reddit - Mod Queue", template: "default", data: {} },
+                { id: 'chatgpt-main', url: "https://chatgpt.com/", title: "ChatGPT - Main", template: "default", data: {} },
+                { id: 'chatgpt-chat1', url: "https://chatgpt.com/c/681b5d0e-f324-800e-a09e-3ae80c22affc", title: "ChatGPT - Chat 681b5d", template: "default", data: {} },
+                { id: 'figma-wireframes', url: "https://www.figma.com/design/ihIhLU92Getzv2qDyULIui/Wireframes-Kit---Free-wireframing-Websites-and-SaaS-UI-UX--Community-?node-id=1140-6414&p=f&t=5N1q88XiIAUE4OhZ-0", title: "Figma - Wireframes Kit", template: "default", data: {} },
+                { id: 'gemini-app', url: "https://gemini.google.com/app", title: "Gemini", template: "default", data: {} },
+                { id: 'aistudio-newchat', url: "https://aistudio.google.com/prompts/new_chat?pli=1", title: "AI Studio - New Chat", template: "default", data: {} },
+                { id: 'firebase-studio', url: "https://studio.firebase.google.com/studio-08171228", title: "Firebase Studio", template: "default", data: {} },
+                { id: 'gh-ripred-ps', url: "https://github.com/ripred/Project-Sleuth", title: "GitHub - ripred/Project-Sleuth", template: "default", data: {} },
+                { id: 'gh-ripred-readme', url: "https://github.com/ripred/ripred/edit/main/README.md", title: "GitHub - ripred/ripred - Edit README", template: "default", data: {} },
+                { id: 'aistudio-apikey', url: "https://aistudio.google.com/app/apikey", title: "AI Studio - API Key", template: "default", data: {} },
+                { id: 'aistudio-live', url: "https://aistudio.google.com/live", title: "AI Studio - Live", template: "default", data: {} },
+                { id: 'grok-main', url: "https://grok.com/", title: "Grok", template: "default", data: {} },
+                { id: 'gh-ripred', url: "https://github.com/ripred", title: "GitHub - ripred", template: "default", data: {} },
+                { id: 'gh-user-img', url: "https://camo.githubusercontent.com/d70921493d8bcebc9fd59014af1707d3d2e66e3ccab70ed4c11762317e62e2f1/68747470733a2f2f6769746875622d70726f66696c652d7726f7068792e76657263656c2e6170702f3f757365726e616d653d726970726564267468656d653d6461726b687562266e6f2d62673d74727565266e6f2d6672616d653d7472756526636f6c756d6e3d34", title: "GitHub User Content - Image", template: "default", data: {} },
+                { id: 'gh-google-a2a', url: "https://github.com/google/A2A", title: "GitHub - google/A2A", template: "default", data: {} },
+                { id: 'mcp-java', url: "https://modelcontextprotocol.io/sdk/java/mcp-overview", title: "ModelContextProtocol - Java SDK Overview", template: "default", data: {} },
+                { id: 'mcp-tools', url: "https://modelcontextprotocol.io/docs/concepts/tools", title: "ModelContextProtocol - Concepts: Tools", template: "default", data: {} },
+                { id: 'mcp-python', url: "https://modelcontextprotocol.io/quickstart/server#python", title: "ModelContextProtocol - Quickstart: Server Python", template: "default", data: {} },
+                { id: 'aistudio-library', url: "https://aistudio.google.com/app/library", title: "AI Studio - Library", template: "default", data: {} },
+                { id: 'claude-chat1', url: "https://claude.ai/chat/11ea4849-9a6f-4867-9883-70833126729f", title: "Claude - Chat 11ea48", template: "default", data: {} },
+                { id: 'anthropic-console', url: "https://console.anthropic.com/login?selectAccount=true&returnTo=%2Fworkbench%2F4d37fa1b-52e7-4902-8843-cbc557066a75%3Ftab%3Dprompt", title: "Anthropic Console - Login/Workbench", template: "default", data: {} },
+                { id: 'ground-news', url: "https://ground.news/", title: "Ground News", template: "default", data: {} },
+                { id: 'manus-login', url: "https://manus.im/login", title: "Manus - Login", template: "default", data: {} },
+                { id: 'digg-privy', url: "https://privy.digg.com/oauth/v2/authorize?client_id=pv9vzvrtp545olzptgbcsm2z&redirect_uri=https%3A%2F%2Fgroundbreakers.digg.com%2Foauth2%2Fcallback&response_type=code&state=4e1539650d66301a8aa5d03948d84ccab1a95a5a958004f5032c0233b455b671", title: "Digg Privy - OAuth", template: "default", data: {} },
+                { id: 'smithery-ai', url: "https://smithery.ai/server/@wonderwhy-er/desktop-commander?code=82cc992e-2afc-45d1-acdc-fd42f20a5cab", title: "Smithery AI - Desktop Commander", template: "default", data: {} },
+                { id: 'chatgpt-gpts-editor', url: "https://chatgpt.com/gpts/editor/g-680daea2ee308191bf5560bf868174dd", title: "ChatGPT - GPTs Editor", template: "default", data: {} },
+                { id: 'anthropic-eng', url: "https://www.anthropic.com/engineering/building-effective-agents", title: "Anthropic - Building Effective Agents", template: "default", data: {} },
+                { id: 'context7', url: "https://context7.com/", title: "Context7", template: "default", data: {} },
+                { id: '123movies', url: "https://123moviestv.net/movie", title: "123MoviesTV - Movie", template: "default", data: {} },
+                { id: 'localhost-9002', url: "http://localhost:9002/", title: "Localhost :9002", template: "default", data: {} },
+                { id: 'nebula-explore', url: "https://nebula.tv/explore/videos", title: "Nebula - Explore Videos", template: "default", data: {} }
+            ],
+            groupOrder: [],
+            backgroundSettings: { 
+                type: 'theme', 
+                color: '#e2e8f0', 
+                localImageName: null,
+                localImageUrlData: null, 
+                onlineImageUrl: null,    
+                imageOpacity: 0.25
+            }
+        };
+
+
+        // --- SVG ICONS ---
+        const sunIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-6.364-.386 1.591-1.591M3 12h2.25m.386-6.364 1.591 1.591M12 12a2.25 2.25 0 0 0-2.25 2.25c0 1.31.934 2.342 2.11 2.342s2.11-1.032 2.11-2.342A2.25 2.25 0 0 0 12 12Z" /></svg>`;
+        const moonIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21c3.975 0 7.403-2.088 9.002-5.168Z" /></svg>`;
+        const systemThemeIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25A2.25 2.25 0 0 1 5.25 3h4.757c3.247 0 5.406 1.5 6.477 3.154" /></svg>`;
+        const plusIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>`;
+        const uploadIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>`;
+        const downloadIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>`;
+        const editIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" /></svg>`;
+        const gearIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.646.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 0 1 0 1.905c-.007.379.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.333.183-.582.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.759 6.759 0 0 1 0-1.905c.007-.379-.137-.75-.43-.99l-1.004-.828a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>`;
+        const localhostIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-full h-full"><path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 101.061 1.06l8.69-8.69z" /><path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15.25v-4.875a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75v4.875H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" /></svg>`;
+        const fallbackIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-full h-full"><path d="M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .976-1.138 2.5 2.5 0 0 1-.142-3.665l3-3Z" /><path d="M8.603 17.397a2.5 2.5 0 0 1-3.535-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 0 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865.75.75 0 0 0-.976 1.138 2.5 2.5 0 0 1 .142 3.665l-3 3Z" /></svg>`;
+        const newTabIconSvg = `<svg class="new-tab-icon" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-4.5 0V6m0 0L18 10.5M13.5 6H18m-4.5 4.5L18 6"></path></svg>`;
+        const ellipsisIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg>`;
+
+
+        // --- DOM ELEMENTS ---
+        const mainContentWrapper = document.getElementById('main-content-wrapper');
+        const pageHeaderElement = document.getElementById('page-header-main');
+        const pageMainTitleContainer = document.getElementById('page-main-title-container');
+        const pageMainSubtitleContainer = document.getElementById('page-main-subtitle-container');
+        const pageMainTitleElement = document.getElementById('page-main-title');
+        const pageMainSubtitleElement = document.getElementById('page-main-subtitle');
+        const footerPageTitleElement = document.getElementById('footer-page-title');
+        const documentTitleElement = document.querySelector('title');
+        const htmlElement = document.documentElement; 
+
+        const systemSettingsButton = document.getElementById('system-settings-button');
+        const uploadConfigButton = document.getElementById('upload-config-button');
+        const downloadConfigButton = document.getElementById('download-config-button');
+        const addNewLinkButton = document.getElementById('add-new-link-button');
+        
+        const backgroundImageInput = document.getElementById('background-image-input');
+        const linkGroupsContainer = document.getElementById('link-groups-container'); // Defined early for use in rendering
+
+
+        // --- THEME LOGIC ---
+        function applyTheme(theme) {
+            localStorage.setItem('theme', theme); 
+            appConfig.currentTheme = theme; 
+            updateDocumentThemeVisuals(theme);
+            applyBackgroundSettings(); 
+        }
+
+        function updateDocumentThemeVisuals(theme) {
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDarkMode = theme === 'dark' || (theme === 'system' && systemPrefersDark);
+            
+            if (isDarkMode) {
+                htmlElement.classList.add('dark');
+            } else {
+                htmlElement.classList.remove('dark');
+            }
+        }
+        
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (appConfig.currentTheme === 'system') {
+                updateDocumentThemeVisuals('system');
+                applyBackgroundSettings(); 
+            }
+        });
+        
+        // --- BACKGROUND SETTINGS LOGIC ---
+        function applyBackgroundSettings() {
+            if (!mainContentWrapper) return;
+
+            const { type, color, localImageUrlData, onlineImageUrl, imageOpacity } = appConfig.backgroundSettings;
+
+            mainContentWrapper.classList.remove('bg-type-theme', 'bg-type-solid', 'bg-type-image');
+            mainContentWrapper.style.setProperty('--main-content-bg-image', 'none');
+            const currentOpacity = typeof imageOpacity === 'number' ? imageOpacity : 0.25;
+            mainContentWrapper.style.setProperty('--main-content-bg-image-opacity', currentOpacity);
+
+
+            switch (type) {
+                case 'solid':
+                    mainContentWrapper.classList.add('bg-type-solid');
+                    mainContentWrapper.style.setProperty('--main-content-bg-color', color);
+                    break;
+                case 'localImage':
+                    if (localImageUrlData) {
+                        mainContentWrapper.classList.add('bg-type-image');
+                        mainContentWrapper.style.setProperty('--main-content-bg-image', `url(${localImageUrlData})`);
+                    } else { 
+                        mainContentWrapper.classList.add('bg-type-theme');
+                    }
+                    break;
+                case 'onlineImage':
+                    if (onlineImageUrl) {
+                        mainContentWrapper.classList.add('bg-type-image');
+                        mainContentWrapper.style.setProperty('--main-content-bg-image', `url(${onlineImageUrl})`);
+                    } else { 
+                        mainContentWrapper.classList.add('bg-type-theme');
+                    }
+                    break;
+                case 'theme':
+                default:
+                    mainContentWrapper.classList.add('bg-type-theme');
+                    mainContentWrapper.style.setProperty('--main-content-bg-image-opacity', '0'); 
+                    break;
+            }
+        }
+
+
+        // --- UTILITY FUNCTIONS ---
+        function getDomain(urlString) {
+            try {
+                const url = new URL(urlString);
+                if (url.protocol === "file:") return "Local Files";
+                if (url.hostname === "localhost") return "Localhost";
+                return url.hostname.replace(/^www\./, '');
+            } catch (e) {
+                if (String(urlString).startsWith("http://localhost")) return "Localhost";
+                console.warn("[Util] Could not parse URL for domain:", urlString, e);
+                return "Other Links";
+            }
+        }
+
+        function getFaviconUrl(domain, fullUrl) {
+            const faviconSize = 16; 
+            if (domain === "Localhost") return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(localhostIconSvg)}`;
+            if (domain === "googleusercontent.com" || domain === "camo.githubusercontent.com") {
+                if (fullUrl.includes("youtube.com")) return `https://www.google.com/s2/favicons?domain=youtube.com&sz=$$${faviconSize}`; 
+                if (fullUrl.includes("github.com")) return `https://www.google.com/s2/favicons?domain=github.com&sz=${faviconSize}`;
+                return `https://www.google.com/s2/favicons?domain=google.com&sz=${faviconSize}`; 
+            }
+            return `https://www.google.com/s2/favicons?domain=${domain}&sz=${faviconSize}`;
+        }
+        
+        function generateUniqueId() {
+            const newId = `custom-link-${appConfig.nextCustomLinkId}`;
+            appConfig.nextCustomLinkId++; 
+            return newId;
+        }
+
+        function makeEditable(element, saveCallback, type = 'text') {
+            element.setAttribute('contenteditable', 'true');
+            element.focus();
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(element);
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            const originalValue = type === 'innerHTML' ? element.innerHTML : element.textContent;
+
+            const onBlur = () => finishEdit();
+            const onKeyDown = (event) => {
+                if (event.key === 'Enter' && !event.shiftKey) { 
+                    event.preventDefault(); 
+                    finishEdit();
+                } else if (event.key === 'Escape') {
+                    element.textContent = originalValue; 
+                    finishEdit(true); 
+                }
+            };
+
+            const finishEdit = (cancelled = false) => {
+                element.setAttribute('contenteditable', 'false');
+                element.removeEventListener('blur', onBlur);
+                element.removeEventListener('keydown', onKeyDown);
+                if (!cancelled) {
+                    const newValue = type === 'innerHTML' ? element.innerHTML : element.textContent;
+                    if (newValue !== originalValue) {
+                        saveCallback(newValue);
+                    }
+                }
+            };
+            element.addEventListener('blur', onBlur);
+            element.addEventListener('keydown', onKeyDown);
+        }
+
+        function updatePageTitlesAndVisibility() {
+            const title = appConfig.pageTitle || "My Link Hub"; 
+            const subtitle = appConfig.pageSubtitle || ""; 
+
+            if (pageMainTitleElement) pageMainTitleElement.textContent = title;
+            if (documentTitleElement) documentTitleElement.textContent = title; 
+            if (footerPageTitleElement) footerPageTitleElement.textContent = title;
+            if (pageMainSubtitleElement) pageMainSubtitleElement.textContent = subtitle;
+
+            if (pageMainTitleContainer) {
+                pageMainTitleContainer.style.display = appConfig.showPageTitle ? 'flex' : 'none';
+            }
+            if (pageMainSubtitleContainer) {
+                pageMainSubtitleContainer.style.display = appConfig.showPageSubtitle ? 'flex' : 'none';
+            }
+            
+            if (pageHeaderElement) {
+                if (!appConfig.showPageTitle && !appConfig.showPageSubtitle) {
+                    pageHeaderElement.classList.add('no-title-subtitle');
+                } else {
+                    pageHeaderElement.classList.remove('no-title-subtitle');
+                }
+            }
+        }
+
+        const configFileImportInput = document.getElementById('config-file-input');
+
+        function saveAppConfig() {
+            try {
+                if (!appConfig.showFlatGrid) { // Only reconcile group order if not in flat grid mode
+                    reconcileGroupOrder();
+                }
+                const configToSave = {
+                    pageTitle: appConfig.pageTitle,
+                    pageSubtitle: appConfig.pageSubtitle,
+                    showPageTitle: appConfig.showPageTitle,
+                    showPageSubtitle: appConfig.showPageSubtitle,
+                    showFlatGrid: appConfig.showFlatGrid, // Save new setting
+                    currentTheme: appConfig.currentTheme,
+                    links: appConfig.links,
+                    nextCustomLinkId: appConfig.nextCustomLinkId,
+                    groupOrder: appConfig.groupOrder,
+                    backgroundSettings: appConfig.backgroundSettings
+                };
+                localStorage.setItem('myLinkHubAppConfig', JSON.stringify(configToSave));
+                console.info("App config saved.");
+            } catch (e) {
+                console.error("Error saving app configuration to localStorage:", e);
+            }
+        }
+
+        function loadAppConfig() {
+            const initialDefaultConfig = { 
+                pageTitle: "My Link Hub",
+                pageSubtitle: "Your configurable, themed dashboard.",
+                showPageTitle: true,
+                showPageSubtitle: true,
+                showFlatGrid: false, // Default for new setting
+                currentTheme: "system",
+                nextCustomLinkId: 1, 
+                links: [ /* ... initial links from your provided code ... */ ], // Truncated for brevity
+                groupOrder: [],
+                backgroundSettings: {
+                    type: 'theme', color: '#e2e8f0', localImageName: null,
+                    localImageUrlData: null, onlineImageUrl: null, imageOpacity: 0.25
+                }
+            };
+             // Populate initialDefaultConfig.links with your full default list
+            initialDefaultConfig.links = [
+                { id: 'yt-guc', url: "https://www.youtube.com/watch?v=3M6e6TG7nDA", title: "Google User Content - YouTube", template: "default", data: {} }, { id: 'reddit-arduino', url: "https://www.reddit.com/r/arduino/new/?feedViewType=compactView&rdt=34729", title: "Reddit - r/arduino/new", template: "default", data: {} }, { id: 'reddit-modq', url: "https://www.reddit.com/mod/queue", title: "Reddit - Mod Queue", template: "default", data: {} }, { id: 'chatgpt-main', url: "https://chatgpt.com/", title: "ChatGPT - Main", template: "default", data: {} }, { id: 'chatgpt-chat1', url: "https://chatgpt.com/c/681b5d0e-f324-800e-a09e-3ae80c22affc", title: "ChatGPT - Chat 681b5d", template: "default", data: {} }, { id: 'figma-wireframes', url: "https://www.figma.com/design/ihIhLU92Getzv2qDyULIui/Wireframes-Kit---Free-wireframing-Websites-and-SaaS-UI-UX--Community-?node-id=1140-6414&p=f&t=5N1q88XiIAUE4OhZ-0", title: "Figma - Wireframes Kit", template: "default", data: {} }, { id: 'gemini-app', url: "https://gemini.google.com/app", title: "Gemini", template: "default", data: {} }, { id: 'aistudio-newchat', url: "https://aistudio.google.com/prompts/new_chat?pli=1", title: "AI Studio - New Chat", template: "default", data: {} }, { id: 'firebase-studio', url: "https://studio.firebase.google.com/studio-08171228", title: "Firebase Studio", template: "default", data: {} }, { id: 'gh-ripred-ps', url: "https://github.com/ripred/Project-Sleuth", title: "GitHub - ripred/Project-Sleuth", template: "default", data: {} }, { id: 'gh-ripred-readme', url: "https://github.com/ripred/ripred/edit/main/README.md", title: "GitHub - ripred/ripred - Edit README", template: "default", data: {} }, { id: 'aistudio-apikey', url: "https://aistudio.google.com/app/apikey", title: "AI Studio - API Key", template: "default", data: {} }, { id: 'aistudio-live', url: "https://aistudio.google.com/live", title: "AI Studio - Live", template: "default", data: {} }, { id: 'grok-main', url: "https://grok.com/", title: "Grok", template: "default", data: {} }, { id: 'gh-ripred', url: "https://github.com/ripred", title: "GitHub - ripred", template: "default", data: {} }, { id: 'gh-user-img', url: "https://camo.githubusercontent.com/d70921493d8bcebc9fd59014af1707d3d2e66e3ccab70ed4c11762317e62e2f1/68747470733a2f2f6769746875622d70726f66696c652d7726f7068792e76657263656c2e6170702f3f757365726e616d653d726970726564267468656d653d6461726b687562266e6f2d62673d74727565266e6f2d6672616d653d7472756526636f6c756d6e3d34", title: "GitHub User Content - Image", template: "default", data: {} }, { id: 'gh-google-a2a', url: "https://github.com/google/A2A", title: "GitHub - google/A2A", template: "default", data: {} }, { id: 'mcp-java', url: "https://modelcontextprotocol.io/sdk/java/mcp-overview", title: "ModelContextProtocol - Java SDK Overview", template: "default", data: {} }, { id: 'mcp-tools', url: "https://modelcontextprotocol.io/docs/concepts/tools", title: "ModelContextProtocol - Concepts: Tools", template: "default", data: {} }, { id: 'mcp-python', url: "https://modelcontextprotocol.io/quickstart/server#python", title: "ModelContextProtocol - Quickstart: Server Python", template: "default", data: {} }, { id: 'aistudio-library', url: "https://aistudio.google.com/app/library", title: "AI Studio - Library", template: "default", data: {} }, { id: 'claude-chat1', url: "https://claude.ai/chat/11ea4849-9a6f-4867-9883-70833126729f", title: "Claude - Chat 11ea48", template: "default", data: {} }, { id: 'anthropic-console', url: "https://console.anthropic.com/login?selectAccount=true&returnTo=%2Fworkbench%2F4d37fa1b-52e7-4902-8843-cbc557066a75%3Ftab%3Dprompt", title: "Anthropic Console - Login/Workbench", template: "default", data: {} }, { id: 'ground-news', url: "https://ground.news/", title: "Ground News", template: "default", data: {} }, { id: 'manus-login', url: "https://manus.im/login", title: "Manus - Login", template: "default", data: {} }, { id: 'digg-privy', url: "https://privy.digg.com/oauth/v2/authorize?client_id=pv9vzvrtp545olzptgbcsm2z&redirect_uri=https%3A%2F%2Fgroundbreakers.digg.com%2Foauth2%2Fcallback&response_type=code&state=4e1539650d66301a8aa5d03948d84ccab1a95a5a958004f5032c0233b455b671", title: "Digg Privy - OAuth", template: "default", data: {} }, { id: 'smithery-ai', url: "https://smithery.ai/server/@wonderwhy-er/desktop-commander?code=82cc992e-2afc-45d1-acdc-fd42f20a5cab", title: "Smithery AI - Desktop Commander", template: "default", data: {} }, { id: 'chatgpt-gpts-editor', url: "https://chatgpt.com/gpts/editor/g-680daea2ee308191bf5560bf868174dd", title: "ChatGPT - GPTs Editor", template: "default", data: {} }, { id: 'anthropic-eng', url: "https://www.anthropic.com/engineering/building-effective-agents", title: "Anthropic - Building Effective Agents", template: "default", data: {} }, { id: 'context7', url: "https://context7.com/", title: "Context7", template: "default", data: {} }, { id: '123movies', url: "https://123moviestv.net/movie", title: "123MoviesTV - Movie", template: "default", data: {} }, { id: 'localhost-9002', url: "http://localhost:9002/", title: "Localhost :9002", template: "default", data: {} }, { id: 'nebula-explore', url: "https://nebula.tv/explore/videos", title: "Nebula - Explore Videos", template: "default", data: {} }
+            ];
+
+            let maxIdFromDefaults = 0;
+            initialDefaultConfig.links.forEach(link => {
+                if (link.id && typeof link.id === 'string' && link.id.startsWith('custom-link-')) {
+                    const numPart = parseInt(link.id.replace('custom-link-', ''), 10);
+                    if (!isNaN(numPart) && numPart > maxIdFromDefaults) maxIdFromDefaults = numPart;
+                }
+            });
+            initialDefaultConfig.nextCustomLinkId = maxIdFromDefaults + 1;
+
+
+            try {
+                const savedConfigJson = localStorage.getItem('myLinkHubAppConfig');
+                if (savedConfigJson) {
+                    const loadedConfig = JSON.parse(savedConfigJson);
+                    
+                    appConfig.pageTitle = loadedConfig.pageTitle || initialDefaultConfig.pageTitle;
+                    appConfig.pageSubtitle = loadedConfig.pageSubtitle || initialDefaultConfig.pageSubtitle;
+                    appConfig.showPageTitle = typeof loadedConfig.showPageTitle === 'boolean' ? loadedConfig.showPageTitle : initialDefaultConfig.showPageTitle;
+                    appConfig.showPageSubtitle = typeof loadedConfig.showPageSubtitle === 'boolean' ? loadedConfig.showPageSubtitle : initialDefaultConfig.showPageSubtitle;
+                    appConfig.showFlatGrid = typeof loadedConfig.showFlatGrid === 'boolean' ? loadedConfig.showFlatGrid : initialDefaultConfig.showFlatGrid; // Load new setting
+                    appConfig.currentTheme = loadedConfig.currentTheme || initialDefaultConfig.currentTheme;
+                    appConfig.links = (Array.isArray(loadedConfig.links) && loadedConfig.links.length > 0) ? loadedConfig.links : initialDefaultConfig.links;
+                    appConfig.nextCustomLinkId = typeof loadedConfig.nextCustomLinkId === 'number' ? loadedConfig.nextCustomLinkId : initialDefaultConfig.nextCustomLinkId;
+                    
+                    appConfig.groupOrder = (loadedConfig.groupOrder || initialDefaultConfig.groupOrder).map(item => {
+                        if (typeof item === 'string') { 
+                            return { domain: item, displayTitle: item };
+                        }
+                        return { domain: item.domain, displayTitle: item.displayTitle || item.domain };
+                    });
+
+                    appConfig.backgroundSettings = { 
+                        ...initialDefaultConfig.backgroundSettings, 
+                        ...(loadedConfig.backgroundSettings || {}) 
+                    };
+                    if (typeof appConfig.backgroundSettings.imageOpacity !== 'number' || isNaN(appConfig.backgroundSettings.imageOpacity)) {
+                        appConfig.backgroundSettings.imageOpacity = 0.25;
+                    }
+                    
+                    console.info("App config loaded from localStorage.");
+                } else {
+                    Object.assign(appConfig, initialDefaultConfig); 
+                    console.info("No saved config found, using user-specified default links.");
+                }
+                updatePageTitlesAndVisibility(); 
+                if (!appConfig.showFlatGrid) {
+                    reconcileGroupOrder();
+                }
+            } catch (e) {
+                console.error("Error loading configuration from localStorage:", e);
+                Object.assign(appConfig, initialDefaultConfig); 
+                updatePageTitlesAndVisibility();
+                if (!appConfig.showFlatGrid) {
+                    reconcileGroupOrder();
+                }
+            }
+        }
+        
+        function reconcileGroupOrder() {
+            const domainsFromLinks = [...new Set(appConfig.links.map(link => getDomain(link.url)))];
+            
+            let validOrderedGroups = (appConfig.groupOrder || [])
+                .filter(group => group && typeof group.domain === 'string' && domainsFromLinks.includes(group.domain))
+                .map(group => ({ 
+                    domain: group.domain,
+                    displayTitle: group.displayTitle || group.domain 
+                }));
+
+            const currentGroupedDomains = validOrderedGroups.map(group => group.domain);
+            const newDomains = domainsFromLinks.filter(domain => !currentGroupedDomains.includes(domain));
+
+            const newDomainGroups = newDomains.map(domain => ({
+                domain: domain,
+                displayTitle: domain 
+            }));
+
+            newDomainGroups.sort((a, b) => {
+                if (a.domain === "Localhost") return -1;
+                if (b.domain === "Localhost") return 1;
+                if (a.domain === "Local Files") return (b.domain === "Localhost" ? 1 : -1);
+                if (b.domain === "Local Files") return (a.domain === "Localhost" ? -1 : 1);
+                if (a.domain === "Other Links") return 1;
+                if (b.domain === "Other Links") return -1;
+                return a.domain.localeCompare(b.domain);
+            });
+
+            appConfig.groupOrder = [...validOrderedGroups, ...newDomainGroups];
+        }
+        
+        function downloadConfiguration() {
+            if (!appConfig.showFlatGrid) {
+                reconcileGroupOrder();
+            }
+            const configData = {
+                pageTitle: appConfig.pageTitle,
+                pageSubtitle: appConfig.pageSubtitle,
+                showPageTitle: appConfig.showPageTitle,
+                showPageSubtitle: appConfig.showPageSubtitle,
+                showFlatGrid: appConfig.showFlatGrid, // Include new setting
+                currentTheme: appConfig.currentTheme,
+                links: appConfig.links,
+                nextCustomLinkId: appConfig.nextCustomLinkId,
+                groupOrder: appConfig.groupOrder,
+                backgroundSettings: appConfig.backgroundSettings
+            };
+            const jsonString = JSON.stringify(configData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'linkhub_config.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            console.info("Configuration downloaded.");
+        }
+
+        function handleConfigFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importedConfig = JSON.parse(e.target.result);
+                    const baseConfigForImport = { 
+                        pageTitle: "My Link Hub", pageSubtitle: "Your configurable, themed dashboard.",
+                        showPageTitle: true, showPageSubtitle: true, showFlatGrid: false, // Base for new setting
+                        currentTheme: "system",
+                        links: appConfig.links, 
+                        nextCustomLinkId: appConfig.nextCustomLinkId, 
+                        groupOrder: [],
+                        backgroundSettings: { type: 'theme', color: '#e2e8f0', localImageName: null, localImageUrlData: null, onlineImageUrl: null, imageOpacity: 0.25 }
+                    };
+
+                    appConfig.pageTitle = importedConfig.pageTitle || baseConfigForImport.pageTitle;
+                    appConfig.pageSubtitle = importedConfig.pageSubtitle || baseConfigForImport.pageSubtitle;
+                    appConfig.showPageTitle = typeof importedConfig.showPageTitle === 'boolean' ? importedConfig.showPageTitle : baseConfigForImport.showPageTitle;
+                    appConfig.showPageSubtitle = typeof importedConfig.showPageSubtitle === 'boolean' ? importedConfig.showPageSubtitle : baseConfigForImport.showPageSubtitle;
+                    appConfig.showFlatGrid = typeof importedConfig.showFlatGrid === 'boolean' ? importedConfig.showFlatGrid : baseConfigForImport.showFlatGrid; // Import new setting
+                    appConfig.currentTheme = importedConfig.currentTheme || baseConfigForImport.currentTheme;
+                    appConfig.links = importedConfig.links || baseConfigForImport.links; 
+                    appConfig.nextCustomLinkId = typeof importedConfig.nextCustomLinkId === 'number' ? importedConfig.nextCustomLinkId : baseConfigForImport.nextCustomLinkId;
+                    
+                    appConfig.groupOrder = (importedConfig.groupOrder || baseConfigForImport.groupOrder).map(item => {
+                        if (typeof item === 'string') return { domain: item, displayTitle: item };
+                        return { domain: item.domain, displayTitle: item.displayTitle || item.domain };
+                    });
+                    
+                    appConfig.backgroundSettings = { ...baseConfigForImport.backgroundSettings, ...(importedConfig.backgroundSettings || {}) };
+                     if (typeof appConfig.backgroundSettings.imageOpacity !== 'number' || isNaN(appConfig.backgroundSettings.imageOpacity)) {
+                        appConfig.backgroundSettings.imageOpacity = 0.25;
+                    }
+                    
+                    let maxId = 0;
+                    appConfig.links.forEach(link => {
+                        if (link.id && typeof link.id === 'string' && link.id.startsWith('custom-link-')) {
+                            const numPart = parseInt(link.id.replace('custom-link-', ''), 10);
+                            if (!isNaN(numPart) && numPart > maxId) maxId = numPart;
+                        }
+                    });
+                    appConfig.nextCustomLinkId = maxId + 1;
+
+                    updatePageTitlesAndVisibility();
+                    applyTheme(appConfig.currentTheme); 
+                    applyBackgroundSettings();
+                    if (!appConfig.showFlatGrid) {
+                        reconcileGroupOrder();
+                    }
+                    saveAppConfig();      
+                    renderAllLinkGroups();
+                    console.info("Configuration imported successfully.");
+                } catch (error) {
+                    console.error("Error parsing config file:", error);
+                    alert("Error: Could not parse config file. Ensure it's valid JSON.");
+                } finally {
+                    configFileImportInput.value = ''; 
+                }
+            };
+            reader.onerror = () => {
+                console.error("Error reading config file.");
+                alert("Error: Could not read the selected file.");
+                configFileImportInput.value = ''; 
+            };
+            reader.readAsText(file);
+        }
+
+        if (uploadConfigButton) {
+            uploadConfigButton.innerHTML = uploadIconSvg;
+            uploadConfigButton.addEventListener('click', () => configFileImportInput.click());
+        }
+        if (downloadConfigButton) {
+            downloadConfigButton.innerHTML = downloadIconSvg;
+            downloadConfigButton.addEventListener('click', downloadConfiguration);
+        }
+        if (configFileImportInput) {
+            configFileImportInput.addEventListener('change', handleConfigFileImport);
+        }
+
+
+        // --- CARD ACTION DROPDOWN LOGIC ---
+        const cardActionDropdown = document.getElementById('card-action-dropdown');
+        let currentCardActionLinkId = null; 
+
+        function showCardActionDropdown(buttonElement, linkId) {
+            currentCardActionLinkId = linkId;
+            const rect = buttonElement.getBoundingClientRect();
+            cardActionDropdown.style.top = `${rect.bottom + window.scrollY}px`;
+            cardActionDropdown.style.left = `${rect.right + window.scrollX - cardActionDropdown.offsetWidth}px`;
+            cardActionDropdown.classList.add('show');
+        }
+
+        function hideCardActionDropdown() {
+            if (cardActionDropdown) cardActionDropdown.classList.remove('show');
+            currentCardActionLinkId = null;
+        }
+
+        if (cardActionDropdown) {
+            cardActionDropdown.addEventListener('click', (event) => {
+                event.stopPropagation(); 
+                const action = event.target.dataset.action;
+                if (action === 'edit') {
+                    if (currentCardActionLinkId) openEditDialog(currentCardActionLinkId);
+                } else if (action === 'delete') {
+                    if (currentCardActionLinkId) openDeleteConfirmDialog(currentCardActionLinkId);
+                }
+                hideCardActionDropdown();
+            });
+        }
+        document.addEventListener('click', (event) => {
+            if (cardActionDropdown && cardActionDropdown.classList.contains('show')) {
+                const isClickInsideDropdown = cardActionDropdown.contains(event.target);
+                const isClickOnAnActionButton = event.target.closest('.card-action-button');
+                if (!isClickInsideDropdown && !isClickOnAnActionButton) {
+                    hideCardActionDropdown();
+                }
+            }
+        });
+        
+        // --- CARD RENDERING ---
+        function renderCardContent(link) {
+            const faviconUrl = getFaviconUrl(getDomain(link.url), link.url);
+            const safeTitle = link.title || "Untitled"; 
+            const safeUrl = link.url || "#";    
+
+            return `
+                <button class="card-action-button" data-link-id="${link.id}" aria-label="Actions for link ${safeTitle}" title="More actions for ${safeTitle}">
+                    ${ellipsisIconSvg}
+                </button>
+                <div class="link-card-header">
+                    <img src="${faviconUrl}" alt="" class="favicon-img" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                    <div class="favicon-fallback hidden">${fallbackIconSvg}</div>
+                    <h3 class="link-card-title" title="${safeTitle}">${safeTitle}</h3>
+                    ${newTabIconSvg}
+                </div>
+                <p class="link-card-url" title="${safeUrl}">${safeUrl}</p>
+            `;
+        }
+
+        // --- EDIT/ADD MODAL LOGIC ---
+        const editModalOverlay = document.getElementById('edit-card-modal-overlay');
+        const editModalTitleElement = document.getElementById('edit-modal-title');
+        const editModalCloseButton = document.getElementById('edit-modal-close-button');
+        const editModalCancelButton = document.getElementById('edit-modal-cancel-button');
+        const editModalSaveButton = document.getElementById('edit-modal-save-button');
+        const editLinkIdStorage = document.getElementById('edit-link-id-storage'); 
+        const editLinkIdField = document.getElementById('edit-link-id'); 
+        const editLinkUrlField = document.getElementById('edit-link-url');
+        const editLinkTitleField = document.getElementById('edit-link-title');
+        const editLinkTemplateField = document.getElementById('edit-link-template');
+        const editLinkDataField = document.getElementById('edit-link-data');
+
+        function openEditDialog(linkId) { 
+            const linkToEdit = appConfig.links.find(link => link.id === linkId);
+            if (!linkToEdit) { console.error("Link not found for editing:", linkId); return; }
+            
+            editModalTitleElement.textContent = "Edit Link";
+            editModalSaveButton.textContent = "Save Changes";
+            
+            editLinkIdStorage.value = linkToEdit.id; 
+            editLinkIdField.value = linkToEdit.id; 
+            editLinkIdField.placeholder = "";
+            editLinkUrlField.value = linkToEdit.url;
+            editLinkTitleField.value = linkToEdit.title;
+            editLinkTemplateField.value = linkToEdit.template;
+            editLinkDataField.value = JSON.stringify(linkToEdit.data || {}, null, 2); 
+            
+            if(editModalOverlay) editModalOverlay.classList.add('show');
+        }
+
+        function openAddNewLinkDialog() { 
+            editModalTitleElement.textContent = "Add New Link";
+            editModalSaveButton.textContent = "Add Link";
+
+            editLinkIdStorage.value = ""; 
+            editLinkIdField.value = ""; 
+            editLinkIdField.placeholder = "will be auto-generated...";
+            editLinkUrlField.value = "";
+            editLinkTitleField.value = "";
+            editLinkTemplateField.value = "default"; 
+            editLinkDataField.value = "{}"; 
+
+            if(editModalOverlay) editModalOverlay.classList.add('show');
+        }
+
+        function closeEditDialog() { 
+            if(editModalOverlay) editModalOverlay.classList.remove('show');
+        }
+
+        if (addNewLinkButton) {
+            addNewLinkButton.innerHTML = plusIconSvg; 
+            addNewLinkButton.addEventListener('click', openAddNewLinkDialog);
+        }
+
+        if (editModalCloseButton) editModalCloseButton.addEventListener('click', closeEditDialog);
+        if (editModalCancelButton) editModalCancelButton.addEventListener('click', closeEditDialog);
+        if (editModalOverlay) {
+            editModalOverlay.addEventListener('click', (event) => {
+                if (event.target === editModalOverlay) closeEditDialog();
+            });
+        }
+
+        if (editModalSaveButton) {
+            editModalSaveButton.addEventListener('click', () => {
+                const storedLinkId = editLinkIdStorage.value;
+                let linkIndex = -1;
+                if (storedLinkId) { 
+                    linkIndex = appConfig.links.findIndex(link => link.id === storedLinkId);
+                }
+
+                let parsedData = {};
+                const dataFieldValue = editLinkDataField.value.trim();
+                try {
+                    parsedData = dataFieldValue === '' ? {} : JSON.parse(dataFieldValue);
+                } catch (e) {
+                    console.error("Invalid JSON in data field:", e, "\nValue was:", dataFieldValue);
+                    alert("Error: Data field contains invalid JSON. Please correct it.\n\nExample: {\"key\": \"value\"}\nOr leave empty for {}.");
+                    return; 
+                }
+
+                const newLinkData = {
+                    url: editLinkUrlField.value,
+                    title: editLinkTitleField.value,
+                    template: editLinkTemplateField.value,
+                    data: parsedData
+                };
+
+                if (linkIndex > -1) { 
+                    appConfig.links[linkIndex] = { ...appConfig.links[linkIndex], ...newLinkData };
+                } else { 
+                    newLinkData.id = generateUniqueId();
+                    appConfig.links.push(newLinkData);
+                }
+                
+                if (!appConfig.showFlatGrid) {
+                    reconcileGroupOrder();
+                }
+                saveAppConfig();
+                renderAllLinkGroups(); 
+                closeEditDialog();
+            });
+        }
+
+        // --- DELETE CONFIRMATION MODAL LOGIC ---
+        const deleteConfirmModalOverlay = document.getElementById('delete-confirm-modal-overlay');
+        const deleteModalCloseButton = document.getElementById('delete-modal-close-button');
+        const deleteModalCancelButton = document.getElementById('delete-modal-cancel-button');
+        const deleteModalConfirmButton = document.getElementById('delete-modal-confirm-button');
+        const deleteLinkIdStorage = document.getElementById('delete-link-id-storage');
+        const deleteLinkTitleDisplay = document.getElementById('delete-link-title-display');
+
+        function openDeleteConfirmDialog(linkId) {
+            const linkToDelete = appConfig.links.find(link => link.id === linkId);
+            if (!linkToDelete) { console.error("Link not found for deletion:", linkId); return; }
+            deleteLinkIdStorage.value = linkToDelete.id;
+            if (deleteLinkTitleDisplay) deleteLinkTitleDisplay.textContent = linkToDelete.title;
+            if (deleteConfirmModalOverlay) deleteConfirmModalOverlay.classList.add('show');
+        }
+
+        function closeDeleteConfirmDialog() {
+            if (deleteConfirmModalOverlay) deleteConfirmModalOverlay.classList.remove('show');
+            if (deleteLinkTitleDisplay) deleteLinkTitleDisplay.textContent = ''; 
+        }
+
+        if (deleteModalCloseButton) deleteModalCloseButton.addEventListener('click', closeDeleteConfirmDialog);
+        if (deleteModalCancelButton) deleteModalCancelButton.addEventListener('click', closeDeleteConfirmDialog);
+        if (deleteConfirmModalOverlay) {
+            deleteConfirmModalOverlay.addEventListener('click', (event) => {
+                if (event.target === deleteConfirmModalOverlay) closeDeleteConfirmDialog();
+            });
+        }
+        if (deleteModalConfirmButton) {
+            deleteModalConfirmButton.addEventListener('click', () => {
+                const linkIdToDelete = deleteLinkIdStorage.value;
+                const linkIndex = appConfig.links.findIndex(link => link.id === linkIdToDelete);
+                if (linkIndex > -1) {
+                    appConfig.links.splice(linkIndex, 1); 
+                    if (!appConfig.showFlatGrid) {
+                        reconcileGroupOrder();
+                    }
+                    saveAppConfig();
+                    renderAllLinkGroups();
+                } else {
+                    console.error("Could not find link to delete:", linkIdToDelete);
+                }
+                closeDeleteConfirmDialog();
+            });
+        }
+
+        // --- SYSTEM SETTINGS MODAL LOGIC ---
+        const systemSettingsModalOverlay = document.getElementById('system-settings-modal-overlay');
+        const systemSettingsModalCloseButton = document.getElementById('system-settings-modal-close-button');
+        const systemSettingsModalCancelButton = document.getElementById('system-settings-modal-cancel-button');
+        const systemSettingsModalSaveButton = document.getElementById('system-settings-modal-save-button');
+        
+        const settingsPageTitleField = document.getElementById('settings-page-title');
+        const settingsShowPageTitleCheckbox = document.getElementById('settings-show-page-title');
+        const settingsPageSubtitleField = document.getElementById('settings-page-subtitle');
+        const settingsShowPageSubtitleCheckbox = document.getElementById('settings-show-page-subtitle');
+        const settingsShowFlatGridCheckbox = document.getElementById('settings-show-flat-grid'); // New checkbox
+        const themeRadioButtons = document.querySelectorAll('input[name="themeSelection"]');
+
+        const backgroundTypeRadios = document.querySelectorAll('input[name="backgroundTypeSelection"]');
+        const bgColorPickerContainer = document.getElementById('background-color-picker-container');
+        const settingsBgColorField = document.getElementById('settings-background-color');
+        const bgLocalImageContainer = document.getElementById('background-local-image-container');
+        const bgLocalImageTrigger = document.getElementById('settings-background-local-image-trigger');
+        const localImageFilenameSpan = document.getElementById('local-image-filename');
+        const bgOnlineImageContainer = document.getElementById('background-online-image-container');
+        const bgImageOpacityContainer = document.getElementById('background-image-opacity-container');
+        const settingsBgImageOpacitySlider = document.getElementById('settings-background-image-opacity');
+        const settingsBgImageOpacityValueSpan = document.getElementById('settings-background-image-opacity-value');
+
+
+        function updateBackgroundSettingsUI(selectedType) {
+            bgColorPickerContainer.classList.toggle('hidden', selectedType !== 'solid');
+            bgLocalImageContainer.classList.toggle('hidden', selectedType !== 'localImage');
+            bgOnlineImageContainer.classList.toggle('hidden', selectedType !== 'onlineImage');
+            bgImageOpacityContainer.classList.toggle('hidden', selectedType !== 'localImage' && selectedType !== 'onlineImage');
+        }
+        
+        backgroundTypeRadios.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                updateBackgroundSettingsUI(event.target.value);
+            });
+        });
+
+        if (bgLocalImageTrigger) {
+            bgLocalImageTrigger.addEventListener('click', () => {
+                backgroundImageInput.click(); 
+            });
+        }
+        if (backgroundImageInput) {
+            backgroundImageInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        bgLocalImageTrigger.dataset.imageDataUrl = e.target.result; 
+                        bgLocalImageTrigger.dataset.imageName = file.name;
+                        if(localImageFilenameSpan) localImageFilenameSpan.textContent = file.name;
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    delete bgLocalImageTrigger.dataset.imageDataUrl;
+                    delete bgLocalImageTrigger.dataset.imageName;
+                    if(localImageFilenameSpan) localImageFilenameSpan.textContent = "No file chosen.";
+                }
+            });
+        }
+        
+        if (settingsBgImageOpacitySlider && settingsBgImageOpacityValueSpan) {
+            settingsBgImageOpacitySlider.addEventListener('input', (event) => {
+                const percentage = Math.round(parseFloat(event.target.value) * 100);
+                settingsBgImageOpacityValueSpan.textContent = `${percentage}%`;
+            });
+        }
+
+
+        function openSystemSettingsDialog() {
+            settingsPageTitleField.value = appConfig.pageTitle;
+            settingsShowPageTitleCheckbox.checked = appConfig.showPageTitle;
+            settingsPageSubtitleField.value = appConfig.pageSubtitle;
+            settingsShowPageSubtitleCheckbox.checked = appConfig.showPageSubtitle;
+            settingsShowFlatGridCheckbox.checked = appConfig.showFlatGrid; // Load flat grid setting
+            
+            themeRadioButtons.forEach(radio => radio.checked = (radio.value === appConfig.currentTheme));
+
+            const bgSettings = appConfig.backgroundSettings;
+            backgroundTypeRadios.forEach(radio => radio.checked = (radio.value === bgSettings.type));
+            settingsBgColorField.value = bgSettings.color;
+            
+            const currentOpacity = typeof bgSettings.imageOpacity === 'number' ? bgSettings.imageOpacity : 0.25;
+            if (settingsBgImageOpacitySlider) settingsBgImageOpacitySlider.value = currentOpacity;
+            if (settingsBgImageOpacityValueSpan) settingsBgImageOpacityValueSpan.textContent = `${Math.round(currentOpacity * 100)}%`;
+            
+            if (bgLocalImageTrigger) {
+                delete bgLocalImageTrigger.dataset.imageDataUrl;
+                delete bgLocalImageTrigger.dataset.imageName;
+            }
+            if(localImageFilenameSpan) {
+                localImageFilenameSpan.textContent = bgSettings.localImageName || "No file chosen.";
+            }
+
+            updateBackgroundSettingsUI(bgSettings.type);
+            if (systemSettingsModalOverlay) systemSettingsModalOverlay.classList.add('show');
+        }
+
+        function closeSystemSettingsDialog() {
+            if (systemSettingsModalOverlay) systemSettingsModalOverlay.classList.remove('show');
+            if (backgroundImageInput) backgroundImageInput.value = null;
+        }
+
+        async function saveSystemSettings() {
+            appConfig.pageTitle = settingsPageTitleField.value.trim();
+            appConfig.showPageTitle = settingsShowPageTitleCheckbox.checked;
+            appConfig.pageSubtitle = settingsPageSubtitleField.value.trim();
+            appConfig.showPageSubtitle = settingsShowPageSubtitleCheckbox.checked;
+            appConfig.showFlatGrid = settingsShowFlatGridCheckbox.checked; // Save flat grid setting
+            
+            const selectedThemeRadio = document.querySelector('input[name="themeSelection"]:checked');
+            if (selectedThemeRadio) appConfig.currentTheme = selectedThemeRadio.value;
+
+            const selectedBgTypeRadio = document.querySelector('input[name="backgroundTypeSelection"]:checked');
+            if (selectedBgTypeRadio) appConfig.backgroundSettings.type = selectedBgTypeRadio.value;
+            
+            appConfig.backgroundSettings.color = settingsBgColorField.value;
+            if (settingsBgImageOpacitySlider) {
+                 appConfig.backgroundSettings.imageOpacity = parseFloat(settingsBgImageOpacitySlider.value);
+            }
+
+
+            if (appConfig.backgroundSettings.type === 'localImage') {
+                if (bgLocalImageTrigger.dataset.imageDataUrl) { 
+                    appConfig.backgroundSettings.localImageUrlData = bgLocalImageTrigger.dataset.imageDataUrl;
+                    appConfig.backgroundSettings.localImageName = bgLocalImageTrigger.dataset.imageName;
+                } 
+            } 
+            
+            if (appConfig.backgroundSettings.type === 'onlineImage') {
+                try {
+                    const response = await fetch(`https://picsum.photos/1920/1080?random=${Date.now()}`); 
+                    if (response.ok && response.url) {
+                        appConfig.backgroundSettings.onlineImageUrl = response.url;
+                    } else {
+                        console.warn("Failed to fetch online image, keeping previous or none.");
+                        if (!appConfig.backgroundSettings.onlineImageUrl) appConfig.backgroundSettings.onlineImageUrl = null;
+                    }
+                } catch (error) {
+                    console.error("Error fetching online image:", error);
+                    if (!appConfig.backgroundSettings.onlineImageUrl) appConfig.backgroundSettings.onlineImageUrl = null;
+                }
+            }
+
+            applyTheme(appConfig.currentTheme); 
+            applyBackgroundSettings();
+            updatePageTitlesAndVisibility(); 
+            saveAppConfig(); 
+            renderAllLinkGroups(); // Re-render to apply flat grid if changed
+            closeSystemSettingsDialog();
+        }
+
+        if (systemSettingsButton) {
+            systemSettingsButton.innerHTML = gearIconSvg;
+            systemSettingsButton.addEventListener('click', openSystemSettingsDialog);
+        }
+        if (systemSettingsModalCloseButton) systemSettingsModalCloseButton.addEventListener('click', closeSystemSettingsDialog);
+        if (systemSettingsModalCancelButton) systemSettingsModalCancelButton.addEventListener('click', closeSystemSettingsDialog);
+        if (systemSettingsModalSaveButton) systemSettingsModalSaveButton.addEventListener('click', saveSystemSettings);
+        if (systemSettingsModalOverlay) {
+            systemSettingsModalOverlay.addEventListener('click', (event) => {
+                if (event.target === systemSettingsModalOverlay) closeSystemSettingsDialog();
+            });
+        }
+
+        
+        // --- DRAG AND DROP LOGIC FOR LINK GROUPS (Only active in grouped view) ---
+        let draggedGroupElement = null;
+        let placeholderElement = null;
+
+        function createDragPlaceholder() {
+            const ph = document.createElement('div');
+            ph.className = 'drag-over-placeholder';
+            return ph;
+        }
+        
+        linkGroupsContainer.addEventListener('dragstart', (event) => {
+            if (appConfig.showFlatGrid) return; // Disable drag in flat view
+            const target = event.target.closest('.link-group-section');
+            if (target) {
+                draggedGroupElement = target;
+                event.dataTransfer.setData('text/plain', target.dataset.domain); 
+                event.dataTransfer.effectAllowed = 'move';
+                setTimeout(() => {
+                    if (draggedGroupElement) draggedGroupElement.classList.add('dragging');
+                }, 0);
+                
+                if (!placeholderElement) {
+                    placeholderElement = createDragPlaceholder();
+                }
+            }
+        });
+
+        linkGroupsContainer.addEventListener('dragover', (event) => {
+            if (appConfig.showFlatGrid) return; // Disable drag in flat view
+            event.preventDefault(); 
+            if (!draggedGroupElement) return;
+            const targetGroup = event.target.closest('.link-group-section');
+            
+            if (targetGroup && targetGroup !== draggedGroupElement) {
+                 const rect = targetGroup.getBoundingClientRect();
+                 const isAfter = event.clientY > rect.top + rect.height / 2;
+                 if (isAfter) {
+                     targetGroup.parentNode.insertBefore(placeholderElement, targetGroup.nextSibling);
+                 } else {
+                     targetGroup.parentNode.insertBefore(placeholderElement, targetGroup);
+                 }
+                 placeholderElement.style.display = 'block'; 
+            } else if (!targetGroup && placeholderElement && placeholderElement.parentNode !== linkGroupsContainer) { 
+                linkGroupsContainer.appendChild(placeholderElement);
+                placeholderElement.style.display = 'block';
+            }
+        });
+        
+        linkGroupsContainer.addEventListener('dragleave', (event) => {
+            if (appConfig.showFlatGrid) return; // Disable drag in flat view
+            if (placeholderElement && placeholderElement.parentNode) {
+                // Check if the mouse is truly leaving the container, not just moving over child elements
+                if (!linkGroupsContainer.contains(event.relatedTarget)) {
+                     placeholderElement.style.display = 'none';
+                }
+            }
+        });
+
+        linkGroupsContainer.addEventListener('drop', (event) => {
+            if (appConfig.showFlatGrid) return; // Disable drag in flat view
+            event.preventDefault();
+            if (!draggedGroupElement || !placeholderElement || !placeholderElement.parentNode) return;
+
+            const draggedDomain = event.dataTransfer.getData('text/plain');
+            
+            // Determine new index based on placeholder's position among actual group sections
+            const actualGroupChildren = Array.from(linkGroupsContainer.children).filter(child => child.classList.contains('link-group-section'));
+            let newVisualIndex = actualGroupChildren.indexOf(placeholderElement.nextSibling); 
+            if (newVisualIndex === -1) { // If placeholder is last or before the first item
+                 if (placeholderElement.nextSibling === null) { // Placeholder is last
+                    newVisualIndex = actualGroupChildren.length;
+                 } else { // Placeholder is before the first item
+                    newVisualIndex = 0;
+                 }
+            }
+            // Adjust if placeholder was inserted before the dragged element's original position
+            const draggedGroupOriginalVisualIndex = actualGroupChildren.indexOf(draggedGroupElement);
+            if (draggedGroupOriginalVisualIndex < newVisualIndex && placeholderElement.previousSibling === draggedGroupElement) {
+                newVisualIndex--;
+            }
+
+
+            const draggedGroupObjIndex = appConfig.groupOrder.findIndex(g => g.domain === draggedDomain);
+            if (draggedGroupObjIndex === -1) {
+                console.error("Dragged group not found in appConfig.groupOrder:", draggedDomain);
+            } else {
+                const [draggedGroupObject] = appConfig.groupOrder.splice(draggedGroupObjIndex, 1);
+                appConfig.groupOrder.splice(newVisualIndex, 0, draggedGroupObject);
+            }
+            
+            if (draggedGroupElement) draggedGroupElement.classList.remove('dragging');
+            if (placeholderElement) placeholderElement.style.display = 'none'; 
+            
+            saveAppConfig();
+            renderAllLinkGroups(); 
+            
+            draggedGroupElement = null; 
+        });
+
+        linkGroupsContainer.addEventListener('dragend', (event) => {
+            if (appConfig.showFlatGrid) return; // Disable drag in flat view
+            if (draggedGroupElement) {
+                draggedGroupElement.classList.remove('dragging');
+            }
+            if (placeholderElement && placeholderElement.parentNode) {
+                 placeholderElement.style.display = 'none'; 
+            }
+            draggedGroupElement = null;
+        });
+
+
+        // --- INITIALIZATION AND RENDERING ALL LINK GROUPS ---
+        function renderAllLinkGroups() {
+            const container = document.getElementById('link-groups-container');
+            const initialLoadingPlaceholder = document.getElementById('loading-placeholder'); 
+            
+            if (!container) { console.error("[Render] Link container not found!"); return; }
+            container.innerHTML = ''; 
+            container.classList.remove('flat-view-active', 'grouped-view-active'); // Clear previous layout classes
+
+            if (appConfig.links.length === 0) { 
+                if (initialLoadingPlaceholder && initialLoadingPlaceholder.parentNode) initialLoadingPlaceholder.remove(); 
+                const noLinksElem = document.createElement('p');
+                noLinksElem.className = 'no-links-placeholder';
+                noLinksElem.textContent = 'No links to display. Click the "+" button to add one, or upload a configuration file!';
+                container.appendChild(noLinksElem);
+                return;
+            } else if (initialLoadingPlaceholder && initialLoadingPlaceholder.parentNode) {
+                 initialLoadingPlaceholder.remove();
+            }
+
+            if (appConfig.showFlatGrid) {
+                // --- FLAT GRID VIEW ---
+                container.classList.add('flat-view-active');
+                // Optionally sort all links, e.g., by title
+                const sortedLinks = [...appConfig.links].sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+
+                sortedLinks.forEach(link => {
+                    const cardLinkWrapper = document.createElement('a'); 
+                    cardLinkWrapper.href = link.url;
+                    cardLinkWrapper.target = '_blank';
+                    cardLinkWrapper.rel = 'noopener noreferrer';
+                    cardLinkWrapper.className = 'link-card'; 
+                    cardLinkWrapper.innerHTML = renderCardContent(link); 
+                    cardLinkWrapper.title = `Open ${link.title || link.url} in a new tab`;
+                    
+                    const actionButton = cardLinkWrapper.querySelector('.card-action-button');
+                    if (actionButton) {
+                        actionButton.addEventListener('click', (event) => {
+                            event.preventDefault(); 
+                            event.stopPropagation(); 
+                            if (cardActionDropdown.classList.contains('show') && currentCardActionLinkId !== link.id) {
+                                hideCardActionDropdown(); 
+                            }
+                            if (cardActionDropdown.classList.contains('show') && currentCardActionLinkId === link.id) {
+                                hideCardActionDropdown();
+                            } else {
+                                showCardActionDropdown(actionButton, link.id);
+                            }
+                        });
+                    }
+                    container.appendChild(cardLinkWrapper);
+                });
+
+            } else {
+                // --- GROUPED VIEW (Existing Logic) ---
+                container.classList.add('grouped-view-active');
+                reconcileGroupOrder(); 
+
+                const groupedLinksByDomain = appConfig.links.reduce((acc, link) => { 
+                    const domain = getDomain(link.url);
+                    if (!acc[domain]) acc[domain] = [];
+                    acc[domain].push(link);
+                    return acc;
+                }, {});
+
+                appConfig.groupOrder.forEach(groupInfo => {
+                    const domain = groupInfo.domain;
+                    const displayTitle = groupInfo.displayTitle || domain; 
+                    const linksInGroup = groupedLinksByDomain[domain];
+
+                    if (!linksInGroup || linksInGroup.length === 0) return; 
+
+                    const groupSection = document.createElement('section');
+                    groupSection.className = 'link-group-section'; 
+                    groupSection.dataset.domain = domain; 
+                    groupSection.setAttribute('draggable', 'true'); 
+                    groupSection.title = `Link group for "${displayTitle}". Drag to rearrange.`;
+                    
+                    const groupHeader = document.createElement('div');
+                    groupHeader.className = 'link-group-header';
+
+                    const groupTitleText = document.createElement('h2');
+                    groupTitleText.className = 'link-group-title-text'; 
+                    groupTitleText.textContent = displayTitle;
+                    groupTitleText.title = `Links from ${domain}`; 
+
+                    const editGroupTitleButton = document.createElement('button');
+                    editGroupTitleButton.className = 'edit-icon-button';
+                    editGroupTitleButton.innerHTML = editIconSvg;
+                    editGroupTitleButton.title = `Edit title for "${displayTitle}" group`;
+                    editGroupTitleButton.setAttribute('aria-label', `Edit title for ${displayTitle} group`);
+                    
+                    editGroupTitleButton.addEventListener('click', (e) => {
+                        e.stopPropagation(); 
+                        makeEditable(groupTitleText, (newTitle) => {
+                            const groupToUpdate = appConfig.groupOrder.find(g => g.domain === domain);
+                            if (groupToUpdate) {
+                                groupToUpdate.displayTitle = newTitle.trim() || domain; 
+                                groupTitleText.textContent = groupToUpdate.displayTitle; 
+                                groupSection.title = `Link group for "${groupToUpdate.displayTitle}". Drag to rearrange.`; 
+                                editGroupTitleButton.title = `Edit title for "${groupToUpdate.displayTitle}" group`; 
+                                saveAppConfig();
+                            }
+                        });
+                    });
+
+                    groupHeader.appendChild(groupTitleText);
+                    groupHeader.appendChild(editGroupTitleButton);
+                    groupSection.appendChild(groupHeader);
+                    
+                    const cardsGrid = document.createElement('div');
+                    cardsGrid.className = 'link-cards-grid'; 
+                    
+                    linksInGroup.forEach(link => {
+                        const cardLinkWrapper = document.createElement('a'); 
+                        cardLinkWrapper.href = link.url;
+                        cardLinkWrapper.target = '_blank';
+                        cardLinkWrapper.rel = 'noopener noreferrer';
+                        cardLinkWrapper.className = 'link-card'; 
+                        cardLinkWrapper.innerHTML = renderCardContent(link); 
+                        cardLinkWrapper.title = `Open ${link.title || link.url} in a new tab`;
+                        
+                        const actionButton = cardLinkWrapper.querySelector('.card-action-button');
+                        if (actionButton) {
+                            actionButton.addEventListener('click', (event) => {
+                                event.preventDefault(); 
+                                event.stopPropagation(); 
+                                if (cardActionDropdown.classList.contains('show') && currentCardActionLinkId !== link.id) {
+                                    hideCardActionDropdown(); 
+                                }
+                                if (cardActionDropdown.classList.contains('show') && currentCardActionLinkId === link.id) {
+                                    hideCardActionDropdown();
+                                } else {
+                                    showCardActionDropdown(actionButton, link.id);
+                                }
+                            });
+                        }
+                        cardsGrid.appendChild(cardLinkWrapper);
+                    });
+                    groupSection.appendChild(cardsGrid);
+                    container.appendChild(groupSection);
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAppConfig(); 
+            applyTheme(appConfig.currentTheme); 
+            applyBackgroundSettings(); 
+
+            const loadingPlaceholder = document.getElementById('loading-placeholder');
+            if (appConfig.links.length > 0 && loadingPlaceholder && loadingPlaceholder.parentNode) { 
+                loadingPlaceholder.remove();
+            }
+            
+            renderAllLinkGroups(); 
+            
+            const currentYearSpan = document.getElementById('currentYear');
+            if (currentYearSpan) {
+                currentYearSpan.textContent = new Date().getFullYear();
+            }
+            window.addEventListener('beforeunload', saveAppConfig);
+        });
+    </script>
+</body>
+</html>
+
