@@ -258,28 +258,35 @@
         
         /* --- Link Groups & Flat View Container --- */
         #link-groups-container {
-            display: grid;
+            display: grid; /* Default for grouped view */
             gap: 0.75rem; 
-            position: relative; 
+            position: relative; /* For drag-drop placeholder and flat view absolute cards */
             z-index: 1;
+            min-height: 300px; /* Ensure container has height for dragging */
         }
         /* Default (grouped view) columns */
         #link-groups-container.grouped-view-active {
             grid-template-columns: repeat(1, minmax(0, 1fr)); 
         }
 
-        /* Flat view columns (targets cards directly) */
+        /* Flat view: container becomes a positioning context, no grid layout for items */
         #link-groups-container.flat-view-active {
-            grid-template-columns: repeat(2, minmax(0, 1fr)); /* Mobile default for cards */
-            gap: 0.5rem; /* Gap between cards in flat view */
+            display: block; /* Override grid for absolute positioning of children */
+            /* The 'gap' is not applicable here as cards are absolutely positioned */
         }
+
 
         .no-links-placeholder {
             text-align: center;
             color: #94a3b8; /* slate-400 */
-            grid-column: 1 / -1; 
             padding: 1rem;
             font-size: 0.875rem; 
+            /* Ensure placeholder is visible in both grid and block display modes */
+            position: absolute; 
+            top: 50%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
         }
         .dark .no-links-placeholder {
             color: #64748b; /* slate-500 */
@@ -287,7 +294,11 @@
         #loading-placeholder {
             text-align: center;
             color: #94a3b8; /* slate-400 */
-            grid-column: 1 / -1; 
+            /* Ensure placeholder is visible in both grid and block display modes */
+            position: absolute; 
+            top: 50%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         .dark #loading-placeholder {
             color: #64748b; /* slate-500 */
@@ -370,7 +381,9 @@
             background-color: #f8fafc; /* slate-50 */
             transition: all 0.2s ease-in-out;
             text-decoration: none;
-            position: relative; 
+            position: relative; /* Default for grouped view, overridden for flat view */
+            width: 180px; /* Default width for cards, adjust as needed */
+            height: auto; /* Or a fixed height */
         }
         .dark .link-card {
             background-color: #334155; /* slate-700 */
@@ -383,6 +396,21 @@
         .dark .link-card:hover {
             background-color: #0369a1; /* sky-700 */
         }
+        
+        /* Styles for draggable cards in flat view */
+        .flat-view-active .link-card {
+            position: absolute;
+            cursor: grab;
+            user-select: none; /* Prevent text selection during drag */
+            z-index: 10; /* Default z-index for draggable cards */
+        }
+        .flat-view-active .link-card.dragging {
+            cursor: grabbing;
+            opacity: 0.7;
+            z-index: 1000; /* Higher z-index when dragging */
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
 
         .card-action-button { 
             position: absolute;
@@ -784,34 +812,25 @@
             .page-header .title { font-size: 1.25rem; line-height: 1.75rem; } 
             .page-header .subtitle { font-size: 0.875rem; line-height: 1.25rem; } 
             
-            /* Grouped view columns */
             #link-groups-container.grouped-view-active { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; } 
-            /* Flat view columns for cards */
-            #link-groups-container.flat-view-active { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-
-            .link-group-section { padding: 0.75rem; } 
-            .link-group-title-text { font-size: 0.875rem; line-height: 1.25rem; } 
+            /* Flat view cards still absolutely positioned, grid not used for layout */
             .link-cards-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; } 
         }
         @media (min-width: 768px) { /* md */
             #link-groups-container.grouped-view-active { grid-template-columns: repeat(3, minmax(0, 1fr)); } 
-            #link-groups-container.flat-view-active { grid-template-columns: repeat(4, minmax(0, 1fr)); }
             .link-cards-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } 
         }
         @media (min-width: 1024px) { /* lg */
             .main-content-wrapper { padding-left: 1rem; padding-right: 1rem; } 
             #link-groups-container.grouped-view-active { grid-template-columns: repeat(4, minmax(0, 1fr)); } 
-            #link-groups-container.flat-view-active { grid-template-columns: repeat(5, minmax(0, 1fr)); }
             .link-cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } /* Cards within a group */
         }
         @media (min-width: 1280px) { /* xl */
             #link-groups-container.grouped-view-active { grid-template-columns: repeat(5, minmax(0, 1fr)); } 
-            #link-groups-container.flat-view-active { grid-template-columns: repeat(6, minmax(0, 1fr)); }
             .link-cards-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } /* Cards within a group */
         }
         @media (min-width: 1536px) { /* 2xl */
             #link-groups-container.grouped-view-active { grid-template-columns: repeat(6, minmax(0, 1fr)); } 
-            #link-groups-container.flat-view-active { grid-template-columns: repeat(8, minmax(0, 1fr)); }
             .link-cards-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } /* Cards within a group */
         }
 
@@ -1004,43 +1023,44 @@
             pageSubtitle: "Your configurable, themed dashboard.",
             showPageTitle: true, 
             showPageSubtitle: true, 
-            showFlatGrid: false, // New setting for flat grid view
+            showFlatGrid: false, 
             currentTheme: "system", 
             nextCustomLinkId: 1, 
             links: [ 
-                { id: 'yt-guc', url: "https://www.youtube.com/watch?v=3M6e6TG7nDA", title: "Google User Content - YouTube", template: "default", data: {} },
-                { id: 'reddit-arduino', url: "https://www.reddit.com/r/arduino/new/?feedViewType=compactView&rdt=34729", title: "Reddit - r/arduino/new", template: "default", data: {} },
-                { id: 'reddit-modq', url: "https://www.reddit.com/mod/queue", title: "Reddit - Mod Queue", template: "default", data: {} },
-                { id: 'chatgpt-main', url: "https://chatgpt.com/", title: "ChatGPT - Main", template: "default", data: {} },
-                { id: 'chatgpt-chat1', url: "https://chatgpt.com/c/681b5d0e-f324-800e-a09e-3ae80c22affc", title: "ChatGPT - Chat 681b5d", template: "default", data: {} },
-                { id: 'figma-wireframes', url: "https://www.figma.com/design/ihIhLU92Getzv2qDyULIui/Wireframes-Kit---Free-wireframing-Websites-and-SaaS-UI-UX--Community-?node-id=1140-6414&p=f&t=5N1q88XiIAUE4OhZ-0", title: "Figma - Wireframes Kit", template: "default", data: {} },
-                { id: 'gemini-app', url: "https://gemini.google.com/app", title: "Gemini", template: "default", data: {} },
-                { id: 'aistudio-newchat', url: "https://aistudio.google.com/prompts/new_chat?pli=1", title: "AI Studio - New Chat", template: "default", data: {} },
-                { id: 'firebase-studio', url: "https://studio.firebase.google.com/studio-08171228", title: "Firebase Studio", template: "default", data: {} },
-                { id: 'gh-ripred-ps', url: "https://github.com/ripred/Project-Sleuth", title: "GitHub - ripred/Project-Sleuth", template: "default", data: {} },
-                { id: 'gh-ripred-readme', url: "https://github.com/ripred/ripred/edit/main/README.md", title: "GitHub - ripred/ripred - Edit README", template: "default", data: {} },
-                { id: 'aistudio-apikey', url: "https://aistudio.google.com/app/apikey", title: "AI Studio - API Key", template: "default", data: {} },
-                { id: 'aistudio-live', url: "https://aistudio.google.com/live", title: "AI Studio - Live", template: "default", data: {} },
-                { id: 'grok-main', url: "https://grok.com/", title: "Grok", template: "default", data: {} },
-                { id: 'gh-ripred', url: "https://github.com/ripred", title: "GitHub - ripred", template: "default", data: {} },
-                { id: 'gh-user-img', url: "https://camo.githubusercontent.com/d70921493d8bcebc9fd59014af1707d3d2e66e3ccab70ed4c11762317e62e2f1/68747470733a2f2f6769746875622d70726f66696c652d7726f7068792e76657263656c2e6170702f3f757365726e616d653d726970726564267468656d653d6461726b687562266e6f2d62673d74727565266e6f2d6672616d653d7472756526636f6c756d6e3d34", title: "GitHub User Content - Image", template: "default", data: {} },
-                { id: 'gh-google-a2a', url: "https://github.com/google/A2A", title: "GitHub - google/A2A", template: "default", data: {} },
-                { id: 'mcp-java', url: "https://modelcontextprotocol.io/sdk/java/mcp-overview", title: "ModelContextProtocol - Java SDK Overview", template: "default", data: {} },
-                { id: 'mcp-tools', url: "https://modelcontextprotocol.io/docs/concepts/tools", title: "ModelContextProtocol - Concepts: Tools", template: "default", data: {} },
-                { id: 'mcp-python', url: "https://modelcontextprotocol.io/quickstart/server#python", title: "ModelContextProtocol - Quickstart: Server Python", template: "default", data: {} },
-                { id: 'aistudio-library', url: "https://aistudio.google.com/app/library", title: "AI Studio - Library", template: "default", data: {} },
-                { id: 'claude-chat1', url: "https://claude.ai/chat/11ea4849-9a6f-4867-9883-70833126729f", title: "Claude - Chat 11ea48", template: "default", data: {} },
-                { id: 'anthropic-console', url: "https://console.anthropic.com/login?selectAccount=true&returnTo=%2Fworkbench%2F4d37fa1b-52e7-4902-8843-cbc557066a75%3Ftab%3Dprompt", title: "Anthropic Console - Login/Workbench", template: "default", data: {} },
-                { id: 'ground-news', url: "https://ground.news/", title: "Ground News", template: "default", data: {} },
-                { id: 'manus-login', url: "https://manus.im/login", title: "Manus - Login", template: "default", data: {} },
-                { id: 'digg-privy', url: "https://privy.digg.com/oauth/v2/authorize?client_id=pv9vzvrtp545olzptgbcsm2z&redirect_uri=https%3A%2F%2Fgroundbreakers.digg.com%2Foauth2%2Fcallback&response_type=code&state=4e1539650d66301a8aa5d03948d84ccab1a95a5a958004f5032c0233b455b671", title: "Digg Privy - OAuth", template: "default", data: {} },
-                { id: 'smithery-ai', url: "https://smithery.ai/server/@wonderwhy-er/desktop-commander?code=82cc992e-2afc-45d1-acdc-fd42f20a5cab", title: "Smithery AI - Desktop Commander", template: "default", data: {} },
-                { id: 'chatgpt-gpts-editor', url: "https://chatgpt.com/gpts/editor/g-680daea2ee308191bf5560bf868174dd", title: "ChatGPT - GPTs Editor", template: "default", data: {} },
-                { id: 'anthropic-eng', url: "https://www.anthropic.com/engineering/building-effective-agents", title: "Anthropic - Building Effective Agents", template: "default", data: {} },
-                { id: 'context7', url: "https://context7.com/", title: "Context7", template: "default", data: {} },
-                { id: '123movies', url: "https://123moviestv.net/movie", title: "123MoviesTV - Movie", template: "default", data: {} },
-                { id: 'localhost-9002', url: "http://localhost:9002/", title: "Localhost :9002", template: "default", data: {} },
-                { id: 'nebula-explore', url: "https://nebula.tv/explore/videos", title: "Nebula - Explore Videos", template: "default", data: {} }
+                // Default links with flatViewPosition initialized
+                { id: 'yt-guc', url: "https://www.youtube.com/watch?v=3M6e6TG7nDA", title: "Google User Content - YouTube", template: "default", data: {}, flatViewPosition: null },
+                { id: 'reddit-arduino', url: "https://www.reddit.com/r/arduino/new/?feedViewType=compactView&rdt=34729", title: "Reddit - r/arduino/new", template: "default", data: {}, flatViewPosition: null },
+                { id: 'reddit-modq', url: "https://www.reddit.com/mod/queue", title: "Reddit - Mod Queue", template: "default", data: {}, flatViewPosition: null },
+                { id: 'chatgpt-main', url: "https://chatgpt.com/", title: "ChatGPT - Main", template: "default", data: {}, flatViewPosition: null },
+                { id: 'chatgpt-chat1', url: "https://chatgpt.com/c/681b5d0e-f324-800e-a09e-3ae80c22affc", title: "ChatGPT - Chat 681b5d", template: "default", data: {}, flatViewPosition: null },
+                { id: 'figma-wireframes', url: "https://www.figma.com/design/ihIhLU92Getzv2qDyULIui/Wireframes-Kit---Free-wireframing-Websites-and-SaaS-UI-UX--Community-?node-id=1140-6414&p=f&t=5N1q88XiIAUE4OhZ-0", title: "Figma - Wireframes Kit", template: "default", data: {}, flatViewPosition: null },
+                { id: 'gemini-app', url: "https://gemini.google.com/app", title: "Gemini", template: "default", data: {}, flatViewPosition: null },
+                { id: 'aistudio-newchat', url: "https://aistudio.google.com/prompts/new_chat?pli=1", title: "AI Studio - New Chat", template: "default", data: {}, flatViewPosition: null },
+                { id: 'firebase-studio', url: "https://studio.firebase.google.com/studio-08171228", title: "Firebase Studio", template: "default", data: {}, flatViewPosition: null },
+                { id: 'gh-ripred-ps', url: "https://github.com/ripred/Project-Sleuth", title: "GitHub - ripred/Project-Sleuth", template: "default", data: {}, flatViewPosition: null },
+                { id: 'gh-ripred-readme', url: "https://github.com/ripred/ripred/edit/main/README.md", title: "GitHub - ripred/ripred - Edit README", template: "default", data: {}, flatViewPosition: null },
+                { id: 'aistudio-apikey', url: "https://aistudio.google.com/app/apikey", title: "AI Studio - API Key", template: "default", data: {}, flatViewPosition: null },
+                { id: 'aistudio-live', url: "https://aistudio.google.com/live", title: "AI Studio - Live", template: "default", data: {}, flatViewPosition: null },
+                { id: 'grok-main', url: "https://grok.com/", title: "Grok", template: "default", data: {}, flatViewPosition: null },
+                { id: 'gh-ripred', url: "https://github.com/ripred", title: "GitHub - ripred", template: "default", data: {}, flatViewPosition: null },
+                { id: 'gh-user-img', url: "https://camo.githubusercontent.com/d70921493d8bcebc9fd59014af1707d3d2e66e3ccab70ed4c11762317e62e2f1/68747470733a2f2f6769746875622d70726f66696c652d7726f7068792e76657263656c2e6170702f3f757365726e616d653d726970726564267468656d653d6461726b687562266e6f2d62673d74727565266e6f2d6672616d653d7472756526636f6c756d6e3d34", title: "GitHub User Content - Image", template: "default", data: {}, flatViewPosition: null },
+                { id: 'gh-google-a2a', url: "https://github.com/google/A2A", title: "GitHub - google/A2A", template: "default", data: {}, flatViewPosition: null },
+                { id: 'mcp-java', url: "https://modelcontextprotocol.io/sdk/java/mcp-overview", title: "ModelContextProtocol - Java SDK Overview", template: "default", data: {}, flatViewPosition: null },
+                { id: 'mcp-tools', url: "https://modelcontextprotocol.io/docs/concepts/tools", title: "ModelContextProtocol - Concepts: Tools", template: "default", data: {}, flatViewPosition: null },
+                { id: 'mcp-python', url: "https://modelcontextprotocol.io/quickstart/server#python", title: "ModelContextProtocol - Quickstart: Server Python", template: "default", data: {}, flatViewPosition: null },
+                { id: 'aistudio-library', url: "https://aistudio.google.com/app/library", title: "AI Studio - Library", template: "default", data: {}, flatViewPosition: null },
+                { id: 'claude-chat1', url: "https://claude.ai/chat/11ea4849-9a6f-4867-9883-70833126729f", title: "Claude - Chat 11ea48", template: "default", data: {}, flatViewPosition: null },
+                { id: 'anthropic-console', url: "https://console.anthropic.com/login?selectAccount=true&returnTo=%2Fworkbench%2F4d37fa1b-52e7-4902-8843-cbc557066a75%3Ftab%3Dprompt", title: "Anthropic Console - Login/Workbench", template: "default", data: {}, flatViewPosition: null },
+                { id: 'ground-news', url: "https://ground.news/", title: "Ground News", template: "default", data: {}, flatViewPosition: null },
+                { id: 'manus-login', url: "https://manus.im/login", title: "Manus - Login", template: "default", data: {}, flatViewPosition: null },
+                { id: 'digg-privy', url: "https://privy.digg.com/oauth/v2/authorize?client_id=pv9vzvrtp545olzptgbcsm2z&redirect_uri=https%3A%2F%2Fgroundbreakers.digg.com%2Foauth2%2Fcallback&response_type=code&state=4e1539650d66301a8aa5d03948d84ccab1a95a5a958004f5032c0233b455b671", title: "Digg Privy - OAuth", template: "default", data: {}, flatViewPosition: null },
+                { id: 'smithery-ai', url: "https://smithery.ai/server/@wonderwhy-er/desktop-commander?code=82cc992e-2afc-45d1-acdc-fd42f20a5cab", title: "Smithery AI - Desktop Commander", template: "default", data: {}, flatViewPosition: null },
+                { id: 'chatgpt-gpts-editor', url: "https://chatgpt.com/gpts/editor/g-680daea2ee308191bf5560bf868174dd", title: "ChatGPT - GPTs Editor", template: "default", data: {}, flatViewPosition: null },
+                { id: 'anthropic-eng', url: "https://www.anthropic.com/engineering/building-effective-agents", title: "Anthropic - Building Effective Agents", template: "default", data: {}, flatViewPosition: null },
+                { id: 'context7', url: "https://context7.com/", title: "Context7", template: "default", data: {}, flatViewPosition: null },
+                { id: '123movies', url: "https://123moviestv.net/movie", title: "123MoviesTV - Movie", template: "default", data: {}, flatViewPosition: null },
+                { id: 'localhost-9002', url: "http://localhost:9002/", title: "Localhost :9002", template: "default", data: {}, flatViewPosition: null },
+                { id: 'nebula-explore', url: "https://nebula.tv/explore/videos", title: "Nebula - Explore Videos", template: "default", data: {}, flatViewPosition: null }
             ],
             groupOrder: [],
             backgroundSettings: { 
@@ -1086,7 +1106,7 @@
         const addNewLinkButton = document.getElementById('add-new-link-button');
         
         const backgroundImageInput = document.getElementById('background-image-input');
-        const linkGroupsContainer = document.getElementById('link-groups-container'); // Defined early for use in rendering
+        const linkGroupsContainer = document.getElementById('link-groups-container'); 
 
 
         // --- THEME LOGIC ---
@@ -1254,17 +1274,24 @@
 
         function saveAppConfig() {
             try {
-                if (!appConfig.showFlatGrid) { // Only reconcile group order if not in flat grid mode
+                if (!appConfig.showFlatGrid) { 
                     reconcileGroupOrder();
                 }
+                // Ensure all links have flatViewPosition, even if null
+                appConfig.links.forEach(link => {
+                    if (typeof link.flatViewPosition === 'undefined') {
+                        link.flatViewPosition = null;
+                    }
+                });
+
                 const configToSave = {
                     pageTitle: appConfig.pageTitle,
                     pageSubtitle: appConfig.pageSubtitle,
                     showPageTitle: appConfig.showPageTitle,
                     showPageSubtitle: appConfig.showPageSubtitle,
-                    showFlatGrid: appConfig.showFlatGrid, // Save new setting
+                    showFlatGrid: appConfig.showFlatGrid, 
                     currentTheme: appConfig.currentTheme,
-                    links: appConfig.links,
+                    links: appConfig.links, // This will now include flatViewPosition
                     nextCustomLinkId: appConfig.nextCustomLinkId,
                     groupOrder: appConfig.groupOrder,
                     backgroundSettings: appConfig.backgroundSettings
@@ -1282,19 +1309,18 @@
                 pageSubtitle: "Your configurable, themed dashboard.",
                 showPageTitle: true,
                 showPageSubtitle: true,
-                showFlatGrid: false, // Default for new setting
+                showFlatGrid: false, 
                 currentTheme: "system",
                 nextCustomLinkId: 1, 
-                links: [ /* ... initial links from your provided code ... */ ], // Truncated for brevity
+                links: [ /* Filled below */ ], 
                 groupOrder: [],
                 backgroundSettings: {
                     type: 'theme', color: '#e2e8f0', localImageName: null,
                     localImageUrlData: null, onlineImageUrl: null, imageOpacity: 0.25
                 }
             };
-             // Populate initialDefaultConfig.links with your full default list
             initialDefaultConfig.links = [
-                { id: 'yt-guc', url: "https://www.youtube.com/watch?v=3M6e6TG7nDA", title: "Google User Content - YouTube", template: "default", data: {} }, { id: 'reddit-arduino', url: "https://www.reddit.com/r/arduino/new/?feedViewType=compactView&rdt=34729", title: "Reddit - r/arduino/new", template: "default", data: {} }, { id: 'reddit-modq', url: "https://www.reddit.com/mod/queue", title: "Reddit - Mod Queue", template: "default", data: {} }, { id: 'chatgpt-main', url: "https://chatgpt.com/", title: "ChatGPT - Main", template: "default", data: {} }, { id: 'chatgpt-chat1', url: "https://chatgpt.com/c/681b5d0e-f324-800e-a09e-3ae80c22affc", title: "ChatGPT - Chat 681b5d", template: "default", data: {} }, { id: 'figma-wireframes', url: "https://www.figma.com/design/ihIhLU92Getzv2qDyULIui/Wireframes-Kit---Free-wireframing-Websites-and-SaaS-UI-UX--Community-?node-id=1140-6414&p=f&t=5N1q88XiIAUE4OhZ-0", title: "Figma - Wireframes Kit", template: "default", data: {} }, { id: 'gemini-app', url: "https://gemini.google.com/app", title: "Gemini", template: "default", data: {} }, { id: 'aistudio-newchat', url: "https://aistudio.google.com/prompts/new_chat?pli=1", title: "AI Studio - New Chat", template: "default", data: {} }, { id: 'firebase-studio', url: "https://studio.firebase.google.com/studio-08171228", title: "Firebase Studio", template: "default", data: {} }, { id: 'gh-ripred-ps', url: "https://github.com/ripred/Project-Sleuth", title: "GitHub - ripred/Project-Sleuth", template: "default", data: {} }, { id: 'gh-ripred-readme', url: "https://github.com/ripred/ripred/edit/main/README.md", title: "GitHub - ripred/ripred - Edit README", template: "default", data: {} }, { id: 'aistudio-apikey', url: "https://aistudio.google.com/app/apikey", title: "AI Studio - API Key", template: "default", data: {} }, { id: 'aistudio-live', url: "https://aistudio.google.com/live", title: "AI Studio - Live", template: "default", data: {} }, { id: 'grok-main', url: "https://grok.com/", title: "Grok", template: "default", data: {} }, { id: 'gh-ripred', url: "https://github.com/ripred", title: "GitHub - ripred", template: "default", data: {} }, { id: 'gh-user-img', url: "https://camo.githubusercontent.com/d70921493d8bcebc9fd59014af1707d3d2e66e3ccab70ed4c11762317e62e2f1/68747470733a2f2f6769746875622d70726f66696c652d7726f7068792e76657263656c2e6170702f3f757365726e616d653d726970726564267468656d653d6461726b687562266e6f2d62673d74727565266e6f2d6672616d653d7472756526636f6c756d6e3d34", title: "GitHub User Content - Image", template: "default", data: {} }, { id: 'gh-google-a2a', url: "https://github.com/google/A2A", title: "GitHub - google/A2A", template: "default", data: {} }, { id: 'mcp-java', url: "https://modelcontextprotocol.io/sdk/java/mcp-overview", title: "ModelContextProtocol - Java SDK Overview", template: "default", data: {} }, { id: 'mcp-tools', url: "https://modelcontextprotocol.io/docs/concepts/tools", title: "ModelContextProtocol - Concepts: Tools", template: "default", data: {} }, { id: 'mcp-python', url: "https://modelcontextprotocol.io/quickstart/server#python", title: "ModelContextProtocol - Quickstart: Server Python", template: "default", data: {} }, { id: 'aistudio-library', url: "https://aistudio.google.com/app/library", title: "AI Studio - Library", template: "default", data: {} }, { id: 'claude-chat1', url: "https://claude.ai/chat/11ea4849-9a6f-4867-9883-70833126729f", title: "Claude - Chat 11ea48", template: "default", data: {} }, { id: 'anthropic-console', url: "https://console.anthropic.com/login?selectAccount=true&returnTo=%2Fworkbench%2F4d37fa1b-52e7-4902-8843-cbc557066a75%3Ftab%3Dprompt", title: "Anthropic Console - Login/Workbench", template: "default", data: {} }, { id: 'ground-news', url: "https://ground.news/", title: "Ground News", template: "default", data: {} }, { id: 'manus-login', url: "https://manus.im/login", title: "Manus - Login", template: "default", data: {} }, { id: 'digg-privy', url: "https://privy.digg.com/oauth/v2/authorize?client_id=pv9vzvrtp545olzptgbcsm2z&redirect_uri=https%3A%2F%2Fgroundbreakers.digg.com%2Foauth2%2Fcallback&response_type=code&state=4e1539650d66301a8aa5d03948d84ccab1a95a5a958004f5032c0233b455b671", title: "Digg Privy - OAuth", template: "default", data: {} }, { id: 'smithery-ai', url: "https://smithery.ai/server/@wonderwhy-er/desktop-commander?code=82cc992e-2afc-45d1-acdc-fd42f20a5cab", title: "Smithery AI - Desktop Commander", template: "default", data: {} }, { id: 'chatgpt-gpts-editor', url: "https://chatgpt.com/gpts/editor/g-680daea2ee308191bf5560bf868174dd", title: "ChatGPT - GPTs Editor", template: "default", data: {} }, { id: 'anthropic-eng', url: "https://www.anthropic.com/engineering/building-effective-agents", title: "Anthropic - Building Effective Agents", template: "default", data: {} }, { id: 'context7', url: "https://context7.com/", title: "Context7", template: "default", data: {} }, { id: '123movies', url: "https://123moviestv.net/movie", title: "123MoviesTV - Movie", template: "default", data: {} }, { id: 'localhost-9002', url: "http://localhost:9002/", title: "Localhost :9002", template: "default", data: {} }, { id: 'nebula-explore', url: "https://nebula.tv/explore/videos", title: "Nebula - Explore Videos", template: "default", data: {} }
+                { id: 'yt-guc', url: "https://www.youtube.com/watch?v=3M6e6TG7nDA", title: "Google User Content - YouTube", template: "default", data: {}, flatViewPosition: null }, { id: 'reddit-arduino', url: "https://www.reddit.com/r/arduino/new/?feedViewType=compactView&rdt=34729", title: "Reddit - r/arduino/new", template: "default", data: {}, flatViewPosition: null }, { id: 'reddit-modq', url: "https://www.reddit.com/mod/queue", title: "Reddit - Mod Queue", template: "default", data: {}, flatViewPosition: null }, { id: 'chatgpt-main', url: "https://chatgpt.com/", title: "ChatGPT - Main", template: "default", data: {}, flatViewPosition: null }, { id: 'chatgpt-chat1', url: "https://chatgpt.com/c/681b5d0e-f324-800e-a09e-3ae80c22affc", title: "ChatGPT - Chat 681b5d", template: "default", data: {}, flatViewPosition: null }, { id: 'figma-wireframes', url: "https://www.figma.com/design/ihIhLU92Getzv2qDyULIui/Wireframes-Kit---Free-wireframing-Websites-and-SaaS-UI-UX--Community-?node-id=1140-6414&p=f&t=5N1q88XiIAUE4OhZ-0", title: "Figma - Wireframes Kit", template: "default", data: {}, flatViewPosition: null }, { id: 'gemini-app', url: "https://gemini.google.com/app", title: "Gemini", template: "default", data: {}, flatViewPosition: null }, { id: 'aistudio-newchat', url: "https://aistudio.google.com/prompts/new_chat?pli=1", title: "AI Studio - New Chat", template: "default", data: {}, flatViewPosition: null }, { id: 'firebase-studio', url: "https://studio.firebase.google.com/studio-08171228", title: "Firebase Studio", template: "default", data: {}, flatViewPosition: null }, { id: 'gh-ripred-ps', url: "https://github.com/ripred/Project-Sleuth", title: "GitHub - ripred/Project-Sleuth", template: "default", data: {}, flatViewPosition: null }, { id: 'gh-ripred-readme', url: "https://github.com/ripred/ripred/edit/main/README.md", title: "GitHub - ripred/ripred - Edit README", template: "default", data: {}, flatViewPosition: null }, { id: 'aistudio-apikey', url: "https://aistudio.google.com/app/apikey", title: "AI Studio - API Key", template: "default", data: {}, flatViewPosition: null }, { id: 'aistudio-live', url: "https://aistudio.google.com/live", title: "AI Studio - Live", template: "default", data: {}, flatViewPosition: null }, { id: 'grok-main', url: "https://grok.com/", title: "Grok", template: "default", data: {}, flatViewPosition: null }, { id: 'gh-ripred', url: "https://github.com/ripred", title: "GitHub - ripred", template: "default", data: {}, flatViewPosition: null }, { id: 'gh-user-img', url: "https://camo.githubusercontent.com/d70921493d8bcebc9fd59014af1707d3d2e66e3ccab70ed4c11762317e62e2f1/68747470733a2f2f6769746875622d70726f66696c652d7726f7068792e76657263656c2e6170702f3f757365726e616d653d726970726564267468656d653d6461726b687562266e6f2d62673d74727565266e6f2d6672616d653d7472756526636f6c756d6e3d34", title: "GitHub User Content - Image", template: "default", data: {}, flatViewPosition: null }, { id: 'gh-google-a2a', url: "https://github.com/google/A2A", title: "GitHub - google/A2A", template: "default", data: {}, flatViewPosition: null }, { id: 'mcp-java', url: "https://modelcontextprotocol.io/sdk/java/mcp-overview", title: "ModelContextProtocol - Java SDK Overview", template: "default", data: {}, flatViewPosition: null }, { id: 'mcp-tools', url: "https://modelcontextprotocol.io/docs/concepts/tools", title: "ModelContextProtocol - Concepts: Tools", template: "default", data: {}, flatViewPosition: null }, { id: 'mcp-python', url: "https://modelcontextprotocol.io/quickstart/server#python", title: "ModelContextProtocol - Quickstart: Server Python", template: "default", data: {}, flatViewPosition: null }, { id: 'aistudio-library', url: "https://aistudio.google.com/app/library", title: "AI Studio - Library", template: "default", data: {}, flatViewPosition: null }, { id: 'claude-chat1', url: "https://claude.ai/chat/11ea4849-9a6f-4867-9883-70833126729f", title: "Claude - Chat 11ea48", template: "default", data: {}, flatViewPosition: null }, { id: 'anthropic-console', url: "https://console.anthropic.com/login?selectAccount=true&returnTo=%2Fworkbench%2F4d37fa1b-52e7-4902-8843-cbc557066a75%3Ftab%3Dprompt", title: "Anthropic Console - Login/Workbench", template: "default", data: {}, flatViewPosition: null }, { id: 'ground-news', url: "https://ground.news/", title: "Ground News", template: "default", data: {}, flatViewPosition: null }, { id: 'manus-login', url: "https://manus.im/login", title: "Manus - Login", template: "default", data: {}, flatViewPosition: null }, { id: 'digg-privy', url: "https://privy.digg.com/oauth/v2/authorize?client_id=pv9vzvrtp545olzptgbcsm2z&redirect_uri=https%3A%2F%2Fgroundbreakers.digg.com%2Foauth2%2Fcallback&response_type=code&state=4e1539650d66301a8aa5d03948d84ccab1a95a5a958004f5032c0233b455b671", title: "Digg Privy - OAuth", template: "default", data: {}, flatViewPosition: null }, { id: 'smithery-ai', url: "https://smithery.ai/server/@wonderwhy-er/desktop-commander?code=82cc992e-2afc-45d1-acdc-fd42f20a5cab", title: "Smithery AI - Desktop Commander", template: "default", data: {}, flatViewPosition: null }, { id: 'chatgpt-gpts-editor', url: "https://chatgpt.com/gpts/editor/g-680daea2ee308191bf5560bf868174dd", title: "ChatGPT - GPTs Editor", template: "default", data: {}, flatViewPosition: null }, { id: 'anthropic-eng', url: "https://www.anthropic.com/engineering/building-effective-agents", title: "Anthropic - Building Effective Agents", template: "default", data: {}, flatViewPosition: null }, { id: 'context7', url: "https://context7.com/", title: "Context7", template: "default", data: {}, flatViewPosition: null }, { id: '123movies', url: "https://123moviestv.net/movie", title: "123MoviesTV - Movie", template: "default", data: {}, flatViewPosition: null }, { id: 'localhost-9002', url: "http://localhost:9002/", title: "Localhost :9002", template: "default", data: {}, flatViewPosition: null }, { id: 'nebula-explore', url: "https://nebula.tv/explore/videos", title: "Nebula - Explore Videos", template: "default", data: {}, flatViewPosition: null }
             ];
 
             let maxIdFromDefaults = 0;
@@ -1316,9 +1342,17 @@
                     appConfig.pageSubtitle = loadedConfig.pageSubtitle || initialDefaultConfig.pageSubtitle;
                     appConfig.showPageTitle = typeof loadedConfig.showPageTitle === 'boolean' ? loadedConfig.showPageTitle : initialDefaultConfig.showPageTitle;
                     appConfig.showPageSubtitle = typeof loadedConfig.showPageSubtitle === 'boolean' ? loadedConfig.showPageSubtitle : initialDefaultConfig.showPageSubtitle;
-                    appConfig.showFlatGrid = typeof loadedConfig.showFlatGrid === 'boolean' ? loadedConfig.showFlatGrid : initialDefaultConfig.showFlatGrid; // Load new setting
+                    appConfig.showFlatGrid = typeof loadedConfig.showFlatGrid === 'boolean' ? loadedConfig.showFlatGrid : initialDefaultConfig.showFlatGrid; 
                     appConfig.currentTheme = loadedConfig.currentTheme || initialDefaultConfig.currentTheme;
+                    
                     appConfig.links = (Array.isArray(loadedConfig.links) && loadedConfig.links.length > 0) ? loadedConfig.links : initialDefaultConfig.links;
+                    // Ensure all loaded links have flatViewPosition
+                    appConfig.links.forEach(link => {
+                        if (typeof link.flatViewPosition === 'undefined') {
+                            link.flatViewPosition = null; 
+                        }
+                    });
+
                     appConfig.nextCustomLinkId = typeof loadedConfig.nextCustomLinkId === 'number' ? loadedConfig.nextCustomLinkId : initialDefaultConfig.nextCustomLinkId;
                     
                     appConfig.groupOrder = (loadedConfig.groupOrder || initialDefaultConfig.groupOrder).map(item => {
@@ -1395,7 +1429,7 @@
                 pageSubtitle: appConfig.pageSubtitle,
                 showPageTitle: appConfig.showPageTitle,
                 showPageSubtitle: appConfig.showPageSubtitle,
-                showFlatGrid: appConfig.showFlatGrid, // Include new setting
+                showFlatGrid: appConfig.showFlatGrid, 
                 currentTheme: appConfig.currentTheme,
                 links: appConfig.links,
                 nextCustomLinkId: appConfig.nextCustomLinkId,
@@ -1425,7 +1459,7 @@
                     const importedConfig = JSON.parse(e.target.result);
                     const baseConfigForImport = { 
                         pageTitle: "My Link Hub", pageSubtitle: "Your configurable, themed dashboard.",
-                        showPageTitle: true, showPageSubtitle: true, showFlatGrid: false, // Base for new setting
+                        showPageTitle: true, showPageSubtitle: true, showFlatGrid: false, 
                         currentTheme: "system",
                         links: appConfig.links, 
                         nextCustomLinkId: appConfig.nextCustomLinkId, 
@@ -1437,9 +1471,17 @@
                     appConfig.pageSubtitle = importedConfig.pageSubtitle || baseConfigForImport.pageSubtitle;
                     appConfig.showPageTitle = typeof importedConfig.showPageTitle === 'boolean' ? importedConfig.showPageTitle : baseConfigForImport.showPageTitle;
                     appConfig.showPageSubtitle = typeof importedConfig.showPageSubtitle === 'boolean' ? importedConfig.showPageSubtitle : baseConfigForImport.showPageSubtitle;
-                    appConfig.showFlatGrid = typeof importedConfig.showFlatGrid === 'boolean' ? importedConfig.showFlatGrid : baseConfigForImport.showFlatGrid; // Import new setting
+                    appConfig.showFlatGrid = typeof importedConfig.showFlatGrid === 'boolean' ? importedConfig.showFlatGrid : baseConfigForImport.showFlatGrid; 
                     appConfig.currentTheme = importedConfig.currentTheme || baseConfigForImport.currentTheme;
+                    
                     appConfig.links = importedConfig.links || baseConfigForImport.links; 
+                    // Ensure imported links have flatViewPosition
+                    appConfig.links.forEach(link => {
+                        if (typeof link.flatViewPosition === 'undefined') {
+                            link.flatViewPosition = null; 
+                        }
+                    });
+
                     appConfig.nextCustomLinkId = typeof importedConfig.nextCustomLinkId === 'number' ? importedConfig.nextCustomLinkId : baseConfigForImport.nextCustomLinkId;
                     
                     appConfig.groupOrder = (importedConfig.groupOrder || baseConfigForImport.groupOrder).map(item => {
@@ -1642,7 +1684,8 @@
                     url: editLinkUrlField.value,
                     title: editLinkTitleField.value,
                     template: editLinkTemplateField.value,
-                    data: parsedData
+                    data: parsedData,
+                    flatViewPosition: linkIndex > -1 ? appConfig.links[linkIndex].flatViewPosition : null // Preserve or init position
                 };
 
                 if (linkIndex > -1) { 
@@ -1717,7 +1760,7 @@
         const settingsShowPageTitleCheckbox = document.getElementById('settings-show-page-title');
         const settingsPageSubtitleField = document.getElementById('settings-page-subtitle');
         const settingsShowPageSubtitleCheckbox = document.getElementById('settings-show-page-subtitle');
-        const settingsShowFlatGridCheckbox = document.getElementById('settings-show-flat-grid'); // New checkbox
+        const settingsShowFlatGridCheckbox = document.getElementById('settings-show-flat-grid'); 
         const themeRadioButtons = document.querySelectorAll('input[name="themeSelection"]');
 
         const backgroundTypeRadios = document.querySelectorAll('input[name="backgroundTypeSelection"]');
@@ -1782,7 +1825,7 @@
             settingsShowPageTitleCheckbox.checked = appConfig.showPageTitle;
             settingsPageSubtitleField.value = appConfig.pageSubtitle;
             settingsShowPageSubtitleCheckbox.checked = appConfig.showPageSubtitle;
-            settingsShowFlatGridCheckbox.checked = appConfig.showFlatGrid; // Load flat grid setting
+            settingsShowFlatGridCheckbox.checked = appConfig.showFlatGrid; 
             
             themeRadioButtons.forEach(radio => radio.checked = (radio.value === appConfig.currentTheme));
 
@@ -1816,7 +1859,7 @@
             appConfig.showPageTitle = settingsShowPageTitleCheckbox.checked;
             appConfig.pageSubtitle = settingsPageSubtitleField.value.trim();
             appConfig.showPageSubtitle = settingsShowPageSubtitleCheckbox.checked;
-            appConfig.showFlatGrid = settingsShowFlatGridCheckbox.checked; // Save flat grid setting
+            appConfig.showFlatGrid = settingsShowFlatGridCheckbox.checked; 
             
             const selectedThemeRadio = document.querySelector('input[name="themeSelection"]:checked');
             if (selectedThemeRadio) appConfig.currentTheme = selectedThemeRadio.value;
@@ -1856,7 +1899,7 @@
             applyBackgroundSettings();
             updatePageTitlesAndVisibility(); 
             saveAppConfig(); 
-            renderAllLinkGroups(); // Re-render to apply flat grid if changed
+            renderAllLinkGroups(); 
             closeSystemSettingsDialog();
         }
 
@@ -1885,26 +1928,27 @@
         }
         
         linkGroupsContainer.addEventListener('dragstart', (event) => {
-            if (appConfig.showFlatGrid) return; // Disable drag in flat view
+            // This event listener is for group dragging.
+            // If in flat view, or if the target is not a group section, do nothing.
+            if (appConfig.showFlatGrid) return; 
             const target = event.target.closest('.link-group-section');
-            if (target) {
-                draggedGroupElement = target;
-                event.dataTransfer.setData('text/plain', target.dataset.domain); 
-                event.dataTransfer.effectAllowed = 'move';
-                setTimeout(() => {
-                    if (draggedGroupElement) draggedGroupElement.classList.add('dragging');
-                }, 0);
-                
-                if (!placeholderElement) {
-                    placeholderElement = createDragPlaceholder();
-                }
+            if (!target) return;
+
+            draggedGroupElement = target;
+            event.dataTransfer.setData('text/plain', target.dataset.domain); 
+            event.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => {
+                if (draggedGroupElement) draggedGroupElement.classList.add('dragging');
+            }, 0);
+            
+            if (!placeholderElement) {
+                placeholderElement = createDragPlaceholder();
             }
         });
 
         linkGroupsContainer.addEventListener('dragover', (event) => {
-            if (appConfig.showFlatGrid) return; // Disable drag in flat view
+            if (appConfig.showFlatGrid || !draggedGroupElement) return; 
             event.preventDefault(); 
-            if (!draggedGroupElement) return;
             const targetGroup = event.target.closest('.link-group-section');
             
             if (targetGroup && targetGroup !== draggedGroupElement) {
@@ -1923,9 +1967,8 @@
         });
         
         linkGroupsContainer.addEventListener('dragleave', (event) => {
-            if (appConfig.showFlatGrid) return; // Disable drag in flat view
+            if (appConfig.showFlatGrid || !draggedGroupElement) return; 
             if (placeholderElement && placeholderElement.parentNode) {
-                // Check if the mouse is truly leaving the container, not just moving over child elements
                 if (!linkGroupsContainer.contains(event.relatedTarget)) {
                      placeholderElement.style.display = 'none';
                 }
@@ -1933,28 +1976,23 @@
         });
 
         linkGroupsContainer.addEventListener('drop', (event) => {
-            if (appConfig.showFlatGrid) return; // Disable drag in flat view
+            if (appConfig.showFlatGrid || !draggedGroupElement || !placeholderElement || !placeholderElement.parentNode) return;
             event.preventDefault();
-            if (!draggedGroupElement || !placeholderElement || !placeholderElement.parentNode) return;
 
             const draggedDomain = event.dataTransfer.getData('text/plain');
-            
-            // Determine new index based on placeholder's position among actual group sections
             const actualGroupChildren = Array.from(linkGroupsContainer.children).filter(child => child.classList.contains('link-group-section'));
             let newVisualIndex = actualGroupChildren.indexOf(placeholderElement.nextSibling); 
-            if (newVisualIndex === -1) { // If placeholder is last or before the first item
-                 if (placeholderElement.nextSibling === null) { // Placeholder is last
+            if (newVisualIndex === -1) { 
+                 if (placeholderElement.nextSibling === null) { 
                     newVisualIndex = actualGroupChildren.length;
-                 } else { // Placeholder is before the first item
+                 } else { 
                     newVisualIndex = 0;
                  }
             }
-            // Adjust if placeholder was inserted before the dragged element's original position
             const draggedGroupOriginalVisualIndex = actualGroupChildren.indexOf(draggedGroupElement);
             if (draggedGroupOriginalVisualIndex < newVisualIndex && placeholderElement.previousSibling === draggedGroupElement) {
                 newVisualIndex--;
             }
-
 
             const draggedGroupObjIndex = appConfig.groupOrder.findIndex(g => g.domain === draggedDomain);
             if (draggedGroupObjIndex === -1) {
@@ -1974,7 +2012,7 @@
         });
 
         linkGroupsContainer.addEventListener('dragend', (event) => {
-            if (appConfig.showFlatGrid) return; // Disable drag in flat view
+            if (appConfig.showFlatGrid || !draggedGroupElement) return; 
             if (draggedGroupElement) {
                 draggedGroupElement.classList.remove('dragging');
             }
@@ -1984,6 +2022,78 @@
             draggedGroupElement = null;
         });
 
+        // --- DRAG AND DROP LOGIC FOR INDIVIDUAL CARDS (Only active in flat view) ---
+        let draggedCardElement = null;
+        let cardOffsetX = 0;
+        let cardOffsetY = 0;
+
+        function makeCardDraggable(cardElement) {
+            cardElement.addEventListener('mousedown', startCardDrag);
+            // Add touch support if needed later: cardElement.addEventListener('touchstart', startCardDrag, { passive: false });
+        }
+
+        function startCardDrag(event) {
+            // Only allow dragging if in flat view and not on an action button or its children
+            if (!appConfig.showFlatGrid || event.target.closest('.card-action-button') || event.target.closest('.card-action-dropdown')) {
+                return;
+            }
+            
+            // Prevent text selection or other default browser actions during drag
+            event.preventDefault();
+
+            draggedCardElement = event.currentTarget; // The .link-card element
+            draggedCardElement.classList.add('dragging');
+
+            const rect = draggedCardElement.getBoundingClientRect();
+            const parentRect = linkGroupsContainer.getBoundingClientRect(); // Drag relative to this container
+
+            cardOffsetX = event.clientX - rect.left;
+            cardOffsetY = event.clientY - rect.top;
+
+            document.addEventListener('mousemove', dragCardMove);
+            document.addEventListener('mouseup', endCardDrag);
+        }
+
+        function dragCardMove(event) {
+            if (!draggedCardElement) return;
+            event.preventDefault();
+
+            const parentRect = linkGroupsContainer.getBoundingClientRect();
+            
+            let newLeft = event.clientX - parentRect.left - cardOffsetX + linkGroupsContainer.scrollLeft;
+            let newTop = event.clientY - parentRect.top - cardOffsetY + linkGroupsContainer.scrollTop;
+
+            // Constrain within parent bounds
+            const cardWidth = draggedCardElement.offsetWidth;
+            const cardHeight = draggedCardElement.offsetHeight;
+            
+            newLeft = Math.max(0, Math.min(newLeft, linkGroupsContainer.scrollWidth - cardWidth));
+            newTop = Math.max(0, Math.min(newTop, linkGroupsContainer.scrollHeight - cardHeight));
+
+            draggedCardElement.style.left = `${newLeft}px`;
+            draggedCardElement.style.top = `${newTop}px`;
+        }
+
+        function endCardDrag(event) {
+            if (!draggedCardElement) return;
+
+            draggedCardElement.classList.remove('dragging');
+            const linkId = draggedCardElement.dataset.linkId;
+            const linkToUpdate = appConfig.links.find(l => l.id === linkId);
+
+            if (linkToUpdate) {
+                linkToUpdate.flatViewPosition = {
+                    top: draggedCardElement.style.top,
+                    left: draggedCardElement.style.left
+                };
+                saveAppConfig();
+            }
+
+            document.removeEventListener('mousemove', dragCardMove);
+            document.removeEventListener('mouseup', endCardDrag);
+            draggedCardElement = null;
+        }
+
 
         // --- INITIALIZATION AND RENDERING ALL LINK GROUPS ---
         function renderAllLinkGroups() {
@@ -1992,7 +2102,7 @@
             
             if (!container) { console.error("[Render] Link container not found!"); return; }
             container.innerHTML = ''; 
-            container.classList.remove('flat-view-active', 'grouped-view-active'); // Clear previous layout classes
+            container.classList.remove('flat-view-active', 'grouped-view-active'); 
 
             if (appConfig.links.length === 0) { 
                 if (initialLoadingPlaceholder && initialLoadingPlaceholder.parentNode) initialLoadingPlaceholder.remove(); 
@@ -2006,12 +2116,13 @@
             }
 
             if (appConfig.showFlatGrid) {
-                // --- FLAT GRID VIEW ---
+                // --- FLAT GRID VIEW (Draggable Cards) ---
                 container.classList.add('flat-view-active');
-                // Optionally sort all links, e.g., by title
-                const sortedLinks = [...appConfig.links].sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+                let defaultTop = 10; // For cascading new cards
+                let defaultLeft = 10;
+                const cardSpacing = 10; // Spacing between cascaded cards
 
-                sortedLinks.forEach(link => {
+                appConfig.links.forEach((link, index) => {
                     const cardLinkWrapper = document.createElement('a'); 
                     cardLinkWrapper.href = link.url;
                     cardLinkWrapper.target = '_blank';
@@ -2019,7 +2130,25 @@
                     cardLinkWrapper.className = 'link-card'; 
                     cardLinkWrapper.innerHTML = renderCardContent(link); 
                     cardLinkWrapper.title = `Open ${link.title || link.url} in a new tab`;
+                    cardLinkWrapper.dataset.linkId = link.id; // For drag identification
+
+                    // Apply saved position or default
+                    if (link.flatViewPosition && link.flatViewPosition.top && link.flatViewPosition.left) {
+                        cardLinkWrapper.style.top = link.flatViewPosition.top;
+                        cardLinkWrapper.style.left = link.flatViewPosition.left;
+                    } else {
+                        // Simple cascade for unpositioned cards
+                        cardLinkWrapper.style.top = `${defaultTop}px`;
+                        cardLinkWrapper.style.left = `${defaultLeft}px`;
+                        defaultLeft += (cardLinkWrapper.offsetWidth || 180) + cardSpacing; // Use actual or default width
+                        if (defaultLeft + (cardLinkWrapper.offsetWidth || 180) > container.clientWidth) {
+                            defaultLeft = 10;
+                            defaultTop += (cardLinkWrapper.offsetHeight || 60) + cardSpacing; // Use actual or default height
+                        }
+                    }
                     
+                    makeCardDraggable(cardLinkWrapper); // Make the card draggable
+
                     const actionButton = cardLinkWrapper.querySelector('.card-action-button');
                     if (actionButton) {
                         actionButton.addEventListener('click', (event) => {
